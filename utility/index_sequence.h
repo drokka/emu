@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace doc {
+namespace emu {
     namespace  utility {
 
         template<std::size_t... Is>

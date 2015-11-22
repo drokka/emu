@@ -10,7 +10,7 @@
 
 #include "../../utility/Parameter.h"
 
-using namespace doc::utility;
+using namespace emu::utility;
 
 class ParameterTestSuite : public ::testing::Test {
 

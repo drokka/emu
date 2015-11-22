@@ -5,7 +5,7 @@
 #ifndef FUNCTION_UTILITIES_ITERATIVEFUNCTIONBASE_H
 #define FUNCTION_UTILITIES_ITERATIVEFUNCTIONBASE_H
 
-namespace doc {
+namespace emu {
     namespace utility {
 
 

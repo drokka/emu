@@ -17,6 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/utility_test/tests/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utility_test/tests/IterativeFunctionTest.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utility_test/tests/ParameterTest.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utility_test/tests/Point2DTest.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utility_test/tests/main.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />

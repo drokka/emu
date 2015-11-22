@@ -8,11 +8,11 @@
 #include "ParameterTest.h"
 #include "IterativeFunction.h"
 #include "IterativeFunctionTest.h"
-
+#include "Point2DTest.h"
 using namespace std;
 
 
-using namespace doc::utility;
+using namespace emu::utility;
 
 
 

@@ -9,7 +9,7 @@
 #include <cmath>
 #include <string.h>
 
-namespace doc {
+namespace emu {
     namespace utility {
 
 

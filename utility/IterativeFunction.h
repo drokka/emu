@@ -11,7 +11,7 @@
 #include "IterativeFunctionBase.h"
 #include "index_sequence.h"
 
-namespace doc {
+namespace emu {
     namespace  utility{
     using namespace std;
 
