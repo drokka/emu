@@ -3,8 +3,8 @@
 // Created by peter on 21/11/15.
 //
 
-#ifndef FUNCTION_UTILITIES_POINTLIST_H
-#define FUNCTION_UTILITIES_POINTLIST_H
+#ifndef FUNCTION_UTILITIES_POINT_H
+#define FUNCTION_UTILITIES_POINT_H
 
 namespace emu {
     namespace utility {
@@ -23,4 +23,4 @@ namespace emu {
     };
 };
 
-#endif //FUNCTION_UTILITIES_POINTLIST_H
+#endif //FUNCTION_UTILITIES_POINT_H

@@ -31,6 +31,13 @@ namespace emu {
                     return true;
                 else    return false;
             }
+
+            bool operator< ( const IntegerPoint2D &otherPoint) const{
+                if(this->val[0] < otherPoint.val[0]  ||
+                   (this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1]))
+                    return true;
+                else    return false;
+            }
         };
     };
 };
