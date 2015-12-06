@@ -89,9 +89,9 @@ namespace emu {
                         j->second+=1; //increment count
                         i->second->maxHits = max(i->second->maxHits, j->second);
                     }
-                    cout<< fd->size() <<endl;
+                  //  cout<< fd->size() <<endl;
                 }
-                cout<< freqTables[COARSE]->frequencyListPtr->size() <<endl;
+               // cout<< freqTables[COARSE]->frequencyListPtr->size() <<endl;
                 return  ipp;
             }
         };
