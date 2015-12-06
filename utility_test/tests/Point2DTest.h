@@ -73,11 +73,23 @@ TEST_F(Point2DTestSuite, testPoint2IntegerPoint){
 
     ASSERT_TRUE(iList.begin()->second == 13);
 
+
+}
+
+TEST_F(Point2DTestSuite, testPointList1){
     PointList points1;
     points1.addPoint(p3);
     points1.addPoint(p3);
 
+    ASSERT_TRUE(points1.freqTables.size() ==1);
     ASSERT_TRUE(points1.rawList->size() == 2);
-}
 
+    //Frequency table for COARSE scale added by default.
+    ASSERT_TRUE(points1.freqTables[points1.COARSE]->scale == points1.COARSE);
+    shared_ptr<PointList::FrequencyData> frequencyData = points1.freqTables[points1.COARSE];
+    shared_ptr<PointList::FrequencyList2D> fl = frequencyData->frequencyListPtr;
+    ASSERT_EQ(fl->size() , 1);
+    ASSERT_EQ(fl->begin()->second,2);
+    ASSERT_EQ(frequencyData->maxHits, 2);
+}
 #endif //FUNCTION_UTILITIES_POINT2DTEST_H
