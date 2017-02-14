@@ -82,7 +82,7 @@ TEST_F(Point2DTestSuite, testPointList1){
     points1.addPoint(p3);
 
     ASSERT_TRUE(points1.freqTables.size() ==1);
-    ASSERT_TRUE(points1.rawList->size() == 2);
+    ASSERT_TRUE(points1.coarseSize() == 2);
 
     //Frequency table for COARSE scale added by default.
     ASSERT_TRUE(points1.freqTables[points1.COARSE]->scale == points1.COARSE);

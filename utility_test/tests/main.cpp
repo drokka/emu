@@ -9,6 +9,8 @@
 #include "IterativeFunction.h"
 #include "IterativeFunctionTest.h"
 #include "Point2DTest.h"
+#include "PointListTest.h"
+
 using namespace std;
 
 
