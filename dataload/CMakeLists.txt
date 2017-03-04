@@ -1,6 +1,6 @@
 set(SOURCE_FILES  ../utility/Parameter.h ../utility/IterativeFunctionBase.h ../utility/IterativeFunction.h ../utility/index_sequence.h
         ../utility/IntegerPoint.h ../utility/IntegerPoint2D.h ../utility/Point.h ../utility/Point2D.h ../utility/PointList.h
-        ../utility/Generator.h dataload.cpp)
+        ../utility/Generator.h dataload.cpp ../utility/FrequencyData.h)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_executable(dataload ${SOURCE_FILES})

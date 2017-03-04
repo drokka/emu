@@ -64,7 +64,7 @@ TEST_F(Point2DTestSuite, testPoint2IntegerPoint){
     ASSERT_TRUE(ipt.val[0] == 1);  //Is floor accurate enough?
     ASSERT_TRUE(ipt.val[1] == 2);
 
-    PointList::FrequencyList2D  iList;
+    FrequencyList2D  iList;
 
 
     iList.insert(make_pair(IntegerPoint2D(21,25), 11));
@@ -85,11 +85,11 @@ TEST_F(Point2DTestSuite, testPointList1){
     ASSERT_TRUE(points1.coarseSize() == 2);
 
     //Frequency table for COARSE scale added by default.
-    ASSERT_TRUE(points1.freqTables[points1.COARSE]->scale == points1.COARSE);
-    shared_ptr<PointList::FrequencyData> frequencyData = points1.freqTables[points1.COARSE];
-    shared_ptr<PointList::FrequencyList2D> fl = frequencyData->frequencyListPtr;
+    ASSERT_TRUE(points1.freqTables[points1.COARSE].scale == points1.COARSE);
+    FrequencyData  frequencyData = points1.freqTables[points1.COARSE];
+    shared_ptr<FrequencyList2D>  fl = frequencyData.frequencyList;
     ASSERT_EQ(fl->size() , 1);
     ASSERT_EQ(fl->begin()->second,2);
-    ASSERT_EQ(frequencyData->maxHits, 2);
+    ASSERT_EQ(frequencyData.maxHits, 2);
 }
 #endif //FUNCTION_UTILITIES_POINT2DTEST_H

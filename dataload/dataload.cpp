@@ -30,9 +30,17 @@ int main(int nParam, char **param) {
         }
     } else {
         cout << "Please supply file name, image file name and extension." << endl;
+        return 1;
     }
 
+    FrequencyData fd1;
+    fd1.frequencyList->insert(make_pair(IntegerPoint2D(1,2),17));
+
+    FrequencyData fd2 = fd1;
+cout<< fd2.frequencyList->size() << endl;
+
     emu::utility::PointList pl;
+    cout << pl.freqTables.size() << "ft size after ctor" <<endl;
     ifstream1 >> pl;
     ifstream1.close();
 
@@ -46,26 +54,28 @@ int main(int nParam, char **param) {
 
 int paint(emu::utility::PointList hl, char *imageName, char *imageExt) {
     PointList::ScaleDataIter i = hl.freqTables.begin();
-    cout<< "number of freqTables is " <<hl.freqTables.size() <<endl;
+    cout << "number of freqTables is " << hl.freqTables.size() << endl;
     while (i != hl.freqTables.end()) {
         cairo_surface_t *surface = 0;
         cairo_t *cr = 0;
         int sz = i.operator*().first;
 
-        surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, sz, sz);
-        cr = cairo_create(surface);
-        cairo_set_source_rgb(cr, 255, 255, 255);
-        cairo_fill(cr);
+        if (i->second.frequencyList->size() >0 ) {   // != nullptr) {
+            surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, sz, sz);
+            cr = cairo_create(surface);
+            cairo_set_source_rgb(cr, 255, 255, 255);
+            cairo_fill(cr);
 
-        long maxhits = i.operator*().second->maxHits;
-        cout << "maxHits for " << hl.COARSE << " is " << maxhits << endl;
-        long fdiff = maxhits - 1; //maxx -minn;
+            long maxhits = i.operator*().second.maxHits;
+            cout << "maxHits for " << hl.COARSE << " is " << maxhits << endl;
+            long fdiff = maxhits - 1; //maxx -minn;
 
-        PointList::FrequencyList2DConstIter iter = i.operator*().second->frequencyListPtr->begin();
-        while (iter != i.operator*().second->frequencyListPtr->end()) {
-            int x = iter->first.val[0]; //(points+i)->x;
-            int y = iter->first.val[1]; //((points+i)->y);
-            long hits = iter->second;
+
+            emu::utility::FrequencyList2DConstIter iter = i.operator*().second.frequencyList->begin();
+            while (iter != i.operator*().second.frequencyList->end()) {
+                int x = iter->first.val[0]; //(points+i)->x;
+                int y = iter->first.val[1]; //((points+i)->y);
+                long hits = iter->second;
 //   cout << "looking for " << x <<" "<< y <<" " << hits <<endl;
 /*****
 PointFrequency::const_iterator pp = hl.hitPointList.find(*(points+i));
@@ -76,29 +86,29 @@ if(pp!= hl.hitPointList.cend())
 }
  ******************/
 //  cout << "maxhits " <<maxhits <<endl;
-            double opacity = (double) (hits - 1) / fdiff;
+                double opacity = (double) (hits - 1) / fdiff;
 //   cout <<"opacity " << opacity <<endl;
 //opacity=0.3*opacity;
 //bound opacity between 0 and 1.
-            opacity = (opacity <= 0) ? 1 : opacity;
-            opacity = (opacity > 1) ? 1 : opacity;
+                opacity = (opacity <= 0) ? 1 : opacity;
+                opacity = (opacity > 1) ? 1 : opacity;
 
-            cairo_set_source_rgba(cr, 0.2, 0.95 * opacity, .9, opacity);
+                cairo_set_source_rgba(cr, 0.2, 0.95 * opacity, .9, opacity);
 //    cairo_set_source_rgb (cr, 0.2, 0.95*opacity, .9);
-            cairo_move_to(cr, x, y + 0.5);
-            cairo_line_to(cr, x + 0.5, y + 0.5);
-            cairo_stroke(cr);
-            iter++;
-        }
+                cairo_move_to(cr, x, y + 0.5);
+                cairo_line_to(cr, x + 0.5, y + 0.5);
+                cairo_stroke(cr);
+                iter++;
+            }
 
-        std::cout << "After painting sz " << sz << " complete. " << '\n';
+            std::cout << "After painting sz " << sz << " complete. " << '\n';
 
-        string fname = string(imageName) + std::to_string(sz) + "." + imageExt;
+            string fname = string(imageName) + std::to_string(sz) + "." + imageExt;
 
-        cairo_surface_write_to_png(surface, fname.c_str());
-        cairo_destroy(cr);
-        cairo_surface_destroy(surface);
-
+            cairo_surface_write_to_png(surface, fname.c_str());
+            cairo_destroy(cr);
+            cairo_surface_destroy(surface);
+        } else { cout << "No frequency table for scale " << sz << endl; }
         i++; //next freqTable / size
     }
 
