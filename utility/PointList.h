@@ -46,24 +46,14 @@ using namespace std;
             ScaleData freqTables;
 
             PointList(const int COARSE, const int MEDIUM, const int FINE,  long rawTotal)
-                    : COARSE(COARSE),
-                      MEDIUM(MEDIUM),
-                      FINE(FINE),
-                      rawIndex(0), rawTotal(rawTotal) {
-                
-                //Add a coarse pixel image by default.
-             //   freqTables.insert(make_pair(COARSE, shared_ptr<FrequencyData>(new FrequencyData())));
-             //   freqTables[COARSE]->scale = COARSE;
-             //   freqTables[COARSE]->maxHits = 1;
-             //   freqTables[COARSE]->minHits = 1;
-             //   freqTables[COARSE]->frequencyList = shared_ptr<FrequencyList2D>(new FrequencyList2D());
-             //   addTable(COARSE);
-              //  addTable(MEDIUM);
-              //  addTable(FINE);  //Stored data only for the frequency tables. More accurate stored data requires adding a finer grained table.
+                    : COARSE(COARSE),  MEDIUM(MEDIUM),  FINE(FINE),
+                      rawIndex(0), rawTotal(rawTotal),freqTables(ScaleData()) {
             }
 
 
-            PointList():rawIndex(0) { PointList(200, 800, 1600,  0);  }
+            PointList():COARSE(200),  MEDIUM(800), FINE(1600),
+                        rawIndex(0), rawTotal(0),freqTables(ScaleData()){
+            }
             
             PointList(const PointList& pl){
                 this->freqTables = pl.freqTables;
@@ -113,10 +103,6 @@ using namespace std;
                 PointList::ScaleDataConstIter i = this->freqTables.find(scale);
                 if (i == this->freqTables.end()) {
                     FrequencyData  fdata(scale) ;
-                    //fdata.scale = scale;
-                    fdata.maxHits = 1;
-                    fdata.minHits = 1;
-                    //fdata.frequencyList = new FrequencyList2D();
                     this->freqTables.insert(make_pair(scale, fdata));
                 }
                 cout<< "ft size: " <<this->freqTables.size() <<endl;
@@ -127,8 +113,10 @@ using namespace std;
             }
 
             long coarseSize() {
-
+                if(freqTables.find(COARSE)!= freqTables.end()) {
                     return freqTables[COARSE].frequencyList->size();
+                }
+                else return 0;
             }
 
 //            friend std::ostream &operator<<(std::ostream &, const PointList &);
@@ -169,19 +157,8 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& 
                 ostream1<<" ";
                 emu::utility::PointList::ScaleDataConstIter i = pl.freqTables.begin();
                 while (i != pl.freqTables.end()) {
-                    ostream1 << i->first << " ";  /* scale */
-                    ostream1 << i->second.maxHits<< " ";
-                    ostream1 << i->second.minHits<< " ";
-                    shared_ptr<FrequencyList2D>  fd = i->second.frequencyList;
-                    ostream1 << fd->size();
+                    ostream1 << i->second;
                     ostream1 << " ";
-                    emu::utility::FrequencyList2DIter j = fd->begin();
-                    while (j != fd->end()) {
-                        ostream1 << j->first.val[0] << " "<< j->first.val[1] << " "<< j->second<< " ";
-                        j++;
-                    }
-                    ostream1 << " ";
-                    ostream1.flush();
                     i++;
                 }
                 ostream1.flush();
@@ -196,26 +173,13 @@ std::istream& operator>>(std::istream &input, emu::utility::PointList& pl) {
 
             for (int i = 0; i < ftSize; i++) {
                 long scale;
+              //  fdPtr.scale = scale;
+                std::streampos p_orig = input.tellg();
                 input >> scale;
-                pl.freqTables.insert(
-                        make_pair(scale,  emu::utility::FrequencyData(scale)));
-                emu::utility::FrequencyData  fdPtr = (pl.freqTables)[scale];
-                fdPtr.scale = scale;
-                input >>  fdPtr.maxHits >> fdPtr.minHits;
-                long freqDataSz;
-                input >> freqDataSz;
-                pl.rawTotal += freqDataSz;
-                //cout<< "Reading data got scale, maxhits, minhits and data length: " <<fdPtr->scale <<" "<< fdPtr->maxHits <<" "<< fdPtr->minHits <<" "<< freqDataSz << std::endl;
-               // cout<<endl;
-                if(freqDataSz >0) {
-                   // fdPtr.frequencyList =  new emu::utility::PointList::FrequencyList2D();
-                    for (long j = 0; j < freqDataSz; j++) {
-                        long x, y;
-                        long freq;
-                        input >> x >> y >> freq;
-                        fdPtr.frequencyList->insert(std::make_pair(emu::utility::IntegerPoint2D(x, y), freq));
-                    }
-                }
+                pl.addTable(scale);
+                input.seekg(p_orig); /* Go back so scale can be read again by >>FrequencyData */
+                input >> pl.freqTables[scale];
+
             }
             return input;
         }

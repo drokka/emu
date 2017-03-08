@@ -38,6 +38,41 @@ TEST_F(PointListTestSuite, constructor){
 
 }
 
+TEST_F(PointListTestSuite, FrequencyData_stream){
+    using namespace emu::utility;
+    FrequencyData fd1;
+    ASSERT_EQ(200, fd1.scale);
+
+    Point2D pt1= Point2D(0.1,1.1);
+    fd1.addIntegerPoint(pt1);
+    ASSERT_EQ(1, fd1.frequencyList->size());
+    fd1.addIntegerPoint(pt1);
+    ASSERT_EQ(1, fd1.frequencyList->size());
+    ASSERT_EQ(2, fd1.maxHits);
+    for(int i=0; i<10;i++){
+        Point2D pt(i+0.3,0.5);
+        fd1.addIntegerPoint(pt);
+    }
+
+    ASSERT_EQ(11, fd1.frequencyList->size());
+
+    std::ofstream outy("/home/peter/fdout1", std::ofstream::out);
+    ASSERT_EQ(2, fd1.maxHits);
+
+    outy <<fd1;
+    outy.flush(); outy.close();
+    std::ifstream inStr(string("/home/peter/fdout1").c_str(), std::ios::in);
+
+    FrequencyData fd2;
+    inStr >> fd2;
+    inStr.close();
+    ASSERT_EQ(11, fd2.frequencyList->size());
+    ASSERT_EQ(200, fd2.scale);
+    ASSERT_EQ(2, fd2.maxHits);
+
+}
+
+
 TEST_F(PointListTestSuite, addPoints){
     emu::utility::PointList pl = PointList();
 
@@ -70,21 +105,18 @@ TEST_F(PointListTestSuite, addPoints){
 
     std::ofstream outy("/home/peter/out1", std::ofstream::out);
 
+    ASSERT_EQ(2, pl.freqTables[pl.COARSE].maxHits);
     outy <<pl;
     outy.flush(); outy.close();
     sleep(1);
     std::ifstream inStr(string("/home/peter/out1").c_str(), std::ios::in);
  //   std::istream_iterator<long>();
     PointList pl2;
-if(inStr.bad()){
-    cout<< "no good"<<endl;
-}
-    bool yeh = inStr.is_open();
     inStr >>pl2;
 
     inStr.close();
 
-    ASSERT_EQ(0, pl2.freqTables[pl.COARSE].maxHits);
+    ASSERT_EQ(2, pl2.freqTables[pl.COARSE].maxHits);
     /*
     PointList::FrequencyList2DConstIter ii = fd1->frequencyListPtr->begin();
     while(ii != fd1->frequencyListPtr->end()){
@@ -106,9 +138,10 @@ TEST_F(PointListTestSuite, addFrequencyList){
     }
 
     pl.convert(500);
+    pl.convert(300);
 
-  //  ASSERT_EQ(2, pl.freqTables.size());
- //   ASSERT_TRUE(pl.coarseSize() > n-1);
+   ASSERT_TRUE(pl.coarseSize() ==0);
+    ASSERT_EQ(2, pl.freqTables.size());
 
     ofstream outy("pltest.txt", ios_base::out);
     outy<<pl;
@@ -117,8 +150,10 @@ TEST_F(PointListTestSuite, addFrequencyList){
     ifstream iny("pltest.txt", ios_base::in);
     PointList pl2;
     iny>> pl2;
- //   ASSERT_EQ(2, pl2.freqTables.size());
-//    ASSERT_TRUE(pl2.coarseSize() > n-1);
+    iny.close();
+
+    ASSERT_EQ(2, pl2.freqTables.size());
+    ASSERT_TRUE(pl2.coarseSize()==0);
 
     ofstream outy2("pltest2.txt", ios_base::out);
     outy2<<pl2;
