@@ -10,6 +10,8 @@
 #include <bits/ios_base.h>
 #include <ios>
 #include <fstream>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 //using namespace emu::utility;
@@ -88,7 +90,8 @@ TEST_F(PointListTestSuite, addPoints){
     }
 
     ASSERT_EQ(12, pl.rawSize());
-    pl.convert(pl.COARSE);
+    pl.addTable(pl.COARSE);
+    pl.addPoints();
     ASSERT_EQ(11, pl.coarseSize());
 
     FrequencyData  fd1 =  pl.freqTables[pl.COARSE];
@@ -137,11 +140,11 @@ TEST_F(PointListTestSuite, addFrequencyList){
         pl.addPoint(pt);
     }
 
-    pl.convert(500);
-    pl.convert(300);
-
-   ASSERT_TRUE(pl.coarseSize() ==0);
-    ASSERT_EQ(2, pl.freqTables.size());
+    pl.addTable(500);
+    pl.addTable(300);
+    pl.addPoints();
+   ASSERT_TRUE(pl.coarseSize() ==100);
+    ASSERT_EQ(3, pl.freqTables.size());
 
     ofstream outy("pltest.txt", ios_base::out);
     outy<<pl;
@@ -152,8 +155,8 @@ TEST_F(PointListTestSuite, addFrequencyList){
     iny>> pl2;
     iny.close();
 
-    ASSERT_EQ(2, pl2.freqTables.size());
-    ASSERT_TRUE(pl2.coarseSize()==0);
+    ASSERT_EQ(3, pl2.freqTables.size());
+    ASSERT_TRUE(pl2.coarseSize()==100);
 
     ofstream outy2("pltest2.txt", ios_base::out);
     outy2<<pl2;
@@ -161,4 +164,53 @@ TEST_F(PointListTestSuite, addFrequencyList){
 
 }
 
+TEST_F(PointListTestSuite, iomanip){
+
+    int i=1,j=-179;
+    float x=3.16;
+    long l= 999999999999;
+
+    ofstream ot("testbin", ios_base::binary|ios_base::out);
+
+    ot<< i << j << std::fixed << x <<l <<endl;
+    ot.flush();
+    ot.close();
+
+}
+
+TEST_F(PointListTestSuite, buffer) {
+    emu::utility::PointList pl;
+
+    int n = 10000;
+    for (int i = 0; i < n; i++) {
+        Point2D pt(0.1, 0.1);
+        pl.addPoint(pt);
+    }
+
+    for (int i = 0; i < n; i++) {
+        Point2D pt(0.2, 0.2);
+        pl.addPoint(pt);
+    }
+    pl.addPoints();
+    ASSERT_EQ(20000, pl.rawTotal);
+
+
+    ASSERT_EQ(10000, pl.freqTables[pl.COARSE].maxHits);
+    ASSERT_EQ(2, pl.freqTables[pl.COARSE].frequencyList->size());
+
+    for (int i = 0; i < 100000; i++) {
+        Point2D pt(-1+i/100000, 0.2 - i/10000);
+        pl.addPoint(pt);
+    }
+    pl.addPoints();
+ASSERT_TRUE(pl.freqTables[pl.COARSE].frequencyList->size() > 10);
+ASSERT_EQ(120000,pl.rawTotal);
+
+    for(int i=0;i<200;i++){
+        Point2D pt(i, 0.5);
+        pl.addPoint(pt );
+    }
+    pl.addPoints();
+    ASSERT_TRUE(pl.freqTables[pl.COARSE].frequencyList->size() > 200);
+}
 #endif //FUNCTION_UTILITIES_POINTLISTTEST_H

@@ -21,6 +21,7 @@ int main(int nParam, char **param) {
             cout << "File is " << symFile << endl;
             ifstream1.open(symFile.c_str(), std::ios::in);
             if (!ifstream1.is_open()) {
+                cout<< "Could not open " << symFile <<endl;
                 throw;
             }
 

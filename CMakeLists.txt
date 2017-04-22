@@ -8,5 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include_directories(utility)
 include_directories(/usr/include/cppunit)
 
+add_subdirectory(utility)
+
 add_subdirectory(utility_test)
 add_subdirectory(dataload)

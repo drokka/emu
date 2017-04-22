@@ -14,30 +14,15 @@ namespace emu {
 
         class IntegerPoint2D:public IntegerPoint<2> {
         public:
-            IntegerPoint2D():IntegerPoint<2>(){}
-
-            IntegerPoint2D(int a, int b){ val[0]=a; val[1] = b;}
+            IntegerPoint2D();
+            IntegerPoint2D(int a, int b);
 //IntegerPoint2D(Point2D &point){}
 
-            IntegerPoint2D(Point2D &point){
-                (*this).val[0] = point.val[0];
-                (*this).val[1] = point.val[1];
-            }
+            IntegerPoint2D(Point2D &point);
 
+            virtual bool operator()(const IntegerPoint &firstPoint, const IntegerPoint &otherPoint) const;
 
-            virtual bool operator()(const IntegerPoint &firstPoint, const IntegerPoint &otherPoint) const{
-                if(firstPoint.val[0] < otherPoint.val[0]  ||
-                   (firstPoint.val[0] == otherPoint.val[0]) && (firstPoint.val[1] < otherPoint.val[1]))
-                    return true;
-                else    return false;
-            }
-
-            bool operator< ( const IntegerPoint2D &otherPoint) const{
-                if(this->val[0] < otherPoint.val[0]  ||
-                   (this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1]))
-                    return true;
-                else    return false;
-            }
+            bool operator< ( const IntegerPoint2D &otherPoint) const;
         };
     };
 };
