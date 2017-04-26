@@ -28,10 +28,22 @@ IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) 
     } else {
         j->second += 1; //increment count
         maxHits = std::max(maxHits, j->second);
-        //TODO: handle minHits
+        //TODO: handle minHits. hmmm added explicit method
     }
 }
 
+long  emu::utility::FrequencyData::findMin() {
+    long min = maxHits;
+    FrequencyList2DConstIter i=this->frequencyList->begin();
+    while(i!= frequencyList->end()){
+        if(i->second < min){
+            min = i->second;
+        }
+        i++;
+    }
+    minHits = min;
+    return minHits;
+}
 
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::FrequencyData& pl) {
     using namespace std;

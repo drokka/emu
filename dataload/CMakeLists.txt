@@ -1,4 +1,4 @@
-set(SOURCE_FILES  dataload.cpp )
+set(SOURCE_FILES  dataload.cpp ../../symicon/PaintIcon.cpp ../../symicon/PaintIcon.h)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_executable(dataload ${SOURCE_FILES})

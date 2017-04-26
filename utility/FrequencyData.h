@@ -37,6 +37,7 @@ namespace emu {
             FrequencyData();
 
             IntegerPoint2D addIntegerPoint( const Point2D &pt) ;
+            long findMin();
 
         };
     }

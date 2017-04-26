@@ -7,12 +7,21 @@
 #include <fstream>
 #include <cairo.h>
 
+
+#include "../../symicon/PaintIcon.h"
+
 using namespace std;
 using namespace emu::utility;
 
 int paint(emu::utility::PointList hl, char *imageName, char *imageExt);
 
+void testColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
+                  double *rgbaOut);
+
+
 int main(int nParam, char **param) {
+    using namespace emu::utility;
+
     ifstream ifstream1;
     // char * imageFileName, *imageExt;
     if (nParam == 4) {
@@ -34,85 +43,53 @@ int main(int nParam, char **param) {
         return 1;
     }
 
-    FrequencyData fd1;
-    fd1.frequencyList->insert(make_pair(IntegerPoint2D(1,2),17));
-
-    FrequencyData fd2 = fd1;
-cout<< fd2.frequencyList->size() << endl;
-
-    emu::utility::PointList pl;
-    cout << pl.freqTables.size() << "ft size after ctor" <<endl;
+     emu::utility::PointList pl;
+   // cout << pl.freqTables.size() << "ft size after ctor" <<endl;
     ifstream1 >> pl;
     ifstream1.close();
 
-    int res = paint(pl, param[2], param[3]);
+    int numTables = pl.freqTables.size();
+    cout<< "number of frequency tables is " << numTables <<endl;
+    PointList::ScaleDataConstIter ii = pl.freqTables.begin();
 
-    if (0 != res) {
-        cout << " There was an error saving image." << endl;
+    double bg[] = {1,1,1, 1};
+    double min[] = {0, .9, .9, 0.5};
+    double max[] = {0, .3, .2, 1};
+
+    while(ii != pl.freqTables.end()) {
+        int sz = ii->first;
+        long maxhits = pl.freqTables[sz].maxHits;
+        long minhits = pl.freqTables[sz].findMin();
+        cout << "maxHits for " << sz << " is " << maxhits << endl;
+        cout << "minHits for " << sz << " is " << minhits << endl;
+        //  PaintIcon paintIcon(sz,sz,bg,min,max,&hl);
+        emu::symicon::PaintIcon paintIcon(sz, sz, bg, min, max, &pl, &testColourFn);
+        paintIcon.setUseAlpha(true);
+        paintIcon.paint();
+        ii++;
     }
-    return res;
+     return 0;
 };
 
-int paint(emu::utility::PointList hl, char *imageName, char *imageExt) {
-    PointList::ScaleDataIter i = hl.freqTables.begin();
-    cout << "number of freqTables is " << hl.freqTables.size() << endl;
-    while (i != hl.freqTables.end()) {
-        cairo_surface_t *surface = 0;
-        cairo_t *cr = 0;
-        int sz = i.operator*().first;
+void testColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd, double *rgbaOut) {
+    long maxhits = fd.maxHits;
+    // cout<< "maxHits for " << sz <<" is "<< maxhits<<endl;
+    long fdiff = maxhits>1?maxhits-1: 1; //maxx -minn;
 
-        if (i->second.frequencyList->size() >0 ) {   // != nullptr) {
-            surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, sz, sz);
-            cr = cairo_create(surface);
-            cairo_set_source_rgb(cr, 255, 255, 255);
-            cairo_fill(cr);
-
-            long maxhits = i.operator*().second.maxHits;
-            cout << "maxHits for " << hl.COARSE << " is " << maxhits << endl;
-            long fdiff = maxhits - 1; //maxx -minn;
-
-
-            emu::utility::FrequencyList2DConstIter iter = i.operator*().second.frequencyList->begin();
-            while (iter != i.operator*().second.frequencyList->end()) {
-                int x = iter->first.val[0]; //(points+i)->x;
-                int y = iter->first.val[1]; //((points+i)->y);
-                long hits = iter->second;
-//   cout << "looking for " << x <<" "<< y <<" " << hits <<endl;
-/*****
-PointFrequency::const_iterator pp = hl.hitPointList.find(*(points+i));
-if(pp!= hl.hitPointList.cend())
-{
- hits = pp->second;
-//       cout<< "found!! " <<hits <<endl;
-}
- ******************/
-//  cout << "maxhits " <<maxhits <<endl;
-                double opacity = (double) (hits - 1) / fdiff;
-//   cout <<"opacity " << opacity <<endl;
+    //  cout << "maxhits " <<maxhits <<endl;
+    double opacity = (double)((double )hits/(double)maxhits);
+    //   cout <<"opacity " << opacity <<endl;std::max(
 //opacity=0.3*opacity;
-//bound opacity between 0 and 1.
-                opacity = (opacity <= 0) ? 1 : opacity;
-                opacity = (opacity > 1) ? 1 : opacity;
+    //bound opacity between 0 and 1.
+    //opacity = (opacity <= .5)?0.5:opacity;
+    // opacity = (opacity >1)?1:opacity;
+    double span1= maxRGBA[0] - minRGBA[0];
+    double span2= maxRGBA[1] - minRGBA[1];
+    double span3= maxRGBA[2] - minRGBA[2];
 
-                cairo_set_source_rgba(cr, 0.2, 0.95 * opacity, .9, opacity);
-//    cairo_set_source_rgb (cr, 0.2, 0.95*opacity, .9);
-                cairo_move_to(cr, x, y + 0.5);
-                cairo_line_to(cr, x + 0.5, y + 0.5);
-                cairo_stroke(cr);
-                iter++;
-            }
-
-            std::cout << "After painting sz " << sz << " complete. " << '\n';
-
-            string fname = string(imageName) + std::to_string(sz) + "." + imageExt;
-
-            cairo_surface_write_to_png(surface, fname.c_str());
-            cairo_destroy(cr);
-            cairo_surface_destroy(surface);
-        } else { cout << "No frequency table for scale " << sz << endl; }
-        i++; //next freqTable / size
-    }
-
-
-    return 0;
-};
+    rgbaOut[0]= minRGBA[0] +span1*opacity;
+    rgbaOut[1]= minRGBA[1] +span2*opacity;
+    rgbaOut[2]= minRGBA[2] +span3*opacity;
+    rgbaOut[3]=opacity;
+   // rgbaOut[3] = 1.0;
+}

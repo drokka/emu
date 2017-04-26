@@ -74,6 +74,7 @@ void emu::utility::PointList::convert(int scale) {
     for(int p=0; p<rawIndex;p++){
         i->second.addIntegerPoint( rl[p]);
     }
+    i->second.findMin();
 }
 
 
