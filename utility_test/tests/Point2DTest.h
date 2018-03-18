@@ -82,13 +82,15 @@ TEST_F(Point2DTestSuite, testPointList1){
     points1.addPoint(p3);
 
     ASSERT_TRUE(points1.freqTables.size() ==1);
+    points1.addPoints();
+
 //    ASSERT_TRUE(points1.coarseSize() == 2);
 
     //Frequency table for COARSE scale added by default.
     ASSERT_TRUE(points1.freqTables[points1.COARSE].scale == points1.COARSE);
     FrequencyData  frequencyData = points1.freqTables[points1.COARSE];
     shared_ptr<FrequencyList2D>  fl = frequencyData.frequencyList;
-//    ASSERT_EQ(fl->size() , 1);
+    ASSERT_EQ(fl->size() , 1);
     ASSERT_EQ(fl->begin()->second,2);
     ASSERT_EQ(frequencyData.maxHits, 2);
 }

@@ -84,7 +84,7 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& 
 
     ostream1 << pl.freqTables.size();
     ostream1<<" ";
-    emu::utility::PointList::ScaleDataConstIter i = pl.freqTables.begin();
+    auto i = pl.freqTables.begin();
     while (i != pl.freqTables.end()) {
         //   ostream1 << i->second;
         ::operator<<(ostream1, i->second);

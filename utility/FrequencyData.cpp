@@ -25,6 +25,10 @@ IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) 
     FrequencyList2DIter j = frequencyList->find(ipp);
     if (j == frequencyList->end()) {
         frequencyList->insert(std::make_pair(ipp, 1));
+        minX = (a<minX)? a:minX;
+        maxX = (a > maxX)? a:maxX;
+        minY = (b<minY)? b:minY;
+        maxY = (b>maxY)? b:maxY;
     } else {
         j->second += 1; //increment count
         maxHits = std::max(maxHits, j->second);
@@ -45,6 +49,14 @@ long  emu::utility::FrequencyData::findMin() {
     return minHits;
 }
 
+const int FrequencyData::rangeY() {
+    return maxY - minY;
+}
+
+const int FrequencyData::rangeX() {
+    return maxX - minX;
+}
+
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::FrequencyData& pl) {
     using namespace std;
     using namespace emu::utility;
@@ -52,6 +64,11 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::FrequencyDa
     ostream1 << pl.scale << " ";  /* scale */
     ostream1 << pl.maxHits<< " ";
     ostream1 << pl.minHits<< " ";
+    ostream1 << pl.minX <<" ";
+    ostream1 << pl.maxX <<" ";
+    ostream1 << pl.minY <<" ";
+    ostream1 << pl.maxY <<" ";
+
     shared_ptr<FrequencyList2D>  fd = pl.frequencyList;
     ostream1 << fd->size();
     ostream1 << " ";
@@ -70,6 +87,7 @@ std::istream& operator>>(std::istream &input, emu::utility::FrequencyData& pl) {
     using namespace std;
     input >> pl.scale;
     input >>  pl.maxHits >> pl.minHits;
+    input >> pl.minX >> pl.maxX >> pl.minY >> pl.maxY;
 
     long freqDataSz;
     input >> freqDataSz;

@@ -23,7 +23,12 @@ namespace emu {
 
         class FrequencyData {
 
+
         public:
+            int minX=0;
+            int maxX=0;
+            int minY=0;
+            int maxY=0;
 
 
             int scale;
@@ -38,7 +43,12 @@ namespace emu {
 
             IntegerPoint2D addIntegerPoint( const Point2D &pt) ;
             long findMin();
-
+        const    int rangeX();
+         const   int rangeY();
+            int getMinX(){return minX;}
+            int getMaxX(){return maxX;}
+            int getMinY(){ return minY;}
+            int getMaxY(){return maxY;}
         };
     }
 }
