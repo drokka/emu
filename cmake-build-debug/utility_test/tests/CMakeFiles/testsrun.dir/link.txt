@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -std=c++11 -std=c++11 -g  -rdynamic CMakeFiles/testsrun.dir/main.cpp.o  -o testsrun -Wl,-rpath,/home/peter/CLionProjects/emu/cmake-build-debug/utility ../gtest/gtest-1.7.0/libgtest.a ../gtest/gtest-1.7.0/libgtest_main.a ../../utility/libemutil.so ../gtest/gtest-1.7.0/libgtest.a -lpthread 

@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="function_utilities"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\utility\;CMake Files\utility_test\;CMake Files\utility_test\gtest\;CMake Files\utility_test\gtest\gtest-1.7.0\;CMake Files\utility_test\gtest\gtest-1.7.0\cmake\;CMake Files\utility_test\tests\;CMake Files\utility_test\dataload\;CMake Files\dataload\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="emutil">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility/libemutil.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 emutil"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="emutil/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility/libemutil.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 emutil/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/libgtest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/libgtest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/libgtest_main.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/libgtest_main.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/gtest/gtest-1.7.0/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testsrun">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/testsrun" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../gtest/gtest-1.7.0"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../../utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 testsrun"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testsrun/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/testsrun" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../gtest/gtest-1.7.0/include"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../gtest/gtest-1.7.0"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/tests/../../utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 testsrun/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testdataload">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/testdataload" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/dataload/../function_utilities/utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 testdataload"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testdataload/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/testdataload" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/../utility"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/home/peter/CLionProjects/emu/utility_test/dataload/../function_utilities/utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 testdataload/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/utility_test/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dataload">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/dataload/dataload" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/dataload"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/home/peter/CLionProjects/emu/dataload/../function_utilities/utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 dataload"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dataload/fast">
+				<Option output="/home/peter/CLionProjects/emu/cmake-build-debug/dataload/dataload" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/peter/CLionProjects/emu/cmake-build-debug/dataload"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/peter/CLionProjects/emu/utility"/>
+					<Add directory="/usr/include/cppunit"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/home/peter/CLionProjects/emu/dataload/../function_utilities/utility"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 dataload/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/peter/CLionProjects/emu/cmake-build-debug/dataload/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/peter/CLionProjects/emu/dataload/dataload.cpp">
+			<Option target="dataload"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/FrequencyData.cpp">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/FrequencyData.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/Generator.cpp">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/Generator.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/IntegerPoint.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/IntegerPoint2D.cpp">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/IntegerPoint2D.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/IterativeFunction.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/IterativeFunctionBase.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/Parameter.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/Point.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/Point2D.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/PointList.cpp">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/PointList.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/index_sequence.h">
+			<Option target="emutil"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/dataload/testdataload.cpp">
+			<Option target="testdataload"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/src/gtest-all.cc">
+			<Option target="gtest"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/src/gtest_main.cc">
+			<Option target="gtest_main"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/IterativeFunctionTest.h">
+			<Option target="testsrun"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/ParameterTest.h">
+			<Option target="testsrun"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/Point2DTest.h">
+			<Option target="testsrun"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/PointListTest.h">
+			<Option target="testsrun"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/main.cpp">
+			<Option target="testsrun"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/symicon/PaintIcon.cpp">
+			<Option target="testdataload"/>
+			<Option target="dataload"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/symicon/PaintIcon.h">
+			<Option target="testdataload"/>
+			<Option target="dataload"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility_test\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/gtest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility_test\gtest\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility_test\gtest\gtest-1.7.0\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/gtest/gtest-1.7.0/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\utility_test\gtest\gtest-1.7.0\cmake\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility_test\tests\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/utility_test/dataload/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\utility_test\dataload\"/>
+		</Unit>
+		<Unit filename="/home/peter/CLionProjects/emu/dataload/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\dataload\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

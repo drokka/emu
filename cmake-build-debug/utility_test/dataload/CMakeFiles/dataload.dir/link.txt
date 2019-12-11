@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -std=c++11 -std=c++11 -g  -rdynamic CMakeFiles/dataload.dir/dataload.cpp.o CMakeFiles/dataload.dir/home/peter/CLionProjects/symicon/PaintIcon.cpp.o  -o dataload -Wl,-rpath,/home/peter/CLionProjects/emu/cmake-build-debug/utility -lcairo ../../utility/libemutil.so 
