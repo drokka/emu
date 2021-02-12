@@ -34,27 +34,28 @@ void emu::utility::ColourIcon::colourIn() {
     if (fd.rangeY() > ySz) { rescaleY = (double) ySz / (double) fd.rangeY(); }
 
     emu::utility::FrequencyList2DConstIter iter = pointList->freqTables[xSz].frequencyList->begin();
-
-    while(iter != pointList->freqTables[xSz].frequencyList->end()){
-        int x = (int) (rescaleX * (iter->first.val[0] - minX)); //(points+i)->x;
-        int y = (int) (rescaleY * (iter->first.val[1] - minY)); //((points+i)->y);
-        long hits = iter->second;
-        //   cout << "looking for " << x <<" "<< y <<" " << hits <<endl;
-        /*****
-    PointFrequency::const_iterator pp = pointList->hitPointList.find(*(points+i));
-    if(pp!= pointList->hitPointList.cend())
-    {
-         hits = pp->second;
-  //       cout<< "found!! " <<hits <<endl;
-    }
-         ******************/
-        double * rgba =(double*)(calloc(4, sizeof(double)));
-        FrequencyData fd = pointList->freqTables[xSz];
-        colourFn(minRGBA, maxRGBA, hits, fd, rgba);
-       // cout << "colourFn gave rgba: "  << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] <<endl;
-        colourPoint( x, y, rgba);
-        iter++;
-    }
+int frequLen = pointList->freqTables[xSz].frequencyList->size();
+cout << "frequ Len " << frequLen <<endl;
+        for (;iter != pointList->freqTables[xSz].frequencyList->end(); iter++) {
+            int x = (int) (rescaleX * (iter->first.val[0] - minX)); //(points+i)->x;
+            int y = (int) (rescaleY * (iter->first.val[1] - minY)); //((points+i)->y);
+            long hits = iter->second;
+            //   cout << "looking for " << x <<" "<< y <<" " << hits <<endl;
+            /*****
+        PointFrequency::const_iterator pp = pointList->hitPointList.find(*(points+i));
+        if(pp!= pointList->hitPointList.cend())
+        {
+             hits = pp->second;
+      //       cout<< "found!! " <<hits <<endl;
+        }
+             ******************/
+            double *rgba = (double *) (calloc(4, sizeof(double)));
+            colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[xSz], rgba);
+          //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
+            colourPoint(x, y, rgba);
+          //  cout <<"colourPoint done" <<endl;
+        }
+        cout<< "loop done" << endl;
 }
 
 void emu::utility::ColourIcon::colourPoint(int x, int y, double *rgba)  {

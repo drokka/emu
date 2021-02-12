@@ -130,10 +130,13 @@ unsigned char *PaintIcon::paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlph
     if(charBuffer == nullptr) {
         getCharArray(colourIcon, withAlpha);
     }
+    cout<< "PaintIcon paintPNGBuffer got char array" <<endl;
     if(charBuffer != nullptr) {
+        cout <<"charBuffer not null" <<endl;
         int pixelSize = withAlpha ? 4 : 3;
         pngBuffer = stbi_write_png_to_mem((const unsigned char *) charBuffer, colourIcon.xSz * pixelSize,
                                                    colourIcon.xSz, colourIcon.ySz, pixelSize, len);
+        cout <<"pngBuffer len is "<< *len <<endl;
     }
     return pngBuffer;
 }

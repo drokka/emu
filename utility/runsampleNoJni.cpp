@@ -50,7 +50,7 @@ static void testColourIcon(){
 
 int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len) {
 
-    long iterations = 100000;
+    long iterations = 1000000;
     if(nparam >1){
         try {
             iterations = atol(param[1]);
@@ -61,10 +61,10 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     //long res = callSym(iterations);
     //cout << "got max hits:" << res << endl;
 
-    testColourIcon();
+    //testColourIcon();
 
     int sz = 999; /** use odd sz for even number either side of centre, otherwise last row and column not used. */
-
+cout << "runsample sz= " << sz <<endl;
     QuiltIcon::QuiltType quiltType = QuiltIcon::QuiltType::SQUARE;
     if (nparam >= 3) {
         if ('H' == param[2][0]) { quiltType = QuiltIcon::QuiltType::HEX; }
@@ -118,7 +118,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
 
     SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, bg, min, max, colourFn);
     app.runGenerator();
-   // cout << "max hits: " << app.maxhits << endl;
+    cout << "After runGenerator call max hits: " << app.maxhits << endl;
 
     app.save(outData);
      std::time_t result = std::time(nullptr);
@@ -139,6 +139,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
+   cout<< "max hits is " << app.maxhits <<endl;
     return app.maxhits;
 
     }

@@ -133,12 +133,13 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     // const std::string ddate = to_string(result).data();
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
   //  if(res == 0) {
-
-    *pngBuf = PaintIcon::paintPNGtoBuffer(app.colourIcon, false, len);
-    if(*pngBuf == NULL){
+    PaintIcon paintIcon;
+    *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
+    if(*pngBuf == nullptr){
         cout <<"save png image failed." << endl;
     }
-/********************************************
+
+ /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
         cout <<"save hdr image failed." << endl;
@@ -198,7 +199,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     cout<< "length "<< lenArgs <<endl;
 
     //int intArg0 = env->GetInt(env->GetObjectArrayElement(intArgs,0));
-    jint* jintArgs = env->GetIntArrayElements(intArgs, NULL);
+    jint* jintArgs = env->GetIntArrayElements(intArgs, 0);
     string argvStr = "whaty ";
     argvStr += to_string(jintArgs[0]);
     argvStr += " ";
@@ -208,7 +209,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     argvStr += " ";
     argvStr += to_string( jintArgs[2]);
 
-    jdouble* jdoubleArgs = env->GetDoubleArrayElements(dArgs,NULL);
+    jdouble* jdoubleArgs = env->GetDoubleArrayElements(dArgs,0);
     argvStr += " ";
     argvStr += to_string(jdoubleArgs[0]);
     argvStr += " ";
@@ -222,7 +223,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     argvStr += " ";
     argvStr += to_string(jdoubleArgs[5]);
 
-    unsigned char *pngBuf = NULL;
+    unsigned char *pngBuf = nullptr;
     int len = 0;
     int result = 0;
 
@@ -254,16 +255,17 @@ cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[
     }
     env->SetObjectField ( outputData,savedDataField,env->NewStringUTF(output.str().c_str()));
     jbyteArray pngJBuf = env->NewByteArray(len);
-    if (pngBuf != NULL) {
+    if (pngBuf != nullptr) {
        env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
     }
 
+    free(pngBuf); // SetByteArrayRegion is copying... I think
     env->SetObjectField(outputData, pngBufferField, pngJBuf);
     env->SetIntField(outputData, pngBufferLenField,  len);
 
     env->ReleaseIntArrayElements(intArgs, jintArgs, 0 );
     env->ReleaseDoubleArrayElements(dArgs, jdoubleArgs,0);
-    free(buff);
+   free(buff);
 
     return outputData;
 
