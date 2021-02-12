@@ -6,12 +6,10 @@
 #include <fstream>
 
 
-#include "../../symicon/PaintIcon.h"
-
 using namespace std;
 using namespace emu::utility;
 
-int paint(emu::utility::PointList hl, char *imageName, char *imageExt);
+//int paint(emu::utility::PointList hl, char *imageName, char *imageExt);
 
 void testColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
                   double *rgbaOut);
@@ -83,9 +81,9 @@ int main(int nParam, char **param) {
         cout << "maxHits for " << sz << " is " << maxhits << endl;
         cout << "minHits for " << sz << " is " << minhits << endl;
         //  PaintIcon paintIcon(sz,sz,bg,mmin,mmax,&hl);
-        emu::symicon::PaintIcon paintIcon(sz, sz, bg, mmin, mmax, &pl, &testColourFn);
-        paintIcon.setUseAlpha(true);
-        paintIcon.paint();
+       // emu::symicon::PaintIcon paintIcon(sz, sz, bg, mmin, mmax, &pl, &testColourFn);
+       // paintIcon.setUseAlpha(true);
+       // paintIcon.paint();
         ii++;
     }
      return 0;

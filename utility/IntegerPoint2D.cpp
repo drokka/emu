@@ -18,14 +18,14 @@ emu::utility::IntegerPoint2D::IntegerPoint2D(Point2D &point){
 
 bool emu::utility::IntegerPoint2D::operator()(const IntegerPoint &firstPoint, const IntegerPoint &otherPoint) const{
     if(firstPoint.val[0] < otherPoint.val[0]  ||
-       (firstPoint.val[0] == otherPoint.val[0]) && (firstPoint.val[1] < otherPoint.val[1]))
+            ((firstPoint.val[0] == otherPoint.val[0]) && (firstPoint.val[1] < otherPoint.val[1])))
         return true;
     else    return false;
 }
 
 bool emu::utility::IntegerPoint2D::operator< ( const IntegerPoint2D &otherPoint) const{
     if(this->val[0] < otherPoint.val[0]  ||
-       (this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1]))
+            ((this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1])))
         return true;
     else    return false;
 }

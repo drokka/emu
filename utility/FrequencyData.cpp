@@ -2,18 +2,22 @@
 // Created by peter on 9/04/17.
 //
 
-#include <FrequencyData.h>
+#include "FrequencyData.h"
 
 using namespace emu::utility;
 
 emu::utility::FrequencyData::FrequencyData(int scale, long maxHits, long minHits)
         : scale(scale), maxHits(maxHits), minHits(minHits), frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D())) {
+  //  frequencyList->get_allocator().allocate(sizeof(FrequencyList2D)*1000);
 }
 
-emu::utility::FrequencyData::FrequencyData(int scale): scale(scale), maxHits(1), minHits(1), frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D())) {
-
+emu::utility::FrequencyData::FrequencyData(int scale): scale(scale), maxHits(1), minHits(1),
+        frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D())) {
+  //  frequencyList->get_allocator().allocate(sizeof(FrequencyList2D)*1000);
 }
-emu::utility::FrequencyData::FrequencyData(): scale(200), maxHits(1), minHits(1), frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D()))  {
+emu::utility::FrequencyData::FrequencyData(): scale(200), maxHits(1), minHits(1),
+frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D()))  {
+  //  frequencyList->get_allocator().allocate(sizeof(FrequencyList2D)*1000);
 }
 
 IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) {
@@ -24,16 +28,18 @@ IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) 
     ipp = IntegerPoint2D(a, b);
     FrequencyList2DIter j = frequencyList->find(ipp);
     if (j == frequencyList->end()) {
-        frequencyList->insert(std::make_pair(ipp, 1));
-        minX = (a<minX)? a:minX;
-        maxX = (a > maxX)? a:maxX;
-        minY = (b<minY)? b:minY;
-        maxY = (b>maxY)? b:maxY;
+        std::pair<IntegerPoint2D, long> entry = std::make_pair(ipp, 1);
+        frequencyList->insert(entry);
+        minX = a < minX ? a : minX;
+        maxX = a > maxX ? a : maxX;
+        minY = b < minY ? b : minY;
+        maxY = b > maxY ? b : maxY;
     } else {
         j->second += 1; //increment count
-        maxHits = std::max(maxHits, j->second);
+        maxHits = (maxHits >  j->second)? maxHits: j->second;
         //TODO: handle minHits. hmmm added explicit method
     }
+    return ipp;
 }
 
 long  emu::utility::FrequencyData::findMin() {
@@ -55,6 +61,19 @@ const int FrequencyData::rangeY() {
 
 const int FrequencyData::rangeX() {
     return maxX - minX;
+}
+
+FrequencyData::~FrequencyData() {
+
+frequencyList->clear();
+
+/****************
+    FrequencyList2DIter iter = frequencyList->begin();
+    while (iter != frequencyList->end()) {
+        frequencyList->get_allocator().destroy(*iter);
+    }
+    frequencyList->get_allocator().deallocate(frequencyList, frequencyList->size());
+    *******************************************************************************************************/
 }
 
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::FrequencyData& pl) {

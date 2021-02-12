@@ -41,6 +41,8 @@ namespace emu {
             FrequencyData(int scale);
             FrequencyData();
 
+            ~FrequencyData();
+
             IntegerPoint2D addIntegerPoint( const Point2D &pt) ;
             long findMin();
         const    int rangeX();

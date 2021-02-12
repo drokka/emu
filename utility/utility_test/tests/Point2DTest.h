@@ -7,9 +7,9 @@
 
 #include <set>
 #include <PointList.h>
-#include "../../utility/Point2D.h"
-#include "../../utility/IntegerPoint2D.h"
-#include "../../utility/PointList.h"
+#include "../utility/Point2D.h"
+#include "../utility/IntegerPoint2D.h"
+#include "../utility/PointList.h"
 
 #include "../gtest/gtest-1.7.0/include/gtest/gtest.h"
 

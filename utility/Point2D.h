@@ -18,14 +18,14 @@ namespace emu {
 
             virtual bool operator()(const Point &firstPoint, const Point &otherPoint) const{
                 if(firstPoint.val[0] < otherPoint.val[0]  ||
-                   (firstPoint.val[0] == otherPoint.val[0]) && (firstPoint.val[1] < otherPoint.val[1]))
+                        ((firstPoint.val[0] == otherPoint.val[0]) && (firstPoint.val[1] < otherPoint.val[1])))
                     return true;
                 else    return false;
             }
 
             bool operator< ( const Point2D &otherPoint) const{
                 if(this->val[0] < otherPoint.val[0]  ||
-                   (this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1]))
+                        ((this->val[0] == otherPoint.val[0]) && (this->val[1] < otherPoint.val[1])))
                     return true;
                 else    return false;
             }

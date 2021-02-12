@@ -7,7 +7,7 @@
 
 #include "../gtest/gtest-1.7.0/include/gtest/gtest.h"
 
-#include "../../utility/IterativeFunction.h"
+#include "../utility/IterativeFunction.h"
 
 class IntHolder {
 public:

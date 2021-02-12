@@ -14,8 +14,9 @@ namespace emu {
             double val[D]; //array of values for each dimension.
 
             Point(){
-                for (int i = 0; i < D; ++i) {
+                for (int i = 0; i < D;) {
                     val[i] = 0;
+                    i++;
                 }
             }
             virtual bool operator()(const Point &firstPoint, const Point &otherPoint) const = 0;
