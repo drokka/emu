@@ -277,8 +277,11 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
     //
     if (2 * (rand() / static_cast<double>(RAND_MAX)) < 1) ynew = -ynew;
     // }
-    inputPoint[0] = (xnew + .5);
-    inputPoint[1] = (ynew + .5);
+    inputPoint[0] = (xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
+    inputPoint[1] = (ynew + .5)*0.96;
+    if(inputPoint[0] >=1 || inputPoint[1] >=1){
+      //  throw ( MATH_ERREXCEPT) ;
+    }
 //    cout << "x: " << inputPoint[0] <<" y: " << inputPoint[1] <<endl;
 }
 

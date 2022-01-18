@@ -41,13 +41,22 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha) {
             xPos = iter->first.val[0];
             yPos = iter->first.val[1];
 
+            if(xPos > width-1 || (yPos > height-1)) continue;
           //  cout << xPos <<" " << yPos << " ";
             double *rgba = iter->second;
             for(int n=0;n<pixelSize;n++) {
                 double fVal = iter->second[n];
                // cout << fVal << " ";
                 unsigned int val = (unsigned int)( fVal * 255);
-                charBuffer[(yPos*width + xPos)*pixelSize +n] = val;
+                int pos = (yPos * width + xPos) * pixelSize +n;
+
+                try {
+                    charBuffer[pos] = static_cast<unsigned char>(val);
+                }catch (runtime_error xx){
+                    //just skip?
+                    cout<< " error charBuffer hasnt got " << pos <<" " << xx.what() << endl;
+                }
+
                // cout << val << "   " ;
             }
            // cout <<endl;
