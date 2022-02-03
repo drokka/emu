@@ -54,6 +54,7 @@ cout << "frequ Len " << frequLen <<endl;
           //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
             colourPoint(x, y, rgba);
           //  cout <<"colourPoint done" <<endl;
+         // free(rgba);
         }
         cout<< "loop done" << endl;
 }

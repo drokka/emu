@@ -37,29 +37,38 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha) {
 ******************************************************************************************/
 
         RgbaList2DIter iter = colourIcon.colourArray.begin();
-        while(iter != colourIcon.colourArray.end()){
+        int posy =0;
+       // int  count = 0;
+        while(iter != colourIcon.colourArray.end() /*&& count < width*height*pixelSize*/ ){
+          //  count++;
             xPos = iter->first.val[0];
             yPos = iter->first.val[1];
 
-            if(xPos > width-1 || (yPos > height-1)) continue;
-          //  cout << xPos <<" " << yPos << " ";
+            if(xPos > width-1 || (yPos > height-1)) {
+                iter++;
+                continue;
+            }
+           // cout << xPos <<" " << yPos << " ";
             double *rgba = iter->second;
             for(int n=0;n<pixelSize;n++) {
-                double fVal = iter->second[n];
-               // cout << fVal << " ";
-                unsigned int val = (unsigned int)( fVal * 255);
-                int pos = (yPos * width + xPos) * pixelSize +n;
-
                 try {
-                    charBuffer[pos] = static_cast<unsigned char>(val);
-                }catch (runtime_error xx){
+
+                    double fVal = iter->second[n];
+             //   cout << fVal << " ";
+                unsigned int val = (unsigned int)( fVal * 255);
+                 posy = (yPos * width + xPos) * pixelSize +n;
+
+             //       cout << "posy "<< posy << "val " <<  val << "   " ;
+
+                    charBuffer[posy] = static_cast<unsigned char>(val);
+                }catch (runtime_error &xx){
                     //just skip?
-                    cout<< " error charBuffer hasnt got " << pos <<" " << xx.what() << endl;
+                    cout<< " error charBuffer " << xx.what() << endl;
                 }
 
-               // cout << val << "   " ;
+
             }
-           // cout <<endl;
+          //  cout <<endl;
             iter++;
         }
     }
@@ -87,7 +96,9 @@ int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha)
     int pixelSz = useAlpha? 4:3;
 
     //Make rgba buffer
-    floatBuffer = (float*)(calloc(width*height*pixelSz, sizeof(float)));
+    int bufMax = width*height*pixelSz;
+    floatBuffer = (float*)(calloc(bufMax, sizeof(float)));
+
     if(floatBuffer != nullptr){
         //set to background colour
         cout << "bgRGBA "<< colourIcon.bgRGBA[0] << " " << colourIcon.bgRGBA[1] << " " << colourIcon.bgRGBA[2] << " "
@@ -102,20 +113,30 @@ int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha)
         int resy = stbi_write_hdr(("bgOnly" +ddate +".hdr").c_str(), colourIcon.xSz, colourIcon.ySz, pixelSz, floatBuffer);
         if(resy == 0){cout << "couldn't write bg image" << endl;}
         RgbaList2DIter iter = colourIcon.colourArray.begin();
-        while(iter != colourIcon.colourArray.end()){
-            xPos = iter->first.val[0];
-            yPos = iter->first.val[1];
+        int bufPos = 0;
+       // int count = 0;
+        while(iter != colourIcon.colourArray.end()/* && (count < bufMax)*/){
+         //   count++;
+            try {
+                xPos = iter->first.val[0];
+                yPos = iter->first.val[1];
 
-            //  cout << xPos <<" " << yPos << " ";
-            double *rgba = iter->second;
-            for(int n=0;n<pixelSz;n++) {
-                float fVal = iter->second[n];
-                // cout << fVal << " ";
-                floatBuffer[(yPos*width + xPos)*pixelSz +n] = fVal;
-                // cout << val << "   " ;
+              //    cout << xPos <<" " << yPos << " ";
+                double *rgba = iter->second;
+                for (int n = 0; n < pixelSz; n++) {
+                    float fVal = iter->second[n];
+                    // cout << fVal << " ";
+                    bufPos = (yPos * width + xPos) * pixelSz + n;
+
+                    floatBuffer[bufPos] = fVal;
+                  //   cout << fVal << "   " ;
+                }
+               //  cout <<endl;
+                iter++;
+            }catch(exception &xx){
+                cout<< "ERROR!" <<xx.what() <<endl;
+                exit;
             }
-            // cout <<endl;
-            iter++;
         }
     }
 }

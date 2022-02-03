@@ -79,7 +79,11 @@ cout << "runsample sz= " << sz <<endl;
     double betaVal = 0.3;
     double gammaVal = 0.4;
     double omegaVal = 0.2;
-    double maVal = 2.0;
+    double maVal = 0.9;
+    if(quiltType == QuiltIcon::QuiltType::FRACTAL) {
+        maVal = 0.173;
+    }
+
     if (nparam == 11) {
         try {
             lambdaVal = strtod(param[5], nullptr); /* HEIGHT is passed in but skipped/ignored. */
@@ -140,7 +144,9 @@ cout << "runsample sz= " << sz <<endl;
     }
    ***************************************************************/
    cout<< "max hits is " << app.maxhits <<endl;
-    return app.maxhits;
+   int resy = app.maxhits;
+
+    return resy;
 
     }
 
