@@ -19,11 +19,12 @@ namespace emu {
 
         class QuiltIcon
                 : public IterativeFunction<Parameter<double>, Parameter<double>, Parameter<double>, Parameter<double>,
-                        Parameter<double>, Parameter<double> > {
+                        Parameter<double>, Parameter<double> , Parameter<int>> {
 
             typedef Parameter<double> P_t;
+            typedef Parameter<int> I_t;
             typedef std::tuple<Parameter<double>, Parameter<double>, Parameter<double>, Parameter<double>,
-                    Parameter<double>, Parameter<double> > Pt_t;
+                    Parameter<double>, Parameter<double> , Parameter<int> > Pt_t;
 
 
         public:
@@ -37,25 +38,26 @@ namespace emu {
         public:
             QuiltIcon(const double _lambda, const double _alpha, const double _beta, const double _gamma,
                       const double _omega,
-                      const double _ma, QuiltType quiltType) :
+                      const double _ma, const int _degSym, QuiltType quiltType) :
                     lambda{new P_t("lambda", _lambda)}, alpha{new P_t("alpha", _alpha)},
                     beta{new P_t("beta", _beta)}, gamma{new P_t("gamma", _gamma)}, omega{new P_t("omega", _omega)},
-                    ma{new P_t("ma", _ma)}, quiltType(quiltType) {
+                    ma{new P_t("ma", _ma)}, degSym{new I_t("degSym", _degSym)}, quiltType(quiltType) {
 
                 stored_inputs = make_tuple(shared_ptr<P_t>(lambda), shared_ptr<P_t>(alpha), shared_ptr<P_t>(beta),
                                            shared_ptr<P_t>(gamma),
-                                           shared_ptr<P_t>(omega), shared_ptr<P_t>(ma));
+                                           shared_ptr<P_t>(omega), shared_ptr<P_t>(ma), shared_ptr<I_t>(degSym));
                 //  parameters = std::make_tuple(lambda,alpha,beta,gamma,omega,ma);
                 //   IterativeFunction(*())
            }
 
-            QuiltIcon(QuiltIcon &qi) : IterativeFunction<P_t, P_t, P_t, P_t, P_t, P_t>(qi) { }
+            QuiltIcon(QuiltIcon &qi) : IterativeFunction<P_t, P_t, P_t, P_t, P_t, P_t, I_t>(qi) { }
 
             QuiltIcon &operator=(QuiltIcon &qi) { return *this; }
 
         private:
 // double _lambda, alpha, beta, gamma, omega, ma;
             shared_ptr<Parameter<double> > lambda, alpha, beta, gamma, omega, ma;
+            shared_ptr<Parameter<int>> degSym;
 
 
         public:
@@ -63,7 +65,7 @@ namespace emu {
 
             virtual void iterFunction(double *input, Parameter<double> lambda, Parameter<double> alpha,
                                       Parameter<double> beta, Parameter<double> gamma, Parameter<double> omega,
-                                      Parameter<double> ma);
+                                      Parameter<double> ma, Parameter<int> degSymPeriod);
 //
 //        virtual void setParameters(double *const pDouble);
 
@@ -75,11 +77,11 @@ namespace emu {
 
             static void
             generateHex(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
-                        double ma);
+                        double ma, int nperiod);
 
             void
             generateFractal(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
-                            double ma);
+                            double ma, int degSym);
         };
     }
 }

@@ -80,11 +80,13 @@ cout << "runsample sz= " << sz <<endl;
     double gammaVal = 0.4;
     double omegaVal = 0.2;
     double maVal = 0.9;
-    if(quiltType == QuiltIcon::QuiltType::FRACTAL) {
-        maVal = 0.173;
-    }
+    int degSym = 3;
 
-    if (nparam == 11) {
+ //   if(quiltType == QuiltIcon::QuiltType::FRACTAL) {
+  //      maVal = 0.173;
+  //  }
+
+    if (nparam == 12) {
         try {
             lambdaVal = strtod(param[5], nullptr); /* HEIGHT is passed in but skipped/ignored. */
             alphaVal = strtod(param[6], nullptr);
@@ -92,6 +94,7 @@ cout << "runsample sz= " << sz <<endl;
             gammaVal = strtod(param[8], nullptr);
             omegaVal = strtod(param[9], nullptr);
             maVal = strtod(param[10], nullptr);
+            degSym = atoi(param[11]);
         } catch (...) {
             cout << "Error reading QuiltIcon parameters." << endl;
             //continue using default values
@@ -120,7 +123,7 @@ cout << "runsample sz= " << sz <<endl;
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
 
-    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, bg, min, max, colourFn);
+    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams,degSym, bg, min, max, colourFn);
     app.runGenerator();
     cout << "After runGenerator call max hits: " << app.maxhits << endl;
 

@@ -40,12 +40,13 @@ int main(int nparams, char** params){
     }
 
 //    free(pngBuf);
-    char* parmaa[3] = {"runsample", "100000","F"};
+    char* parmaa[12] = {"runsample", "100000","F", "121", "cannot count",
+                        "0.2", "0.13", "0.7","0.39","0.22","0.073","4"};
     unsigned char * pngBuf3 = nullptr;
     int len3 = 0;
     ostringstream output3("test");
 
-    result += runsample(3,parmaa , output3, &pngBuf3, &len3);
+    result += runsample(12,parmaa , output3, &pngBuf3, &len3);
 
     char msg3[150]; strchrnul(msg2,50);
     sprintf(msg3, "Fractal pngBuf3: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf3[0], pngBuf3[1]  ,pngBuf3[2]  ,

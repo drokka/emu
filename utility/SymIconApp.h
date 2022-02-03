@@ -19,7 +19,7 @@ namespace emu {
         class SymIconApp {
         public:
             SymIconApp(long iterations, double initX, double initY, QuiltIcon::QuiltType type, string fnBase,
-                       int sz, double *iconParams, int numIconParams, double *bgColour, double *minColour,
+                       int sz, double *iconParams, int numIconParams, int degSym, double *bgColour, double *minColour,
                        double *maxColour, ColourIcon::ColourFn colourFn);
 
             virtual ~SymIconApp();
@@ -39,6 +39,7 @@ namespace emu {
             double gammaVal;
             double omegaVal;
             double maVal;
+            int degSym;
             /*******  pp.aA=2; pp.bB=0; pp.gG=1; pp.oO=0.01;
              pp.degreeSym=4; pp.scale=1;
              pp.lL=-1.8; ****/

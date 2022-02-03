@@ -9,11 +9,11 @@
 using namespace emu::utility;
 
 SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::QuiltType type, string fnBase,
-                       int sz, double *iconParams, int numIconParams, double *bgColour, double *minColour,
+                       int sz, double *iconParams, int numIconParams, int degSym, double *bgColour, double *minColour,
                        double *maxColour, ColourIcon::ColourFn colourFn)
         : iterations(iterations), initPoint(Point2D(initX, initY)),
           type(type), fnBase(fnBase), sz(sz), iconParams(iconParams),
-          numIconParams(numIconParams), hl(PointList()), colourArray(),
+          numIconParams(numIconParams),degSym(degSym), hl(PointList()), colourArray(),
           colourIcon(ColourIcon( sz, sz, bgColour, minColour, maxColour, &hl, colourFn, colourArray)) {
 
     if (numIconParams > 5) {
@@ -25,7 +25,7 @@ SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::Q
         maVal = iconParams[5];
     }
 
-    qi = new QuiltIcon(lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal, type);
+    qi = new QuiltIcon(lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal, degSym, type);
     gg = new Generator(qi, iterations, &hl);
 
     hl.addTable(sz); //add a fine scale

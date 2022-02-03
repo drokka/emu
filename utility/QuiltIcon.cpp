@@ -104,7 +104,7 @@ void QuiltIcon::UnrolledFunction(std::tuple &tuple, double *input, double **outp
 *****************/
 
 void QuiltIcon::iterFunction(double *input, Parameter<double> lambda, Parameter<double> alpha,
-                             Parameter<double> beta,Parameter<double> gamma,Parameter<double> omega,Parameter<double> ma) {
+                             Parameter<double> beta,Parameter<double> gamma,Parameter<double> omega,Parameter<double> ma, Parameter<int> degSymPeriod) {
 
     switch (quiltType) {
         case QuiltType::SQUARE:
@@ -113,11 +113,11 @@ void QuiltIcon::iterFunction(double *input, Parameter<double> lambda, Parameter<
             break;
         case QuiltType::HEX:
             generateHex(input, lambda.getValue(), alpha.getValue(), beta.getValue(), gamma.getValue(),
-                        omega.getValue(), ma.getValue());
+                        omega.getValue(), ma.getValue(), degSymPeriod.getValue());
             break;
         case QuiltType::FRACTAL:
             generateFractal(input, lambda.getValue(), alpha.getValue(), beta.getValue(), gamma.getValue(),
-                            omega.getValue(), ma.getValue());
+                            omega.getValue(), ma.getValue(), degSymPeriod.getValue());
     }
 }
 
@@ -133,12 +133,12 @@ void QuiltIcon::setValue(double _lambda, double _alpha, double _beta, double _ga
 }
 
 void QuiltIcon::generateHex(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
-                            double ma) {
+                            double ma, int nperiod) {
 
     double pi = cos(-1);
     double p2 = 2 * pi;
 
-    int nperiod = 6;
+   // int nperiod = 6;
     int HALFnperiod = nperiod / 2.0;
     double sx, sy, x, y;
     double xnew, ynew, sq3 = pow(3, .5);
@@ -239,10 +239,10 @@ void QuiltIcon::generateHex(double *inputPoint, double lambda, double alpha, dou
 }
 
 void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha, double beta, double gamma,
-                                double omega, double ma) {
+                                double omega, double ma, int  degSym) {
     //first get needed trig constants:
     double PI = acos(-1);
-    int n = 3;// Info.degreeSym;
+    int n = degSym;// Info.degreeSym;
     int m;
 
     double a11, a12, a22, a21, b1, b2;
@@ -256,6 +256,7 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
     double x = inputPoint[0];
     double y = inputPoint[1];
 
+    if (n >=128 ) n=127;
     double c[128]; //= new double[128];   //degree sym assumed < 128
     double s[128]; //= new double[128];
     for (int i = 0; i < n; i++) {

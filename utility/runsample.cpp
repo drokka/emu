@@ -88,7 +88,9 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     double gammaVal = 0.4;
     double omegaVal = 0.2;
     double maVal = 2.0;
-    if (nparam == 11) {
+    int degSym = 4;
+
+    if (nparam == 12) {
         try {
             lambdaVal = strtod(param[5], nullptr); /* HEIGHT is passed in but skipped/ignored. */
             alphaVal = strtod(param[6], nullptr);
@@ -96,6 +98,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
             gammaVal = strtod(param[8], nullptr);
             omegaVal = strtod(param[9], nullptr);
             maVal = strtod(param[10], nullptr);
+            degSym = atoi(param[11]);
         } catch (...) {
             cout << "Error reading QuiltIcon parameters." << endl;
             //continue using default values
@@ -124,7 +127,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
 
-    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, bg, min, max, colourFn);
+    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams,degSym, bg, min, max, colourFn);
     app.runGenerator();
    // cout << "max hits: " << app.maxhits << endl;
 
