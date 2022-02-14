@@ -9,12 +9,15 @@ int main(int nparams, char** params){
     unsigned char *pngBuf = nullptr;
     int len=0;
   //  char* parmaaa[3] = {"runsample", "100","F"};
-    int result = runsample(nparams, params, output, &pngBuf, &len);
+    ostringstream paramValsApplied("Icon definition and parameters captured: ");
+
+    int result = runsample(nparams, params, output, &pngBuf, &len, paramValsApplied);
 
     char msg[150]; strchrnul(msg,50);
     sprintf(msg, "pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
             pngBuf[3] , pngBuf[4],pngBuf[len-1], len);
     cout << msg << endl;
+    cout << paramValsApplied.str() << endl;
 
     ofstream stream( "symi.png", ios::out | ios::binary);
     if(!stream){ cout << "failed create bin file stream" << endl;}
@@ -25,12 +28,14 @@ int main(int nparams, char** params){
    // free(pngBuf);
     char* parma[3] = {"runsample","100000","H"};
 
-    result += runsample(3,parma , output, &pngBuf, &len);
+    ostringstream paramValsApplied1("");
+            result += runsample(3,parma , output, &pngBuf, &len, paramValsApplied1);
 
     char msg2[150]; strchrnul(msg2,50);
     sprintf(msg2, "Hex pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
             pngBuf[3] , pngBuf[4],pngBuf[len-1], len);
     cout << "HEX ICON DONE!!!!!!!!!!!" << msg2 << endl;
+    cout << paramValsApplied1.str() << endl;
 
 
     ofstream stream2( "symi2.png", ios::out | ios::binary);
@@ -45,13 +50,16 @@ int main(int nparams, char** params){
     unsigned char * pngBuf3 = nullptr;
     int len3 = 0;
     ostringstream output3("test");
+    ostringstream paramValsApplied2("");
 
-    result += runsample(12,parmaa , output3, &pngBuf3, &len3);
+    result += runsample(12,parmaa , output3, &pngBuf3, &len3, paramValsApplied2);
 
     char msg3[150]; strchrnul(msg2,50);
     sprintf(msg3, "Fractal pngBuf3: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf3[0], pngBuf3[1]  ,pngBuf3[2]  ,
             pngBuf3[3] , pngBuf3[4],pngBuf3[len3-1], len3);
+
     cout << "FRACTAL ICON DONE!!"<< msg3 << endl;
+    cout << paramValsApplied2.str() << endl;
 
     ofstream stream3( "symiF.png", ios::out | ios::binary);
     if(!stream3){ cout << "failed create bin file stream3" << endl;}

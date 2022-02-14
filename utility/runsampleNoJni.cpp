@@ -48,9 +48,9 @@ static void testColourIcon(){
 //   free(colour);  the pointer is added to the colour array. Freed on its deletion.
 }
 
-int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len) {
+int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
-    long iterations = 1000000;
+    long iterations = 10000;
     if(nparam >1){
         try {
             iterations = atol(param[1]);
@@ -65,30 +65,54 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
 
     int sz = 999; /** use odd sz for even number either side of centre, otherwise last row and column not used. */
 cout << "runsample sz= " << sz <<endl;
+int degSym = 4;
     QuiltIcon::QuiltType quiltType = QuiltIcon::QuiltType::SQUARE;
     if (nparam >= 3) {
         if ('H' == param[2][0]) { quiltType = QuiltIcon::QuiltType::HEX; }
         else if ('F' == param[2][0]) { quiltType = QuiltIcon::QuiltType::FRACTAL; }
     }
-    if(nparam >=4)
+    if(nparam >=5)
     {
         sz = atoi(param[3]); /* WIDTH in pixels is passed in, but assuming height the same. */
+        degSym = atoi(param[5]);
     }
     double lambdaVal = 0.6;
     double alphaVal = 0.2;
     double betaVal = 0.3;
     double gammaVal = 0.4;
     double omegaVal = 0.2;
-    double maVal = 0.9;
-    int degSym = 3;
+    double maVal = 0.5;
 
- //   if(quiltType == QuiltIcon::QuiltType::FRACTAL) {
-  //      maVal = 0.173;
-  //  }
 
     if (nparam == 12) {
         try {
-            lambdaVal = strtod(param[5], nullptr); /* HEIGHT is passed in but skipped/ignored. */
+            lambdaVal = strtod(param[6], nullptr); // HEIGHT is passed in but skipped/ignored.
+            alphaVal = strtod(param[7], nullptr);
+            betaVal = strtod(param[8], nullptr);
+            gammaVal = strtod(param[9], nullptr);
+            omegaVal = strtod(param[10], nullptr);
+            maVal = strtod(param[11], nullptr);
+        } catch (...) {
+            cout << "Error reading QuiltIcon parameters." << endl;
+            //continue using default values
+        }
+    }
+    iconDefUsed.clear();
+    iconDefUsed << " lambdaVal = "+to_string(lambdaVal)
+            << " alphaVal = "+to_string(alphaVal)
+            << " betaVal = "+to_string(betaVal)
+            << " gammaVal = "+to_string(gammaVal)
+            << " omegaVal = "+to_string(omegaVal)
+            << " maVal = "+to_string(maVal)
+            << " degSym = "+to_string(degSym)
+            << " quiltType = " << int(quiltType)
+            << " width = " << sz
+            << " iterations = " << iterations
+            << endl;
+/*******************************************
+    if (nparam == 12) {
+        try {
+            lambdaVal = strtod(param[5], nullptr); // HEIGHT is passed in but skipped/ignored.
             alphaVal = strtod(param[6], nullptr);
             betaVal = strtod(param[7], nullptr);
             gammaVal = strtod(param[8], nullptr);
