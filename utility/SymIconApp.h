@@ -58,8 +58,11 @@ namespace emu {
             //paintIcon.setUseAlpha(false);
 
             std::string fnBase = "img_a_";
+            std::string errorMsg = "";
 
         public:
+            bool error = false;
+
             ColourIcon colourIcon;
             void runGenerator();
 

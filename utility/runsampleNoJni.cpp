@@ -154,23 +154,27 @@ int degSym = 4;
     app.save(outData);
      std::time_t result = std::time(nullptr);
      const std::string ddate = to_string(result).data();
-     PaintIcon paintIcon;
-    int res = paintIcon.paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
-    if(res == 0) {
-        cout <<"save png image failed." << endl;
-    }
+    if(!app.error) {
 
-    *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
-    if(*pngBuf == nullptr){
-        cout <<"save png buffer failed." << endl;
-    }
+        PaintIcon paintIcon;
+        int res = paintIcon.paintPNG(app.colourIcon, "symi_" + ddate + ".png", false);
+        if (res == 0) {
+            cout << "save png image failed." << endl;
+        }
+
+        *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
+        if (*pngBuf == nullptr) {
+            cout << "save png buffer failed." << endl;
+
 /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
-   cout<< "max hits is " << app.maxhits <<endl;
+        }
+    }
+cout<< "max hits is " << app.maxhits <<endl;
    int resy = app.maxhits;
 
     return resy;

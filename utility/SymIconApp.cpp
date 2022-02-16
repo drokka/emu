@@ -40,9 +40,16 @@ void SymIconApp::runGenerator() {
         hl.addPoints();
     } catch (std::exception &xx) {
         cout << "Error: " << xx.what() << endl;
-
+        errorMsg.append("Error.").append(xx.what());
+        error = true;
+        maxhits = 0;
+        return;
     } catch (...) {
         cout << "error some other exception" << endl;
+        errorMsg.append("Error. runGenerator: error some other exception occured.");
+        error = true;
+        maxhits = 0;
+        return;
     }
 
     maxhits = hl.freqTables[sz].maxHits;
@@ -52,17 +59,23 @@ void SymIconApp::runGenerator() {
 
 void SymIconApp::save(ostringstream& outy) {
 //colourIcon.setUseAlpha(false);
-    colourIcon.colourIn();
+    if(error){
+        outy << errorMsg;
+    }
+    else {
 
-    std::cout << "After colourIn complete. " << colourArray.size()<< '\n';
+        colourIcon.colourIn();
+
+        std::cout << "After colourIn complete. " << colourArray.size() << '\n';
 
 
-   // std::time_t result = std::time(nullptr);
-   // const std::string ddate = to_string(result).data();
+        // std::time_t result = std::time(nullptr);
+        // const std::string ddate = to_string(result).data();
 
-   // string dname = fnBase + ddate + ".sym";
-    //std::ostringstream outy(dname, std::ios_base::out);
-    outy << hl;
+        // string dname = fnBase + ddate + ".sym";
+        //std::ostringstream outy(dname, std::ios_base::out);
+        outy << hl;
+    }
     outy.flush();
   //  outy.close();
 

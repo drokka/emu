@@ -74,6 +74,15 @@ ColourIcon::~ColourIcon() {
 
 }
 
+void ColourIcon::setColour(double *bgRGBAin, double *minRGBAin, double *maxRGBAin) {
+
+    bgRGBA = bgRGBAin; minRGBA = minRGBAin; maxRGBA = maxRGBAin;
+}
+
+void ColourIcon::setColourFunction(ColourIcon::ColourFn func){
+    colourFn = func;
+}
+
 void emu::utility::simpleColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
                                                     double *rgbaOut) {
     long maxhits = fd.maxHits;

@@ -50,7 +50,11 @@ namespace emu {
         //Dimensions
         double *bgRGBA;
 
+        void setColour(double *bgRGBA, double *minRGBA, double *maxRGBA); //change the background, min and max colours.
+
         ~ColourIcon();
+
+        void setColourFunction(ColourFn func);
     };
 
 }

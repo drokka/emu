@@ -159,12 +159,14 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     // const std::string ddate = to_string(result).data();
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
   //  if(res == 0) {
-    PaintIcon paintIcon;
-    *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
-    if(*pngBuf == nullptr){
-        cout <<"save png image failed." << endl;
-    }
 
+    if(!app.error) {
+        PaintIcon paintIcon;
+        *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
+        if (*pngBuf == nullptr) {
+            cout << "save png image failed." << endl;
+        }
+    }
  /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
@@ -218,6 +220,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
     jobject outputData = env->AllocObject(outputDataClass);
     jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
+    jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
+
     jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
     jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
@@ -252,9 +256,6 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     argvStr += " ";
     argvStr += to_string(jdoubleArgs[5]);
 
-    argvStr += " ";
-    argvStr += to_string(jintArgs[3]);
-
     unsigned char *pngBuf = nullptr;
     int len = 0;
     int result = 0;
@@ -263,7 +264,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     int j = 0;
     char *argy[nparam];
 
-    char * buff = (char*)calloc(100 ,  sizeof(char) );
+    char * buff = (char*)calloc(200 ,  sizeof(char) );
 
     buff = strcpy(buff, argvStr.c_str() );
     char *p2 = strtok(buff, " ");
@@ -272,10 +273,11 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
         argy[j++] = p2;
         p2 = strtok(0, " ");
     }
+    ostringstream captureParams("");
   //  argy[nparam -1] = p2; /*ouch got to get the last one. horrible *******/
    // const char** paramChars =    env->GetCharArrayElements(params,NULL);
  //   if (params != 0){
-        result = runsample(11, argy , output, &pngBuf, &len);
+        result = runsample(12, argy , output, &pngBuf, &len, captureParams);
 
  //   }else {
    //     result = runsample(1, (char **) ({ "whaty"; }), output, &pngBuf, &len);
@@ -286,6 +288,8 @@ cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[
         return nullptr;
     }
     env->SetObjectField ( outputData,savedDataField,env->NewStringUTF(output.str().c_str()));
+    env->SetObjectField ( outputData,paramsUsedField,env->NewStringUTF(captureParams.str().c_str()));
+
     jbyteArray pngJBuf = env->NewByteArray(len);
     if (pngBuf != nullptr) {
        env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
