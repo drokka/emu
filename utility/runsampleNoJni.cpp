@@ -47,6 +47,17 @@ static void testColourIcon(){
    // assert(colourArray.at(999).size()==1000);
 //   free(colour);  the pointer is added to the colour array. Freed on its deletion.
 }
+int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* bg, double* min, double * max){
+    SymIconApp* appy = new SymIconApp();
+    symIn >> *appy;
+
+    appy->setColour(bg,min,max);
+    appy ->colourIcon.colourIn();
+    int *bufLen;
+    appy->createPNG(pngBuf, bufLen, fname);
+    delete appy;
+    return *bufLen;
+}
 
 int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
@@ -154,7 +165,16 @@ int degSym = 4;
     app.save(outData);
      std::time_t result = std::time(nullptr);
      const std::string ddate = to_string(result).data();
+
+     string fname("symD" +ddate+".symd");
+     ofstream symFile;
+     symFile.open(fname.c_str(), std::ofstream::out);
+     cout <<"writing the SymIconApp to file " + fname <<endl;
+     symFile << app; // use the operator << defn
     if(!app.error) {
+
+        app.createPNG(pngBuf, len,"symi_" + ddate + ".png");
+        /********************************************
 
         PaintIcon paintIcon;
         int res = paintIcon.paintPNG(app.colourIcon, "symi_" + ddate + ".png", false);
@@ -166,13 +186,12 @@ int degSym = 4;
         if (*pngBuf == nullptr) {
             cout << "save png buffer failed." << endl;
 
-/********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
-        }
+
     }
 cout<< "max hits is " << app.maxhits <<endl;
    int resy = app.maxhits;

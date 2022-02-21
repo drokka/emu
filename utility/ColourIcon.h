@@ -24,13 +24,13 @@ namespace emu {
         void simpleColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
                                    double *rgbaOut);
     class ColourIcon {
-        double *minRGBA;
-        double *maxRGBA;
         PointList *pointList;
         bool useAlpha = false;
 
 
     public:
+        double *minRGBA;
+        double *maxRGBA;
         typedef void (*ColourFn)(double min[4], double max[4], long frequency, FrequencyData &pointList,
                                  double *rgbaOut); //calculate RGBA to colourise frequency
 

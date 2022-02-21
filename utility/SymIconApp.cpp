@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include "SymIconApp.h"
+#include "image/PaintIcon.h"
 
 using namespace emu::utility;
 
@@ -34,6 +35,7 @@ SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::Q
 
 }
 
+
 void SymIconApp::runGenerator() {
     try {
         gg->go(initPoint);
@@ -55,6 +57,27 @@ void SymIconApp::runGenerator() {
     maxhits = hl.freqTables[sz].maxHits;
     cout << "maxHits for " << sz << " is " << maxhits << endl;
     fdiff = maxhits > 1 ? maxhits - 1 : 1; //maxx -minn;
+}
+
+int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
+    PaintIcon paintIcon;
+    int res = paintIcon.paintPNG(colourIcon, fname, false);
+    if (res == 0) {
+        cout << "save png image failed." << endl;
+    }
+
+    *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, false, len);
+    if (*pngBuf == nullptr) {
+        cout << "save png buffer failed." << endl;
+
+/********************************************
+    res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
+    if(res == 0) {
+        cout <<"save hdr image failed." << endl;
+    }
+   ***************************************************************/
+    }
+    return  *len;
 }
 
 void SymIconApp::save(ostringstream& outy) {
@@ -86,4 +109,38 @@ void SymIconApp::save(ostringstream& outy) {
 SymIconApp::~SymIconApp() {
     delete qi;
     delete gg;
+}
+
+void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {
+    colourIcon.setColour(bgClr,minClr,maxClr);
+}
+
+std::ostream& operator<<(std::ostream &ostream1, const emu::utility::SymIconApp& symIconApp) {
+    ostream1 << symIconApp.sz<< " "
+    << *(symIconApp.qi) <<" " << symIconApp.hl <<" "
+    << symIconApp.lambdaVal <<" "
+    << symIconApp.alphaVal << " "
+    << symIconApp.betaVal << " "
+    << symIconApp.gammaVal << " "
+            << symIconApp.omegaVal << " "
+            << symIconApp.maVal << " "
+            << symIconApp.degSym << " ";
+
+    //<< symIconApp.colourIcon.colourArray <<" ";
+    return ostream1;
+}
+std::istream& operator>>(std::istream &input, emu::utility::SymIconApp& symIconApp){
+  //  QuiltIcon quiltIconIn;
+ //   PointList pointListIn;
+    input >> symIconApp.sz;
+    input >> *(symIconApp.qi);
+    input >>  symIconApp.hl ;
+    input >> symIconApp.lambdaVal
+     >> symIconApp.alphaVal
+                         >> symIconApp.betaVal
+                         >> symIconApp.gammaVal
+                         >> symIconApp.omegaVal
+                         >> symIconApp.maVal
+                         >> symIconApp.degSym;
+    return input;
 }

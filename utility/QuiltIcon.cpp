@@ -302,3 +302,69 @@ Info.numberSteps  = 0;  Info.MaxHits  = 1;
     pp.lL=-1.8;
 
 }******/
+
+
+std::ostream& operator<<(std::ostream &ostream1, const emu::utility::QuiltIcon::QuiltType& quiltType) {
+    using namespace std;
+    using namespace emu::utility;
+    switch (quiltType) {
+        case emu::utility::QuiltIcon::QuiltType::SQUARE:
+            ostream1 << 0;
+            break;
+        case QuiltIcon::QuiltType::HEX:
+            ostream1 << 1;
+            break;
+        case QuiltIcon::QuiltType::FRACTAL:
+            ostream1 << 2;
+            break;
+    }
+    return ostream1;
+}
+std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon::QuiltType& quiltType){
+    int readValue;
+    input >> readValue;
+    switch (readValue) {
+        case 0: quiltType = emu::utility::QuiltIcon::QuiltType::SQUARE; break;
+        case 1: quiltType = emu::utility::QuiltIcon::QuiltType::HEX; break;
+        case 2: quiltType = emu::utility::QuiltIcon::QuiltType::FRACTAL; break;
+        default: quiltType = emu::utility::QuiltIcon::QuiltType::SQUARE;
+    }
+   return input ;
+}
+
+std::ostream& operator<<(std::ostream &ostream1, const emu::utility::QuiltIcon& quiltIcon) {
+    using namespace std;
+    using namespace emu::utility;
+    ostream1<< quiltIcon.quiltType <<" "
+     << quiltIcon.lambda->getValue()<<" " << quiltIcon.alpha->getValue()<<" " << quiltIcon.beta->getValue()<<" "
+            << quiltIcon.gamma->getValue()<<" " << quiltIcon.omega->getValue()<<" " << quiltIcon.ma->getValue()<<" "
+            <<quiltIcon.degSym->getValue()<<" ";
+
+    return ostream1;
+}
+
+std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon& quiltIcon){
+    using namespace std;
+    using namespace emu::utility;
+    input >> quiltIcon.quiltType;
+    double readVal;
+    input >> readVal;
+    quiltIcon.lambda->setValue(readVal);
+    input >> readVal;
+    quiltIcon.alpha->setValue(readVal);
+    input >> readVal;
+    quiltIcon.beta->setValue(readVal);
+    input >> readVal;
+    quiltIcon.gamma->setValue(readVal);
+    input >> readVal;
+    quiltIcon.omega->setValue(readVal);
+    input >> readVal;
+    quiltIcon.ma->setValue(readVal);
+
+    int degSym;
+    input >> degSym;
+    quiltIcon.degSym->setValue(degSym);
+
+    return input;
+}
+

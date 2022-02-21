@@ -11,6 +11,10 @@
 #include <functional>
 #include "Parameter.h"
 #include "IterativeFunction.h"
+#include <ostream>
+#include <istream>
+#include <iostream>
+
 
 using namespace emu::utility;
 
@@ -35,6 +39,8 @@ namespace emu {
             const static double pi;
             const static double p2;
 
+            QuiltIcon(): QuiltIcon(0.1,0.1,0.1,0.1,0.1,0.1, 3, QuiltType::SQUARE){};
+
         public:
             QuiltIcon(const double _lambda, const double _alpha, const double _beta, const double _gamma,
                       const double _omega,
@@ -54,7 +60,7 @@ namespace emu {
 
             QuiltIcon &operator=(QuiltIcon &qi) { return *this; }
 
-        private:
+      //  private:
 // double _lambda, alpha, beta, gamma, omega, ma;
             shared_ptr<Parameter<double> > lambda, alpha, beta, gamma, omega, ma;
             shared_ptr<Parameter<int>> degSym;
@@ -85,5 +91,14 @@ namespace emu {
         };
     }
 }
+
+
+std::ostream& operator<<(std::ostream &ostream1, const emu::utility::QuiltIcon::QuiltType& quiltType) ;
+std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon::QuiltType& quiltType);
+
+std::ostream& operator<<(std::ostream &ostream1, const emu::utility::QuiltIcon& quiltIcon) ;
+std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon& quiltIcon);
+
+
 
 #endif //QUILT_QUILTICON_H

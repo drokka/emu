@@ -20,3 +20,6 @@ add_executable(symirun  main.cpp)
 
 target_link_libraries(symirun emutil m)
 
+#tests
+add_subdirectory(utility_test)
+
