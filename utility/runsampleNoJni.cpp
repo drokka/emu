@@ -53,10 +53,28 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
 
     appy->setColour(bg,min,max);
     appy ->colourIcon.colourIn();
-    int *bufLen;
-    appy->createPNG(pngBuf, bufLen, fname);
-    delete appy;
-    return *bufLen;
+    int bufLen = 0;
+    appy->createPNG(pngBuf, &bufLen, fname);
+    return bufLen;
+}
+int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, double* min, double * max){
+    SymIconApp* appy = new SymIconApp();
+    symIn >> *appy;
+//    std::time_t result = std::time(nullptr);
+  //   const std::string ddate = to_string(result).data();
+    //ofstream stream( "recolourBuffer"+ddate + ".txt", ios::out);
+//    if(!stream){ cout << "failed create file stream" << endl;}
+  //  else{
+    ///    stream.write(symIn,);
+ //   }
+
+ //   appy->save( )
+
+    appy->setColour(bg,min,max);
+    appy ->colourIcon.colourIn();
+    int bufLen = 0;
+    appy->createPngBuffer(pngBuf, &bufLen);
+    return bufLen;
 }
 
 int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
@@ -69,6 +87,9 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
         }
     }
 
+    cout<<"runsample nparam and parameters: " << nparam;
+    for(int i=0; i<nparam;i++){ cout<< " " <<param[i];}
+    cout<<endl;
     //long res = callSym(iterations);
     //cout << "got max hits:" << res << endl;
 

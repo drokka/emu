@@ -10,7 +10,6 @@
 
 #include <ColourIcon.h>
 
-#include "../../../stb/stb_image_write.h"
 
 using namespace emu::utility;
 using namespace std;

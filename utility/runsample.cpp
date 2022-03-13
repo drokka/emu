@@ -50,6 +50,16 @@ static void testColourIcon(){
    // assert(colourArray.at(999).size()==1000);
 //   free(colour);  the pointer is added to the colour array. Freed on its deletion.
 }
+int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, double* min, double * max){
+    SymIconApp* appy = new SymIconApp();
+    symIn >> *appy;
+
+    appy->setColour(bg,min,max);
+    appy ->colourIcon.colourIn();
+    int bufLen = 0;
+    appy->createPngBuffer(pngBuf, &bufLen);
+    return bufLen;
+}
 
 int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
@@ -211,6 +221,61 @@ JNIEXPORT jstring JNICALL Java_com_drokka_emu_testloadimage_MainActivityKt_callR
 extern "C"
 JNIEXPORT jstring JNICALL Java_com_drokka_emu_symicon_SymiNativeWrapperKt_getHelloFromJNI(JNIEnv *env, jclass clazz) {
     return (*env).NewStringUTF("Hello from JNI ! freaka");}
+
+/*
+ * reColour(stringstream& symIn,
+ * unsigned char **pngBuf,
+ * string fname,
+ * double* bg,
+ * double* min,
+ * double * max)
+ */
+extern "C"
+JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callReColourBufFromJNI(
+        JNIEnv *env, jclass jazz, jstring symIn, jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr) {
+
+    ostringstream output("test");
+    jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
+    jobject outputData = env->AllocObject(outputDataClass);
+    jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
+    jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
+
+    jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
+    jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
+
+   // jsize size = env->GetArrayLength( bgClr );
+    double bgClrArray[4] ;
+    env->GetDoubleArrayRegion( bgClr, 0, 4, bgClrArray );
+
+ //   jdouble* jdoubleArgs = env->GetDoubleArrayElements(dArgs,0);
+    double minClrArray[4] ;
+    env->GetDoubleArrayRegion( minClr, 0, 4, minClrArray );
+    double maxClrArray[4] ;
+    env->GetDoubleArrayRegion( maxClr, 0, 4, maxClrArray );
+
+
+    unsigned char *pngBuf = nullptr;
+    int len = 0;
+    string symInString = env->GetStringUTFChars(symIn,NULL);
+    stringstream symStream;
+    symStream << symInString;
+    len = reColourBuffer( symStream, &pngBuf,  bgClrArray,  minClrArray,  maxClrArray);
+
+    jbyteArray pngJBuf = env->NewByteArray(len);
+    if (pngBuf != nullptr) {
+        env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
+    }
+
+    free(pngBuf); // SetByteArrayRegion is copying... I think
+    env->SetObjectField(outputData, pngBufferField, pngJBuf);
+    env->SetIntField(outputData, pngBufferLenField,  len);
+
+  //  env->ReleaseDoubleArrayElements(bgClr, bgClrArray,0);
+  //  env->ReleaseDoubleArrayElements(minClr, minClrArray,0);
+ //   env->ReleaseDoubleArrayElements(maxClr, maxClrArray,0);
+
+    return outputData;
+}
 
 extern "C"
 JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callRunSampleFromJNI(

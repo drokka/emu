@@ -86,6 +86,8 @@ namespace emu {
             void setColour(double *bgClr, double *minClr, double *maxClr);
 
             int createPNG(unsigned char **pngBuf, int *len, string fname);
+
+            int createPngBuffer(unsigned char **pngBuf, int *len);
         };
     }
 }

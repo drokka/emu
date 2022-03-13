@@ -135,8 +135,8 @@ void QuiltIcon::setValue(double _lambda, double _alpha, double _beta, double _ga
 void QuiltIcon::generateHex(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
                             double ma, int nperiod) {
 
-    double pi = cos(-1);
-    double p2 = 2 * pi;
+  //  double pi = cos(-1);
+   // double p2 = 2 * pi;
 
    // int nperiod = 6;
     int HALFnperiod = nperiod / 2.0;

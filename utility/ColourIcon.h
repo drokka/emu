@@ -34,12 +34,12 @@ namespace emu {
         typedef void (*ColourFn)(double min[4], double max[4], long frequency, FrequencyData &pointList,
                                  double *rgbaOut); //calculate RGBA to colourise frequency
 
-        ColourIcon(const int xSz, const int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList,
+        ColourIcon(int xSz, int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList,
                  ColourFn colourFn , RgbaList2D &colourArray);
 
-        ColourIcon(const int xSz, const int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList, RgbaList2D &colourArray);
+        ColourIcon(int xSz, int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList, RgbaList2D &colourArray);
 
-        ColourFn colourFn = 0;
+        ColourFn colourFn = nullptr;
         void colourPoint( int x, int y, double *rgba) ;
 
         void colourIn();
@@ -59,4 +59,5 @@ namespace emu {
 
 }
 }
+
 #endif //UTILITY_ColourIcon_H

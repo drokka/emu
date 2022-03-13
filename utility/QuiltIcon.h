@@ -85,7 +85,7 @@ namespace emu {
             generateHex(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
                         double ma, int nperiod);
 
-            void
+            static void
             generateFractal(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,
                             double ma, int degSym);
         };

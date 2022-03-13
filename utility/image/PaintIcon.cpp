@@ -2,6 +2,7 @@
 // Created by peter on 27/01/2021.
 //
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../../../stb/stb_image_write.h"
 
 #include <ctime>
 #include "PaintIcon.h"

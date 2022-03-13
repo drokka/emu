@@ -80,6 +80,22 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
     return  *len;
 }
 
+int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len){
+    PaintIcon paintIcon;
+     *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, false, len);
+    if (*pngBuf == nullptr) {
+        cout << "save png buffer failed." << endl;
+
+/********************************************
+    res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
+    if(res == 0) {
+        cout <<"save hdr image failed." << endl;
+    }
+   ***************************************************************/
+    }
+    return  *len;
+}
+
 void SymIconApp::save(ostringstream& outy) {
 //colourIcon.setUseAlpha(false);
     if(error){
@@ -97,7 +113,7 @@ void SymIconApp::save(ostringstream& outy) {
 
         // string dname = fnBase + ddate + ".sym";
         //std::ostringstream outy(dname, std::ios_base::out);
-        outy << hl;
+        outy << *this;
     }
     outy.flush();
   //  outy.close();
@@ -117,14 +133,15 @@ void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {
 
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::SymIconApp& symIconApp) {
     ostream1 << symIconApp.sz<< " "
-    << *(symIconApp.qi) <<" " << symIconApp.hl <<" "
     << symIconApp.lambdaVal <<" "
     << symIconApp.alphaVal << " "
     << symIconApp.betaVal << " "
     << symIconApp.gammaVal << " "
             << symIconApp.omegaVal << " "
             << symIconApp.maVal << " "
-            << symIconApp.degSym << " ";
+            << symIconApp.degSym << " "
+            << *(symIconApp.qi) <<" " << symIconApp.hl <<" ";
+
 
     //<< symIconApp.colourIcon.colourArray <<" ";
     return ostream1;
@@ -133,8 +150,6 @@ std::istream& operator>>(std::istream &input, emu::utility::SymIconApp& symIconA
   //  QuiltIcon quiltIconIn;
  //   PointList pointListIn;
     input >> symIconApp.sz;
-    input >> *(symIconApp.qi);
-    input >>  symIconApp.hl ;
     input >> symIconApp.lambdaVal
      >> symIconApp.alphaVal
                          >> symIconApp.betaVal
@@ -142,5 +157,14 @@ std::istream& operator>>(std::istream &input, emu::utility::SymIconApp& symIconA
                          >> symIconApp.omegaVal
                          >> symIconApp.maVal
                          >> symIconApp.degSym;
+    input >> *(symIconApp.qi);
+    input >>  symIconApp.hl ;
+
+    symIconApp.colourIcon.xSz = symIconApp.sz;
+    symIconApp.colourIcon.ySz = symIconApp.sz;
+
+ //   symIconApp.hl.addTable(symIconApp.sz);
+ //   symIconApp.hl.addPoints(); //time consuming.
+
     return input;
 }

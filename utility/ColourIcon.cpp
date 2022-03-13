@@ -20,6 +20,9 @@ emu::utility::ColourIcon::ColourIcon(int xSz, int ySz, double *bgRGBA, double *m
 }
 void emu::utility::ColourIcon::colourIn() {
 
+    if(colourFn == nullptr){
+        colourFn = emu::utility::simpleColourFn;
+    }
     FrequencyData &fd = pointList->freqTables[xSz];
     cout << "save max and range: " << fd.getMinX() << " " << fd.getMaxX() << " " << fd.getMinY() << " " << fd.getMaxY()
          << " "

@@ -13,6 +13,7 @@
 #include "QuiltIcon.h"
 #include "SymIconApp.h"
 #include "colourIcon.cpp"
+#include "runsampleNoJni.cpp"
 
 using namespace std;
 
@@ -66,6 +67,43 @@ TEST(parameterA,basictest ) {
 
 }
 
+TEST(FD, symi_streaming_Test){
+    FrequencyData fd(10);
+    for (int i=0;i<10;i++){
+        for(int j=0;j<10;j++) {
+
+            fd.addIntegerPoint(Point2D(i*0.1, j*0.1));
+
+        }}
+
+    cout << fd <<endl;
+
+    ASSERT_EQ( fd.minX,0);
+    ASSERT_EQ( fd.minY,0);
+    ASSERT_EQ( fd.maxX,9);
+    ASSERT_EQ( fd.maxY,9);
+
+    ASSERT_EQ(fd.maxHits, 1);
+
+    fd.addIntegerPoint(Point2D(0.3,0.3));
+    ASSERT_EQ(fd.maxHits, 2);
+
+    cout << fd <<endl;
+    stringstream ss;  ss<<fd;
+
+    FrequencyData fd2;
+    ss>> fd2;
+
+    ASSERT_EQ( fd2.minX,0);
+    ASSERT_EQ( fd2.minY,0);
+    ASSERT_EQ( fd2.maxX,9);
+    ASSERT_EQ( fd2.maxY,9);
+
+    ASSERT_EQ(fd2.maxHits, 2);
+
+    cout<< fd2 <<endl;
+}
+
 TEST(symi, streaming){
     //"100000","F", "121", "cannot count",
     //                        "0.2", "0.13", "0.7","0.39","0.22","0.073","4"
@@ -115,28 +153,29 @@ TEST(symi, streaming){
     ss4>> qi2;
     ASSERT_EQ(qi2.lambda->getValue(), quiltIcon.lambda->getValue());
     ASSERT_EQ(qi2.quiltType, quiltIcon.quiltType);
-    int sz = 11, degSym = 3;
+    int sz = 101, degSym = 3;
     double maxColour[] = {0.9,0.9,0.9,0.1};
     double bgColour[] = {0.1,0.2,0.2,0.1};
     double minColour[] = {0.3,0.3,0.3,0.1};
-    double params[] = {0.01, 0.01, 0.1, 0.01, 0.3, 0.2};
+    double params[] = {0.1, 0.1, 0.1, 0.4, 0.3, 0.2};
     double params2[] = {.02, .02, .6, .01, .9, .9};
 
     ColourIcon::ColourFn colourFn = myClrFn;
 
-    SymIconApp *app1 = new SymIconApp(100, 0.3, 0.1, emu::utility::QuiltIcon::QuiltType::SQUARE,
+    SymIconApp *app1 = new SymIconApp(1000, 0.3, 0.1, emu::utility::QuiltIcon::QuiltType::SQUARE,
                     "symitest", sz, params ,
                     6, degSym,  bgColour, minColour,
     maxColour, colourFn);
     app1->runGenerator();
     stringstream ss5;
-
+    cout << "app1 hl: "<<endl;
+    cout << app1->hl <<endl;
     ss5 << *(app1);
     cout<<"app1:" <<endl;
     cout <<*(app1) <<endl;
     cout<<"ss5 string:" <<endl;
     cout << ss5.str() <<endl;
-    delete app1;
+
     SymIconApp app2(10, 0.1,0.7,emu::utility::QuiltIcon::QuiltType::FRACTAL,
                     "ss", sz, params2,
                     6, 5, bgColour, minColour, maxColour, colourFn);
@@ -148,4 +187,32 @@ TEST(symi, streaming){
     ASSERT_EQ(app2.degSym, 3);
     ASSERT_EQ(app2.omegaVal, 0.3);
     ASSERT_EQ(0.3, app2.qi->omega->getValue());
+
+    ASSERT_EQ(app2.hl.freqTables.size(), app1->hl.freqTables.size());
+    ASSERT_EQ(app2.hl.freqTables[0].maxX, app1->hl.freqTables[0].maxX);
+    ASSERT_EQ(app2.hl.freqTables[0].maxY, app1->hl.freqTables[0].maxY);
+    ASSERT_EQ(app2.hl.freqTables[0].maxHits, app1->hl.freqTables[0].maxHits);
+
+    double mClr[4] = {.1,.6,.6,.2};
+    double maxClr[4] = {.9,0.333,0.01,.2};
+    double bgClr[4] = {.9,.9,.9,.9};
+    unsigned char *pngBuf = nullptr;
+
+    stringstream ss6;
+    ss6 << *app1;
+cout<<" ss6" <<endl;
+cout << ss6.str()<<endl;
+
+std::time_t result = std::time(nullptr);
+     const std::string ddate = to_string(result).data();
+     string ff = "testIco" + ddate + ".png";
+int bufLen =    reColour(ss6,&pngBuf,ff , bgClr,mClr, maxClr);
+
+    unsigned char *pngBuf2 = nullptr;
+    stringstream ss7;
+    ss7 << *app1;
+
+    int bufLen2 =    reColourBuffer(ss7,&pngBuf2 , bgClr,mClr, maxClr);
+cout <<"png buffer length is: " <<bufLen << " bufLen2 is: " << bufLen2 <<endl;
+cout <<"streaming test done"<<endl;
 }
