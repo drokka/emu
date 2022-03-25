@@ -50,6 +50,16 @@ static void testColourIcon(){
    // assert(colourArray.at(999).size()==1000);
 //   free(colour);  the pointer is added to the colour array. Freed on its deletion.
 }
+int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* bg, double* min, double * max){
+    SymIconApp* appy = new SymIconApp();
+    symIn >> *appy;
+
+    appy->setColour(bg,min,max);
+    appy ->colourIcon.colourIn();
+    int bufLen = 0;
+    appy->createPNG(pngBuf, &bufLen, fname);
+    return bufLen;
+}
 int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, double* min, double * max){
     SymIconApp* appy = new SymIconApp();
     symIn >> *appy;
@@ -154,13 +164,29 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bg[] ={0,0.2,.15,.5};
-    double min[]= {0.0,.5,.3,.5};
-    double max[] = {.3,.99,.99,1};
+    double bgClr[] ={0, 0.2, .15, .5};
+    double minClr[]= {0.0,.5,.3,.5};
+    double maxClr[] = {.3,.99,.99,1};
+
+    if(nparam == 24) { //colours provided
+        bgClr[0] = strtod(param[12], nullptr);
+        bgClr[1] = strtod(param[13], nullptr);
+        bgClr[2] = strtod(param[14], nullptr);
+        bgClr[3] = strtod(param[15], nullptr);
+
+        minClr[0] = strtod(param[16], nullptr);
+        minClr[1] = strtod(param[17], nullptr);
+        minClr[2] = strtod(param[18], nullptr);
+        minClr[3] = strtod(param[19], nullptr);
+        maxClr[0] = strtod(param[20], nullptr);
+        maxClr[1] = strtod(param[21], nullptr);
+        maxClr[2] = strtod(param[22], nullptr);
+        maxClr[3] = strtod(param[23], nullptr);
+    }
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
 
-    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams,degSym, bg, min, max, colourFn);
+    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();
    // cout << "max hits: " << app.maxhits << endl;
 
@@ -308,24 +334,19 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     argvStr += to_string( jintArgs[3]);
 
     jdouble* jdoubleArgs = env->GetDoubleArrayElements(dArgs,0);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[0]);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[1]);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[2]);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[3]);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[4]);
-    argvStr += " ";
-    argvStr += to_string(jdoubleArgs[5]);
+
+    int lenDargs = env->GetArrayLength(dArgs); //colours last 12.... optional
+    for(int ii = 0; ii< lenDargs; ii++){
+        argvStr += " ";
+        argvStr += to_string(jdoubleArgs[ii]);
+    }
+
 
     unsigned char *pngBuf = nullptr;
     int len = 0;
     int result = 0;
 
-    int nparam = 12; /* for the char** argument passed in */
+    int nparam = 6 + lenDargs; /* for the char** argument passed in */
     int j = 0;
     char *argy[nparam];
 
@@ -342,7 +363,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
   //  argy[nparam -1] = p2; /*ouch got to get the last one. horrible *******/
    // const char** paramChars =    env->GetCharArrayElements(params,NULL);
  //   if (params != 0){
-        result = runsample(12, argy , output, &pngBuf, &len, captureParams);
+        result = runsample(nparam, argy , output, &pngBuf, &len, captureParams);
 
  //   }else {
    //     result = runsample(1, (char **) ({ "whaty"; }), output, &pngBuf, &len);

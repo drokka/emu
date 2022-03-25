@@ -93,15 +93,15 @@ void emu::utility::simpleColourFn(double *minRGBA, double *maxRGBA, long hits, F
     long fdiff = maxhits>1?maxhits-1: 1; //maxx -minn;
 
     //  cout << "maxhits " <<maxhits <<endl;
-    double opacity = (double)(hits - 1)/fdiff;
+    double ratio = (double)(hits - 1)/fdiff;
     //   cout <<"opacity " << opacity <<endl;std::max(
 //opacity=0.3*opacity;
     //bound opacity between 0 and 1.
-    opacity = (opacity <= 0)?0.05:opacity;
-    opacity = (opacity >1)?1:opacity;
- rgbaOut[0]= 0.5 +0.5*opacity;
-    rgbaOut[1]=  .9*opacity;
-    rgbaOut[2]= 0.3 +0.7*opacity;
-    rgbaOut[3]=opacity;
+  //  opacity = (opacity <= 0)?0.05:opacity;
+  //  opacity = (opacity >1)?1:opacity;
+  for(int i=0;i<4;i++){
+      rgbaOut[i] = minRGBA[i] + ratio*(maxRGBA[i] - minRGBA[i]);
+  }
+
 }
 

@@ -49,9 +49,9 @@ int main(int nparams, char** params){
  //   cout <<"hexSymApp is: " <<endl;
   //  cout << outputH.str() <<endl;
     unsigned char *pngRecolrBuf = nullptr;
-    double bg[4]  = {0.99,0.99,0.99,0.0};
+    double bg[4]  = {0.99,0.0,0.0,0.0};
     double minC[4] = {0.0,0.9,0.0,0.0};
-    double maxC[4] = {0.99,0.01,0.99,0.0};
+    double maxC[4] = {0.0,0.01,0.99,0.9};
     int reClrResult = -1;
     cout<<"recolour on hex"<<endl;
     reClrResult = reColourBuffer(hexSymApp, &pngRecolrBuf, bg, minC, maxC);
