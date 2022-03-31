@@ -130,7 +130,31 @@ SymIconApp::~SymIconApp() {
 void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {
     colourIcon.setColour(bgClr,minClr,maxClr);
 }
+/*
+emu::utility::SymIconApp SymIconApp::sizeSlice(const emu::utility::SymIconApp &symIconApp, const int sz) {
+    SymIconApp appy;
 
+    appy.sz = sz;
+    appy.colourIcon.xSz = appy.colourIcon.ySz = sz;
+
+     appy.lambdaVal =  symIconApp.lambdaVal;
+     appy.alphaVal =  symIconApp.alphaVal;
+     appy.betaVal = symIconApp.betaVal;
+     appy.gammaVal =  symIconApp.gammaVal;
+     appy.omegaVal =  symIconApp.omegaVal;
+     appy. maVal =  symIconApp.maVal;
+     appy.degSym = symIconApp.degSym;
+
+
+     if(!symIconApp.hl.freqTables.empty() && !symIconApp.hl.freqTables.at(sz).frequencyList->empty()) {
+
+         appy.hl.freqTables.emplace(sz,symIconApp.hl.freqTables.at(sz).frequencyList );
+         appy.hl.rawTotal = symIconApp.hl.rawTotal;
+
+     }
+    return appy;
+}
+*/
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::SymIconApp& symIconApp) {
     ostream1 << symIconApp.sz<< " "
     << symIconApp.lambdaVal <<" "

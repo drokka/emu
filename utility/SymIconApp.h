@@ -77,6 +77,7 @@ namespace emu {
 
             long fdiff;
             long maxhits;
+            SymIconApp sizeSlice(const SymIconApp& symIconApp, const int size); // get data for one sized icon
 
             //           double bg[];
             //          double min[];

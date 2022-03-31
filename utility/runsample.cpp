@@ -60,12 +60,15 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     appy->createPNG(pngBuf, &bufLen, fname);
     return bufLen;
 }
-int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, double* min, double * max){
+int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* bg, double* min, double * max){
     SymIconApp* appy = new SymIconApp();
     symIn >> *appy;
 
+    appy->sz = sz;
+    appy->colourIcon.xSz = sz;
+    appy->colourIcon.ySz = sz;
     appy->setColour(bg,min,max);
-    appy ->colourIcon.colourIn();
+    appy ->colourIcon.colourIn(sz);
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
     return bufLen;
@@ -106,7 +109,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     double maVal = 0.5;
 
 
-    if (nparam == 12) {
+    if (nparam >= 12) {
         try {
             lambdaVal = strtod(param[6], nullptr); // HEIGHT is passed in but skipped/ignored.
             alphaVal = strtod(param[7], nullptr);
@@ -258,7 +261,7 @@ JNIEXPORT jstring JNICALL Java_com_drokka_emu_symicon_SymiNativeWrapperKt_getHel
  */
 extern "C"
 JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callReColourBufFromJNI(
-        JNIEnv *env, jclass jazz, jstring symIn, jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr) {
+        JNIEnv *env, jclass jazz, jstring symIn, jint sz, jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr) {
 
     ostringstream output("test");
     jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
@@ -285,7 +288,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     string symInString = env->GetStringUTFChars(symIn,NULL);
     stringstream symStream;
     symStream << symInString;
-    len = reColourBuffer( symStream, &pngBuf,  bgClrArray,  minClrArray,  maxClrArray);
+    int sizeIcon = sz;
+    len = reColourBuffer( symStream, sz, &pngBuf,  bgClrArray,  minClrArray,  maxClrArray);
 
     jbyteArray pngJBuf = env->NewByteArray(len);
     if (pngBuf != nullptr) {

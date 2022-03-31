@@ -18,28 +18,40 @@ emu::utility::ColourIcon::ColourIcon(int xSz, int ySz, double *bgRGBA, double *m
           colourFn(emu::utility::simpleColourFn), colourArray(clrArray) {
 
 }
-void emu::utility::ColourIcon::colourIn() {
+void emu::utility::ColourIcon::colourIn(int sz ) {
 
     if(colourFn == nullptr){
         colourFn = emu::utility::simpleColourFn;
     }
-    FrequencyData &fd = pointList->freqTables[xSz];
-    cout << "save max and range: " << fd.getMinX() << " " << fd.getMaxX() << " " << fd.getMinY() << " " << fd.getMaxY()
+
+    FrequencyData *fd = nullptr;
+    int iconSize = xSz;
+    if( sz==0) {
+        fd = &(pointList->freqTables[xSz]);
+    }else if(pointList->freqTables.find(sz) != pointList->freqTables.end()) {
+        fd = &(pointList->freqTables[sz]);
+        iconSize = sz;
+    }else{
+        cout<<"error sz " <<sz <<"  xsz " << xSz <<endl;
+        return;
+    }
+    cout << "save max and range: " << fd->getMinX() << " " << fd->getMaxX() << " " << fd->getMinY() << " " << fd->getMaxY()
          << " "
-         << fd.rangeX() << " " << fd.rangeY() << endl;
+         << fd->rangeX() << " " << fd->rangeY() << endl;
     double rescaleX = 1.0;
     double rescaleY = 1.0;
-    int minX = fd.minX;
-    int minY = fd.minY;
-    if (fd.rangeX() > xSz) {
-        rescaleX = (double) xSz / (double) fd.rangeX();
+    int minX = fd->minX;
+    int minY = fd->minY;
+    if (fd->rangeX() > iconSize) {
+        rescaleX = (double) iconSize / (double) fd->rangeX();
     }
-    if (fd.rangeY() > ySz) { rescaleY = (double) ySz / (double) fd.rangeY(); }
+    if (fd->rangeY() > iconSize) { rescaleY = (double) iconSize / (double) fd->rangeY(); }
 
-    emu::utility::FrequencyList2DConstIter iter = pointList->freqTables[xSz].frequencyList->begin();
-int frequLen = pointList->freqTables[xSz].frequencyList->size();
+    emu::utility::FrequencyList2DConstIter iter = pointList->freqTables[iconSize].frequencyList->begin();
+int frequLen = pointList->freqTables[iconSize].frequencyList->size();
 cout << "frequ Len " << frequLen <<endl;
-        for (;iter != pointList->freqTables[xSz].frequencyList->end(); iter++) {
+
+        for (;iter != pointList->freqTables[iconSize].frequencyList->end(); iter++) {
             int x = (int) (rescaleX * (iter->first.val[0] - minX)); //(points+i)->x;
             int y = (int) (rescaleY * (iter->first.val[1] - minY)); //((points+i)->y);
             long hits = iter->second;
@@ -53,7 +65,7 @@ cout << "frequ Len " << frequLen <<endl;
         }
              ******************/
             double *rgba = (double *) (calloc(4, sizeof(double)));
-            colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[xSz], rgba);
+            colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba);
           //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
             colourPoint(x, y, rgba);
           //  cout <<"colourPoint done" <<endl;

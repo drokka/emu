@@ -36,10 +36,10 @@ using namespace std;
             typedef std::map<int, FrequencyData>::const_iterator ScaleDataConstIter;
 
             //Scale values
-             int COARSE = 200;
-              int MEDIUM = 800;
-             int FINE = 1600;
-            const static long BUFFER_SIZE = 100000;
+             int COARSE = 201;
+              int MEDIUM = 941;
+             int FINE = 1601;
+            const static long BUFFER_SIZE = 10000;
 
 
             //shared_ptr<PointList2D> rawList;

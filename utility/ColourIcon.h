@@ -42,7 +42,7 @@ namespace emu {
         ColourFn colourFn = nullptr;
         void colourPoint( int x, int y, double *rgba) ;
 
-        void colourIn();
+        void colourIn(int sz = 0);
         static ColourFn simpleColourFn;
         int xSz;
         int ySz;

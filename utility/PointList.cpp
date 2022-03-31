@@ -87,6 +87,8 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& 
     auto i = pl.freqTables.begin();
     while (i != pl.freqTables.end()) {
         //   ostream1 << i->second;
+        ostream1 <<endl << "freqTable BEGIN "  <<endl;
+     //   ostream1<< i->first;
         ::operator<<(ostream1, i->second);
         ostream1 << " ";
         i++;
@@ -102,6 +104,9 @@ std::istream& operator>>(std::istream &input, emu::utility::PointList& pl) {
     input >> ftSize;
 
     for (int i = 0; i < ftSize; i++) {
+        input.ignore(100, '\n');
+        input.ignore(100, '\n');
+
         int scale;
         //  fdPtr.scale = scale;
         std::streampos p_orig = input.tellg();
