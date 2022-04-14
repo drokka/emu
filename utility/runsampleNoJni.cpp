@@ -1,3 +1,6 @@
+#ifndef EMU_UTILITIES_RUNSAMPLE
+#define EMU_UTILITIES_RUNSAMPLE
+
 //#include <iostream>
 #include <map>
 #include "QuiltIcon.h"
@@ -77,7 +80,8 @@ int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, doub
     return bufLen;
 }
 
-int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
+
+static int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
     long iterations = 10000;
     if(nparam >1){
@@ -221,3 +225,16 @@ cout<< "max hits is " << app.maxhits <<endl;
 
     }
 
+    extern "C"
+ int runsamplewrapimp(int nparam, char** param, unsigned char **pngBuf, int *len) {
+
+    ostringstream outdata("outy string");
+    ostringstream defdata("defn string");
+    int resy = runsample(nparam, param, reinterpret_cast<ostringstream &>(outdata), pngBuf, len,
+                         reinterpret_cast<ostringstream &>(defdata));
+
+    return resy;
+}
+
+
+#endif
