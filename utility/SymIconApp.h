@@ -64,6 +64,7 @@ namespace emu {
 
         protected:
         public:
+            Point2D lastPoint;
             PointList hl;
             int sz = 1600;
 

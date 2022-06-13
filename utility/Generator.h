@@ -20,7 +20,7 @@ namespace emu {
         public:
             Generator(IterativeFunctionBase *ff, long iters, PointList *hl);
 
-            void go(Point2D startPt) ;
+            Point2D go(Point2D startPt) ;
         };
     }
 }
