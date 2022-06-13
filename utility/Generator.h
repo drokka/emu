@@ -14,13 +14,14 @@ namespace emu {
         class Generator {
 
             IterativeFunctionBase *iterativeFunctionPtr;
-            long iters = 10000;
             PointList *hl;
 
         public:
             Generator(IterativeFunctionBase *ff, long iters, PointList *hl);
 
-            void go(Point2D startPt) ;
+            Point2D go(const Point2D& startPt) ;
+
+            long iters = 10000;
         };
     }
 }

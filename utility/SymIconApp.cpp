@@ -35,10 +35,14 @@ SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::Q
 
 }
 
+void SymIconApp::setIterations(long iter){
+    iterations = iter;
+    gg->iters = iter;
+}
 
 void SymIconApp::runGenerator() {
     try {
-        gg->go(initPoint);
+       lastPoint = gg->go(initPoint);
         hl.addPoints();
     } catch (std::exception &xx) {
         cout << "Error: " << xx.what() << endl;
@@ -113,7 +117,7 @@ void SymIconApp::save(ostringstream& outy) {
 
         // string dname = fnBase + ddate + ".sym";
         //std::ostringstream outy(dname, std::ios_base::out);
-        outy << *this;
+        outy << *this ;
     }
     outy.flush();
   //  outy.close();
@@ -130,6 +134,11 @@ SymIconApp::~SymIconApp() {
 void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {
     colourIcon.setColour(bgClr,minClr,maxClr);
 }
+
+void SymIconApp::setInitPoint(Point2D point2D) {
+    initPoint = std::move(point2D);
+}
+
 /*
 emu::utility::SymIconApp SymIconApp::sizeSlice(const emu::utility::SymIconApp &symIconApp, const int sz) {
     SymIconApp appy;
@@ -164,7 +173,8 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::SymIconApp&
             << symIconApp.omegaVal << " "
             << symIconApp.maVal << " "
             << symIconApp.degSym << " "
-            << *(symIconApp.qi) <<" " << symIconApp.hl <<" ";
+            << *(symIconApp.qi) <<" " << symIconApp.hl <<" "
+            << symIconApp.lastPoint.val[0] <<" "  << symIconApp.lastPoint.val[1] << " " ;
 
 
     //<< symIconApp.colourIcon.colourArray <<" ";
@@ -183,6 +193,9 @@ std::istream& operator>>(std::istream &input, emu::utility::SymIconApp& symIconA
                          >> symIconApp.degSym;
     input >> *(symIconApp.qi);
     input >>  symIconApp.hl ;
+    double x, y;
+    input >> x >> y;
+    symIconApp.lastPoint = Point2D(x,y);
 
     symIconApp.colourIcon.xSz = symIconApp.sz;
     symIconApp.colourIcon.ySz = symIconApp.sz;

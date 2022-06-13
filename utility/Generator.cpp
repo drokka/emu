@@ -7,7 +7,7 @@
 emu::utility::Generator::Generator(IterativeFunctionBase *ff, long iters, PointList *hl):
 iterativeFunctionPtr(ff), iters(iters), hl(hl) { }
 
-void emu::utility::Generator::go(Point2D startPt) {
+emu::utility::Point2D  emu::utility::Generator::go(const Point2D& startPt) {
 
     emu::utility::Point2D point;
     point.val[0] = startPt.val[0];
@@ -22,4 +22,5 @@ void emu::utility::Generator::go(Point2D startPt) {
         point.val[1] = inPt[1];
         hl->addPoint(point);
     }
+    return point;
 }

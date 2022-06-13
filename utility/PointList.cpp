@@ -18,7 +18,6 @@ emu::utility::PointList::PointList(): rawIndex(0), rawTotal(0),freqTables(ScaleD
 
 emu::utility::PointList::PointList(const PointList& pl){
     this->freqTables = pl.freqTables;
-
 }
 
 void emu::utility::PointList::addPoints() {
@@ -77,11 +76,10 @@ void emu::utility::PointList::convert(int scale) {
     i->second.findMin();
 }
 
-
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& pl) {
     using namespace std;
     using namespace emu::utility;
-
+    ostream1 << " rawTotal " << pl.rawTotal << " ";
     ostream1 << pl.freqTables.size();
     ostream1<<" ";
     auto i = pl.freqTables.begin();
@@ -93,6 +91,7 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& 
         ostream1 << " ";
         i++;
     }
+    ostream1 << endl;
     ostream1.flush();
     return ostream1;
 }
@@ -101,6 +100,9 @@ std::istream& operator>>(std::istream &input, emu::utility::PointList& pl) {
     using emu::utility::PointList;
     using namespace std;
     long ftSize;
+    string discard;
+    input >> discard;
+    input >> pl.rawTotal ;
     input >> ftSize;
 
     for (int i = 0; i < ftSize; i++) {
@@ -116,5 +118,6 @@ std::istream& operator>>(std::istream &input, emu::utility::PointList& pl) {
         //   input >> pl.freqTables.find(scale)->second;
         ::operator>>(input, pl.freqTables.find(scale)->second);
     }
+
     return input;
 }

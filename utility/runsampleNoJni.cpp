@@ -60,7 +60,7 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     appy->createPNG(pngBuf, &bufLen, fname);
     return bufLen;
 }
-int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, double* min, double * max){
+int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* bg, double* min, double * max){
     SymIconApp* appy = new SymIconApp();
     symIn >> *appy;
 //    std::time_t result = std::time(nullptr);
@@ -71,17 +71,32 @@ int reColourBuffer(stringstream& symIn, unsigned char **pngBuf, double* bg, doub
     ///    stream.write(symIn,);
  //   }
 
- //   appy->save( )
-
+    appy->sz = sz;
+    appy->colourIcon.xSz = sz;
+    appy->colourIcon.ySz = sz;
     appy->setColour(bg,min,max);
-    appy ->colourIcon.colourIn();
+    appy ->colourIcon.colourIn(sz);
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
+    free( appy);
     return bufLen;
 }
 
+int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
+                   unsigned char **pngBuf, double *pDouble, double *pDouble1, double *pDouble2) {
+    SymIconApp* appy = new SymIconApp();
+    inData >> *appy;
+    appy->setIterations(iterations);
+    appy->runGenerator();
+    appy->save(outData);
+    int bufLen = 0;
+    appy->createPngBuffer(pngBuf, &bufLen);
 
-static int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
+    free(appy);
+    return bufLen;
+}
+
+int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
     long iterations = 10000;
     if(nparam >1){
@@ -120,7 +135,7 @@ int degSym = 4;
     double maVal = 0.5;
 
 
-    if (nparam == 12) {
+    if (nparam >= 12) {
         try {
             lambdaVal = strtod(param[6], nullptr); // HEIGHT is passed in but skipped/ignored.
             alphaVal = strtod(param[7], nullptr);
@@ -173,21 +188,43 @@ int degSym = 4;
 
     double initX = 0.307;
     double initY = 0.079;
+    if(lastPoint != nullptr && (*lastPoint)[0] != 0.0) initX = (*lastPoint)[0];
+    if(lastPoint != nullptr && (*lastPoint)[1] != 0.0) initY = (*lastPoint)[1];
+
     std::string fnBase = "img_a_";
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bg[] ={0,0.2,.15,.5};
-    double min[]= {0.0,.5,.3,.5};
-    double max[] = {.3,.99,.99,1};
+    double bgClr[] ={0, 0.2, .15, .5};
+    double minClr[]= {0.0,.5,.3,.5};
+    double maxClr[] = {.3,.99,.99,1};
+
+    if(nparam == 24) { //colours provided
+        bgClr[0] = strtod(param[12], nullptr);
+        bgClr[1] = strtod(param[13], nullptr);
+        bgClr[2] = strtod(param[14], nullptr);
+        bgClr[3] = strtod(param[15], nullptr);
+
+        minClr[0] = strtod(param[16], nullptr);
+        minClr[1] = strtod(param[17], nullptr);
+        minClr[2] = strtod(param[18], nullptr);
+        minClr[3] = strtod(param[19], nullptr);
+        maxClr[0] = strtod(param[20], nullptr);
+        maxClr[1] = strtod(param[21], nullptr);
+        maxClr[2] = strtod(param[22], nullptr);
+        maxClr[3] = strtod(param[23], nullptr);
+    }
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
 
-    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams,degSym, bg, min, max, colourFn);
+    SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();
     cout << "After runGenerator call max hits: " << app.maxhits << endl;
 
     app.save(outData);
+    (*lastPoint)[0] = app.lastPoint.val[0];
+    (*lastPoint)[1] = app.lastPoint.val[1];
+
      std::time_t result = std::time(nullptr);
      const std::string ddate = to_string(result).data();
 
@@ -225,16 +262,16 @@ cout<< "max hits is " << app.maxhits <<endl;
 
     }
 
-    extern "C"
+/*    extern "C"
  int runsamplewrapimp(int nparam, char** param, unsigned char **pngBuf, int *len) {
 
     ostringstream outdata("outy string");
     ostringstream defdata("defn string");
-    int resy = runsample(nparam, param, reinterpret_cast<ostringstream &>(outdata), pngBuf, len,
+    int resy = runsample(nparam, param, len reinterpret_cast<ostringstream &>(outdata), pngBuf, len,
                          reinterpret_cast<ostringstream &>(defdata));
 
     return resy;
-}
+} */
 
 
 #endif

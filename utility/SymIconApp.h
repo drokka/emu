@@ -26,6 +26,10 @@ namespace emu {
                                               const_cast<double *>(defaultParams), 6, 3,
                                               const_cast<double *>(defaultClr), const_cast<double *>(defaultClr),
                                               const_cast<double *>(defaultClr), nullptr){}
+            SymIconApp(long iterations, double initX, double initY,double *bgColour, double *minColour, double *maxColour):
+                            SymIconApp(iterations, initX, initY, QuiltIcon::QuiltType::SQUARE, "sym", 9,
+                                       const_cast<double *>(defaultParams), 6, 3, bgColour, minColour, maxColour,
+                                       nullptr){}
             virtual ~SymIconApp();
 
 
@@ -64,6 +68,7 @@ namespace emu {
 
         protected:
         public:
+            Point2D lastPoint;
             PointList hl;
             int sz = 1600;
 
@@ -89,6 +94,10 @@ namespace emu {
             int createPNG(unsigned char **pngBuf, int *len, string fname);
 
             int createPngBuffer(unsigned char **pngBuf, int *len);
+
+            void setIterations(long iter);
+
+            void setInitPoint(Point2D point2D);
         };
     }
 }

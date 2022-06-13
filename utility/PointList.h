@@ -35,6 +35,10 @@ using namespace std;
             typedef std::map<int, FrequencyData>::iterator ScaleDataIter;
             typedef std::map<int, FrequencyData>::const_iterator ScaleDataConstIter;
 
+            typedef std::map<Point2D, long> RawData;
+            typedef std::map<Point2D, long>::iterator RawDataIter;
+            typedef std::map<Point2D, long>::const_iterator RawDataConstIter;
+
             //Scale values
              int COARSE = 201;
               int MEDIUM = 941;
@@ -44,12 +48,12 @@ using namespace std;
 
             //shared_ptr<PointList2D> rawList;
             ScaleData freqTables;
-
+           // RawData rawData;
             PointList(const int COARSE, const int MEDIUM, const int FINE,  long rawTotal);
 
 
             PointList();
-            
+
             PointList(const PointList& pl);
             virtual ~PointList() {
              //addPoints();

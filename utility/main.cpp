@@ -12,7 +12,8 @@ int main(int nparams, char** params){
     ostringstream paramValsApplied("Icon definition and parameters captured: ");
 
     cout<<"runsample call 1"<<endl;
-    int result = runsample(nparams, params, output, &pngBuf, &len, paramValsApplied);
+    double lastPoint[2];
+    int result = runsample(nparams, params, output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, paramValsApplied);
 
     char msg[150]; strchrnul(msg,50);
     sprintf(msg, "pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
@@ -33,7 +34,7 @@ int main(int nparams, char** params){
     unsigned char* pngBuf2 = nullptr;
     ostringstream outputH;
     cout<<"runsampe call 2, HEX icon" <<endl;
-            result += runsample(3,parma , outputH, &pngBuf2, &len, paramValsApplied1);
+            result += runsample(3,parma , outputH,reinterpret_cast<double **>(&lastPoint), &pngBuf2, &len, paramValsApplied1);
 
     std::time_t resultH = std::time(nullptr);
     const std::string ddateH = to_string(resultH).data();
@@ -54,7 +55,7 @@ int main(int nparams, char** params){
     double maxC[4] = {0.0,0.01,0.99,0.9};
     int reClrResult = -1;
     cout<<"recolour on hex"<<endl;
-    reClrResult = reColourBuffer(hexSymApp, &pngRecolrBuf, bg, minC, maxC);
+    reClrResult = reColourBuffer(hexSymApp, 201, &pngRecolrBuf, bg, minC, maxC);
     if(reClrResult < 1){
         cout<< "recolourFAILED!!!!!!!!!!!!!!!!!!" <<endl;
     }else{
@@ -83,7 +84,7 @@ int main(int nparams, char** params){
     ostringstream output3("test");
     ostringstream paramValsApplied2("");
 
-    result += runsample(12,parmaa , output3, &pngBuf3, &len3, paramValsApplied2);
+    result += runsample(12,parmaa , output3, reinterpret_cast<double **>(&lastPoint),&pngBuf3, &len3, paramValsApplied2);
 
      cout << "FRACTAL ICON DONE!!" << endl;
     cout << paramValsApplied2.str() << endl;

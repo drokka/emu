@@ -71,10 +71,33 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy ->colourIcon.colourIn(sz);
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
+    free( appy);
     return bufLen;
 }
 
-int runsample(int nparam, char** param, ostringstream &outData, unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
+int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
+                   unsigned char **pngBuf, double *pDouble, double *pDouble1, double *pDouble2) {
+    SymIconApp* appy = new SymIconApp();
+    inData >> *appy;
+    appy->setIterations(iterations);
+    appy->setInitPoint(appy->lastPoint);
+    appy->runGenerator();
+    appy->save(outData);
+    //double bgc[4] = {0.99,0.99,0.99,0.0};
+    //double minc[4] = {0.0,0.0,0.0,0.0};
+    //double maxgc[4] = {0.4,0.0,0.0,0.0};
+
+    appy->setColour(pDouble,pDouble1,pDouble2);
+    appy ->colourIcon.colourIn(appy->sz);
+
+    int bufLen = 0;
+    appy->createPngBuffer(pngBuf, &bufLen);
+
+    free(appy);
+    return bufLen;
+}
+
+int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
 
     long iterations = 10000;
     if(nparam >1){
@@ -160,9 +183,11 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
     cout << "maVal " << maVal << endl;
      **************/
 
-
     double initX = 0.307;
     double initY = 0.079;
+    if(lastPoint != nullptr && (*lastPoint)[0] != 0.0) initX = (*lastPoint)[0];
+    if(lastPoint != nullptr && (*lastPoint)[1] != 0.0) initY = (*lastPoint)[1];
+
     std::string fnBase = "img_a_";
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
@@ -194,6 +219,9 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
    // cout << "max hits: " << app.maxhits << endl;
 
     app.save(outData);
+
+    (*lastPoint)[0] = app.lastPoint.val[0];
+    (*lastPoint)[1] = app.lastPoint.val[1];
      //std::time_t result = std::time(nullptr);
     // const std::string ddate = to_string(result).data();
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
@@ -212,6 +240,7 @@ int runsample(int nparam, char** param, ostringstream &outData, unsigned char **
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
+
     return app.maxhits;
 
     }
@@ -249,7 +278,77 @@ JNIEXPORT jstring JNICALL Java_com_drokka_emu_testloadimage_MainActivityKt_callR
  *********************************/
 extern "C"
 JNIEXPORT jstring JNICALL Java_com_drokka_emu_symicon_SymiNativeWrapperKt_getHelloFromJNI(JNIEnv *env, jclass clazz) {
-    return (*env).NewStringUTF("Hello from JNI ! freaka");}
+    return (*env).NewStringUTF("Hello from JNI ! freaka");
+}
+
+//-------------------------------------------------------------------------------------------
+// MoreIterSample
+//--------------------------------------------------------------------------------------------
+extern  "C"
+JNIEXPORT int JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callMoreIterSampleFromJNI(
+                            JNIEnv *env,jclass jazz,
+                                          jobject mainViewModel ,jobject context,
+                                          jlong iterations,  jstring fname, jstring imageFileName,
+                                          jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr){
+    jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
+    jobject outputData = env->AllocObject(outputDataClass);
+    jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
+
+    jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
+    jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
+    jclass  mvmClass = env->FindClass("com/drokka/emu/symicon/generateicon/ui/main/MainViewModel");
+    jmethodID saveOutputDataId = env->GetMethodID(mvmClass, "saveOutputData",
+                                                  "(Lcom/drokka/emu/symicon/generateicon/nativewrap/OutputData;Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)V");
+
+    jmethodID  readDataFileId = env->GetMethodID(mvmClass, "readDataFile",
+                                                 "(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/String;");
+
+
+    double *bgclr_c = env->GetDoubleArrayElements(bgClr, 0);
+    double *minclr_c = env->GetDoubleArrayElements(minClr, 0);
+    double *maxclr_c = env->GetDoubleArrayElements(maxClr, 0);
+
+    jstring inData = static_cast<jstring>(env->CallObjectMethod(mainViewModel, readDataFileId,
+                                                                context, fname));
+
+    string symInString = env->GetStringUTFChars(inData,nullptr);
+    int resy =1;
+    if(!symInString.empty()) {
+        istringstream symStream(symInString);
+        //  symStream << symInString;
+        unsigned char *pngBuf = nullptr;
+        ostringstream outData("stuff");
+        int pngBufLen = moreIterSample(iterations, symStream, outData, &pngBuf, bgclr_c, minclr_c,
+                                       maxclr_c);
+
+        auto outDataJ = env->NewStringUTF(outData.str().c_str());
+        env->SetObjectField(outputData, savedDataField, outDataJ);
+
+        jbyteArray pngJBuf = env->NewByteArray(pngBufLen);
+        if (pngBuf != nullptr) {
+            env->SetByteArrayRegion(pngJBuf, 0, pngBufLen, (jbyte *) pngBuf);
+        }
+
+        free(pngBuf); // SetByteArrayRegion is copying... I think
+        env->SetObjectField(outputData, pngBufferField, pngJBuf);
+        env->SetIntField(outputData, pngBufferLenField, pngBufLen);
+
+        // long time = time_t(0);
+        //char * strbuf[30];
+        //int fn = snprintf(strbuf,30, "symidata%{d}.sym", time);
+        // string fn = "symidataJNI"+ to_string(time) +".sym";
+        // auto len = fn.length();
+        // jstring dataFileName = env->NewString(reinterpret_cast<const jchar *>(fn.c_str()), len);
+
+        //----------- Save outputData ----------------------- calling Java method on MainViewModel instance//
+        env->CallVoidMethod(mainViewModel, saveOutputDataId, outputData, context, fname, imageFileName);
+        env->DeleteLocalRef(pngJBuf);
+        env->DeleteLocalRef(outDataJ);
+        //env->FreeByteArrayRegion(pngJBuf)
+        resy = 0;
+    }
+return resy;
+}
 
 /*
  * reColour(stringstream& symIn,
@@ -266,8 +365,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     ostringstream output("test");
     jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
     jobject outputData = env->AllocObject(outputDataClass);
-    jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
-    jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
+  //  jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
+  //  jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
 
     jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
     jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
@@ -285,7 +384,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
 
     unsigned char *pngBuf = nullptr;
     int len = 0;
-    string symInString = env->GetStringUTFChars(symIn,NULL);
+    string symInString = env->GetStringUTFChars(symIn,0);
     stringstream symStream;
     symStream << symInString;
     int sizeIcon = sz;
@@ -321,6 +420,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
     jsize lenArgs = env->GetArrayLength(intArgs);
+    jfieldID lastPointField = env->GetFieldID(outputDataClass,"lastPoint", "[D");
     cout<< "length "<< lenArgs <<endl;
 
     //int intArg0 = env->GetInt(env->GetObjectArrayElement(intArgs,0));
@@ -367,7 +467,9 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
   //  argy[nparam -1] = p2; /*ouch got to get the last one. horrible *******/
    // const char** paramChars =    env->GetCharArrayElements(params,NULL);
  //   if (params != 0){
-        result = runsample(nparam, argy , output, &pngBuf, &len, captureParams);
+    double* lastPoint = static_cast<double *>(malloc(2 * sizeof(double)));
+    lastPoint[0] = 0.0; lastPoint[1] = 0.0;
+        result = runsample(nparam, argy , output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, captureParams);
 
  //   }else {
    //     result = runsample(1, (char **) ({ "whaty"; }), output, &pngBuf, &len);
@@ -389,6 +491,9 @@ cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[
     env->SetObjectField(outputData, pngBufferField, pngJBuf);
     env->SetIntField(outputData, pngBufferLenField,  len);
 
+    jdoubleArray jdoubleArray1 = env->NewDoubleArray(2);
+    env->SetDoubleArrayRegion(jdoubleArray1, 0, 2,lastPoint);
+    env->SetObjectField(outputData, lastPointField, jdoubleArray1);
     env->ReleaseIntArrayElements(intArgs, jintArgs, 0 );
     env->ReleaseDoubleArrayElements(dArgs, jdoubleArgs,0);
    free(buff);
