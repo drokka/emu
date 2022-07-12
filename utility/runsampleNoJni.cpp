@@ -83,12 +83,24 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
 }
 
 int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
-                   unsigned char **pngBuf, double *pDouble, double *pDouble1, double *pDouble2) {
+                   unsigned char **pngBuf, double *bgclr_c, double *minclr_c, double *maxclr_c) {
     SymIconApp* appy = new SymIconApp();
     inData >> *appy;
     appy->setIterations(iterations);
+    appy->setInitPoint(appy->lastPoint);
     appy->runGenerator();
     appy->save(outData);
+    //double bgc[4] = {0.99,0.99,0.99,0.0};
+    //double minc[4] = {0.0,0.0,0.0,0.0};
+    //double maxgc[4] = {0.4,0.0,0.0,0.0};
+
+    stringstream strlog ; strlog << "colour double arrays " << *bgclr_c << " " << *(bgclr_c+1) << " " << *(bgclr_c+2) << " " << *(bgclr_c+3) << " " << *(bgclr_c+4) << " , "
+                                 << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3)<< " " << *(minclr_c+4) << " , "
+                                 << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " " << *(maxclr_c+4) << endl;
+
+    appy->setColour(bgclr_c ,minclr_c,maxclr_c);
+    appy ->colourIcon.colourIn(appy->sz);
+
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
 
@@ -195,9 +207,9 @@ int degSym = 4;
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bgClr[] ={0, 0.2, .15, .5};
-    double minClr[]= {0.0,.5,.3,.5};
-    double maxClr[] = {.3,.99,.99,1};
+    double bgClr[] ={0, 0.2, .15, 1.0};
+    double minClr[]= {0.0,.5,.3,1.0};
+    double maxClr[] = {.3,.99,.99,1.0};
 
     if(nparam == 24) { //colours provided
         bgClr[0] = strtod(param[12], nullptr);
@@ -216,6 +228,9 @@ int degSym = 4;
     }
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
+    stringstream strlog ; strlog << "colour double arrays " << *bgClr << " " << *(bgClr+1) << " " << *(bgClr+2) << " " << *(bgClr+3) << " " << *(bgClr+4) << " , "
+                                 << *minClr << " " << *(minClr+1) << " " << *(minClr+2) << " " << *(minClr+3)<< " " << *(minClr+4) << " , "
+                                 << *maxClr << " " << *(maxClr+1) << " " << *(maxClr+2) << " " << *(maxClr+3)  << " " << *(maxClr+4) << endl;
 
     SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();

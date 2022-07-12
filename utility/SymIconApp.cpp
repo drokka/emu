@@ -65,12 +65,12 @@ void SymIconApp::runGenerator() {
 
 int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
     PaintIcon paintIcon;
-    int res = paintIcon.paintPNG(colourIcon, fname, false);
+    int res = paintIcon.paintPNG(colourIcon, fname, true);
     if (res == 0) {
         cout << "save png image failed." << endl;
     }
 
-    *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, false, len);
+    *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, true, len);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
 
@@ -84,9 +84,9 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
     return  *len;
 }
 
-int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len){
+int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len, bool switchRGBAtoARGB){
     PaintIcon paintIcon;
-     *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, false, len);
+     *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, true, len,  switchRGBAtoARGB);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
 
@@ -100,6 +100,17 @@ int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len){
     return  *len;
 }
 
+int SymIconApp::createByteBuffer(unsigned char **buf, int *len, bool switchRGBAtoARGB) {
+    PaintIcon paintIcon;
+     paintIcon.getCharArray(colourIcon, true,   switchRGBAtoARGB);
+    if (paintIcon.charBuffer == nullptr) {
+        cout << "save char buffer failed." << endl;
+    }
+    *buf = paintIcon.charBuffer;
+    *len = sz*sz*4; //with alpha
+
+    return  *len;
+}
 void SymIconApp::save(ostringstream& outy) {
 //colourIcon.setUseAlpha(false);
     if(error){

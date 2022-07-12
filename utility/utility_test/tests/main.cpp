@@ -153,9 +153,9 @@ TEST(symi, streaming){
     ss4>> qi2;
     ASSERT_EQ(qi2.lambda->getValue(), quiltIcon.lambda->getValue());
     ASSERT_EQ(qi2.quiltType, quiltIcon.quiltType);
-    int sz = 101, degSym = 3;
+    int sz = 301, degSym = 3;
     double maxColour[] = {0.9,0.9,0.9,0.1};
-    double bgColour[] = {0.1,0.2,0.2,0.1};
+    double bgColour[] = {0.9,0.9,0.0,0.1};
     double minColour[] = {0.3,0.3,0.3,0.1};
     double params[] = {0.1, 0.1, 0.1, 0.4, 0.3, 0.2};
     double params2[] = {.02, .02, .6, .01, .9, .9};
@@ -193,9 +193,9 @@ TEST(symi, streaming){
     ASSERT_EQ(app2.hl.freqTables[0].maxY, app1->hl.freqTables[0].maxY);
     ASSERT_EQ(app2.hl.freqTables[0].maxHits, app1->hl.freqTables[0].maxHits);
 
-    double mClr[4] = {.1,.6,.6,.2};
-    double maxClr[4] = {.9,0.333,0.01,.2};
-    double bgClr[4] = {.9,.9,.9,.9};
+    double mClr[4] = {.1,.0,.6,0.2};
+    double maxClr[4] = {.9,0.333,0.01,1.0};
+    double bgClr[4] = {.01,0.99,0.0,.9};
     unsigned char *pngBuf = nullptr;
 
     stringstream ss6;
@@ -212,7 +212,48 @@ int bufLen =    reColour(ss6,&pngBuf,ff , bgClr,mClr, maxClr);
     stringstream ss7;
     ss7 << *app1;
 
-    int bufLen2 =    reColourBuffer(ss7,&pngBuf2 , bgClr,mClr, maxClr);
+    int bufLen2 =    reColourBuffer(ss7,301,&pngBuf2 , bgClr,mClr, maxClr);
 cout <<"png buffer length is: " <<bufLen << " bufLen2 is: " << bufLen2 <<endl;
 cout <<"streaming test done"<<endl;
+cout << "ss7 is:______________________________________________________________________" <<endl;
+cout << ss7.str() << endl;
+    cout<<"reiter test"<<endl;
+    cout << "rawtotal " << app1->hl.rawTotal << "  max hits " << app1->hl.freqTables.at(201).maxHits <<endl;
+    ostringstream osIter("yep");
+    istringstream inPutSym(ss7.str());
+    unsigned char *pngBuf3 = nullptr;
+    int reiterResult = moreIterSample(10000,inPutSym , osIter, &pngBuf3, bgClr, mClr,maxClr);
+    cout <<"moreIter result " << reiterResult << " output data is " << endl;
+    istringstream inny(osIter.str());
+    inny >> *app1;
+    cout << "rawtotal " << app1->hl.rawTotal << "  max hits " << app1->hl.freqTables.at(201).maxHits <<endl;
+
+    cout << osIter.str() <<endl;
+    stringstream iter1Stream(osIter.str());
+
+      reColour(iter1Stream,&pngBuf,"iter1.png" , bgClr,mClr, maxClr);
+ /*    iter1Stream >> *app1;
+     unsigned  char *bb = nullptr;
+     int ii = 0;
+
+     app1->createPNG(&bb, &ii, "iter_1.png"); */
+//    result = stbi_write_png("iter_1.png", 201,201, 3, pngBuf3,  201 * 3);
+    cout<<"reiter test TWO"<<endl;
+
+    ostringstream osIter1("yep");
+    istringstream inPutSym1(osIter.str());
+    int reiterResult1 = moreIterSample(100000,inPutSym1, osIter1, &pngBuf2, bgClr,mClr, maxClr);
+    istringstream inny2(osIter1.str());
+    inny2 >> *app1;
+    cout << "rawtotal " << app1->hl.rawTotal << "  max hits " << app1->hl.freqTables.at(201).maxHits <<endl;
+
+    cout <<"moreIter result " << reiterResult1 << " output data is " << endl;
+    cout << osIter1.str() <<endl;
+    stringstream iter12Stream(osIter1.str());
+    reColour(iter12Stream,&pngBuf,"iter2.png" , bgClr,mClr, maxClr);
+/*
+    iter12Stream >> *app1;
+    unsigned  char *bb1 = nullptr;
+    int ii1 = 0;
+    app1->createPNG(&bb1, &ii1, "iter_2.png"); */
 }

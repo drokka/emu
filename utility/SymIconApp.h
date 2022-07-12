@@ -82,7 +82,7 @@ namespace emu {
 
             long fdiff;
             long maxhits;
-            SymIconApp sizeSlice(const SymIconApp& symIconApp, const int size); // get data for one sized icon
+         //   SymIconApp sizeSlice(const SymIconApp& symIconApp, const int size); // get data for one sized icon
 
             //           double bg[];
             //          double min[];
@@ -93,7 +93,8 @@ namespace emu {
 
             int createPNG(unsigned char **pngBuf, int *len, string fname);
 
-            int createPngBuffer(unsigned char **pngBuf, int *len);
+            int createPngBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
+            int createByteBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
 
             void setIterations(long iter);
 

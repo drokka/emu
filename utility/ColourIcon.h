@@ -42,11 +42,11 @@ namespace emu {
         ColourFn colourFn = nullptr;
         void colourPoint( int x, int y, double *rgba) ;
 
-        void colourIn(int sz = 0);
         static ColourFn simpleColourFn;
         int xSz;
         int ySz;
         RgbaList2D &colourArray;
+        unsigned char *rgbaByteArray;
         //Dimensions
         double *bgRGBA;
 
@@ -55,6 +55,8 @@ namespace emu {
         ~ColourIcon();
 
         void setColourFunction(ColourFn func);
+
+        void colourIn(int sz =0, bool argb =false);
     };
 
 }

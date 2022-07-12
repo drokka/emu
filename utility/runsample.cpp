@@ -15,6 +15,7 @@ using namespace emu::utility;
 #include <string.h>
 
 #include <jni.h>
+
 #include <sstream>
 #include <zconf.h>
 
@@ -68,15 +69,15 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy->colourIcon.xSz = sz;
     appy->colourIcon.ySz = sz;
     appy->setColour(bg,min,max);
-    appy ->colourIcon.colourIn(sz);
+    appy ->colourIcon.colourIn(sz, true);
     int bufLen = 0;
-    appy->createPngBuffer(pngBuf, &bufLen);
+    appy->createByteBuffer(pngBuf, &bufLen, false);
     free( appy);
     return bufLen;
 }
 
 int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
-                   unsigned char **pngBuf, double *pDouble, double *pDouble1, double *pDouble2) {
+                   unsigned char **pngBuf, double *bgclr_c, double *minclr_c, double *maxclr_c) {
     SymIconApp* appy = new SymIconApp();
     inData >> *appy;
     appy->setIterations(iterations);
@@ -87,12 +88,23 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     //double minc[4] = {0.0,0.0,0.0,0.0};
     //double maxgc[4] = {0.4,0.0,0.0,0.0};
 
-    appy->setColour(pDouble,pDouble1,pDouble2);
+    stringstream strlog ; strlog << "colour double arrays " << *bgclr_c << " " << *(bgclr_c+1) << " " << *(bgclr_c+2) << " " << *(bgclr_c+3) << " " << *(bgclr_c+4) << " , "
+                                 << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3)<< " " << *(minclr_c+4) << " , "
+                                 << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " " << *(maxclr_c+4) << endl;
+
+    appy->setColour(bgclr_c ,minclr_c,maxclr_c);
     appy ->colourIcon.colourIn(appy->sz);
 
     int bufLen = 0;
-    appy->createPngBuffer(pngBuf, &bufLen);
-
+    appy->createPngBuffer(pngBuf, &bufLen, true);
+   /*
+    if(!appy->error) {
+        PaintIcon paintIcon;
+        *pngBuf = paintIcon.paintPNGtoBuffer(appy->colourIcon, true, &bufLen);
+        if (*pngBuf == nullptr) {
+            cout << "save png image failed." << endl;
+        }
+    }*/
     free(appy);
     return bufLen;
 }
@@ -192,9 +204,9 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bgClr[] ={0, 0.2, .15, .5};
-    double minClr[]= {0.0,.5,.3,.5};
-    double maxClr[] = {.3,.99,.99,1};
+    double bgClr[] ={0, 0.2, .15, 1.0};
+    double minClr[]= {0.0,.5,.3,1.0};
+    double maxClr[] = {.3,.99,.99,1.0};
 
     if(nparam == 24) { //colours provided
         bgClr[0] = strtod(param[12], nullptr);
@@ -213,6 +225,9 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
     }
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
+    stringstream strlog ; strlog << "colour double arrays " << *bgClr << " " << *(bgClr+1) << " " << *(bgClr+2) << " " << *(bgClr+3) << " " << *(bgClr+4) << " , "
+                                 << *minClr << " " << *(minClr+1) << " " << *(minClr+2) << " " << *(minClr+3)<< " " << *(minClr+4) << " , "
+                                 << *maxClr << " " << *(maxClr+1) << " " << *(maxClr+2) << " " << *(maxClr+3)  << " " << *(maxClr+4) << endl;
 
     SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();
@@ -227,9 +242,10 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
   //  if(res == 0) {
 
+  app.colourIcon.colourIn(sz);
     if(!app.error) {
         PaintIcon paintIcon;
-        *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, false, len);
+        *pngBuf = paintIcon.paintPNGtoBuffer(app.colourIcon, true, len);
         if (*pngBuf == nullptr) {
             cout << "save png image failed." << endl;
         }
@@ -240,6 +256,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
+
 
     return app.maxhits;
 
@@ -264,6 +281,31 @@ JNIEXPORT jstring JNICALL Java_com_example_symy_MainActivityKt_callRunSampleFrom
 
  //   return env->NewStringUTF(string1.c_str());
 //}
+
+//Android or Java, as well as argb instead of rgba, also do a ?premultiply?
+//The basic alpha blending formula is:
+//
+// dest.r = ((dest.r * (256 - source.a)) + (source.r * source.a)) >> 8;
+// dest.g = ((dest.g * (256 - source.a)) + (source.g * source.a)) >> 8;
+// dest.b = ((dest.b * (256 - source.a)) + (source.b * source.a)) >> 8;
+//
+//where dest is the background pixel and source is the pixel in your bitmap. Pre-multiplying the alpha changes this to:
+//
+// dest.r = ((dest.r * (256 - source.a)) >> 8) + source.premultiplied_r;
+// dest.g = ((dest.g * (256 - source.a)) >> 8) + source.premultiplied_g;
+// dest.b = ((dest.b * (256 - source.a)) >> 8) + source.premultiplied_b;
+//
+//which saves a bunch of multiplies.
+// The results are all clamped to 255. I'm not claiming this is the exact formula used, but it is something pretty close to it.
+void mungeRgbaToArgbAndroid(unsigned char** dst, int len /* width xheight*/) {
+    for (int i = 0; i < len; i++) {
+
+        int premultipliedR = (0xff * 0x88) >> 8;
+        for (int i = 0; i < len; i++) {
+            *(*dst + i) = (0x88 << 24 | premultipliedR | 0x00 << 8 | 0x00 << 16);
+        }
+    }
+}
 /****************************************************************
 extern "C"
 JNIEXPORT jstring JNICALL Java_com_drokka_emu_testloadimage_MainActivityKt_callRunSampleFromJNI( JNIEnv* env, jclass thiz ) {
@@ -285,7 +327,7 @@ JNIEXPORT jstring JNICALL Java_com_drokka_emu_symicon_SymiNativeWrapperKt_getHel
 // MoreIterSample
 //--------------------------------------------------------------------------------------------
 extern  "C"
-JNIEXPORT int JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callMoreIterSampleFromJNI(
+JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callMoreIterSampleFromJNI(
                             JNIEnv *env,jclass jazz,
                                           jobject mainViewModel ,jobject context,
                                           jlong iterations,  jstring fname, jstring imageFileName,
@@ -303,10 +345,14 @@ JNIEXPORT int JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNa
     jmethodID  readDataFileId = env->GetMethodID(mvmClass, "readDataFile",
                                                  "(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/String;");
 
+    jfieldID lastPointField = env->GetFieldID(outputDataClass,"lastPoint", "[D");
 
     double *bgclr_c = env->GetDoubleArrayElements(bgClr, 0);
     double *minclr_c = env->GetDoubleArrayElements(minClr, 0);
     double *maxclr_c = env->GetDoubleArrayElements(maxClr, 0);
+    stringstream strlog ; strlog << "colour double arrays " << *bgclr_c << " " << *(bgclr_c+1) << " " << *(bgclr_c+2) << " " << *(bgclr_c+3) << " "  << " , "
+            << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3) << " , "
+            << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " "  << endl;
 
     jstring inData = static_cast<jstring>(env->CallObjectMethod(mainViewModel, readDataFileId,
                                                                 context, fname));
@@ -318,20 +364,79 @@ JNIEXPORT int JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNa
         //  symStream << symInString;
         unsigned char *pngBuf = nullptr;
         ostringstream outData("stuff");
-        int pngBufLen = moreIterSample(iterations, symStream, outData, &pngBuf, bgclr_c, minclr_c,
-                                       maxclr_c);
+      //  int pngBufLen = moreIterSample(iterations, symStream, outData, &pngBuf, bgclr_c, minclr_c,
+        //                               maxclr_c);
+     //   mungeRgbaToArgbAndroid(&pngBuf, pngBufLen);
+
+        SymIconApp* appy = new SymIconApp();
+        symStream >> *appy;
+        appy->setIterations(iterations);
+        appy->setInitPoint(appy->lastPoint);
+        appy->runGenerator();
+        appy->save(outData);
+        appy->setColour(bgclr_c ,minclr_c,maxclr_c);
+        appy ->colourIcon.colourIn(appy->sz);
+        PaintIcon paintIcon;
+       // stringstream bugg;
+      /*  RgbaList2DIter iter = appy->colourIcon.colourArray.begin();
+        iter+=4455;
+        for(int i=1; i<20;i++) {
+            bugg <<
+        } */
+     /*   paintIcon.getCharArray(appy->colourIcon, true,   false); // TRUE for pre
+        if (paintIcon.charBuffer == nullptr) {
+            cout << "save char buffer failed." << endl;
+            throw exception();
+        } */
+     assert(appy->colourIcon.rgbaByteArray != nullptr);
+        unsigned char *rgbaBuf = appy->colourIcon.rgbaByteArray;  //paintIcon.charBuffer;
+        jclass bitmapConfig = env->FindClass("android/graphics/Bitmap$Config");
+        jfieldID rgba8888FieldID = env->GetStaticFieldID(bitmapConfig, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
+        jobject rgba8888Obj = env->GetStaticObjectField(bitmapConfig, rgba8888FieldID);
+
+        jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
+        jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass,"createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+        jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
+
+        int sz = appy->sz;
+        jobject bitmapObj = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
+
+        jintArray pixels = env->NewIntArray(sz * sz);
+
+        for (int i = 0; i < sz * sz; i++)
+        {
+            unsigned char red = rgbaBuf[i*4 +0];
+            unsigned char green = rgbaBuf[i*4 + 1];
+            unsigned char blue = rgbaBuf[i*4 + 2];
+            unsigned char alpha = rgbaBuf[i*4 +3];
+            int currentPixel = (alpha << 24) | (red << 16) | (green << 8) | (blue);
+            env->SetIntArrayRegion(pixels, i, 1, &currentPixel);
+        }
+
+        jmethodID setPixelsMid = env->GetMethodID(bitmapClass, "setPixels", "([IIIIIII)V");
+        env->CallVoidMethod(bitmapObj, setPixelsMid, pixels, 0, sz, 0, 0, sz, sz);
+
+        env->SetObjectField(outputData, bitmapField, bitmapObj);
+
+
 
         auto outDataJ = env->NewStringUTF(outData.str().c_str());
         env->SetObjectField(outputData, savedDataField, outDataJ);
 
-        jbyteArray pngJBuf = env->NewByteArray(pngBufLen);
-        if (pngBuf != nullptr) {
-            env->SetByteArrayRegion(pngJBuf, 0, pngBufLen, (jbyte *) pngBuf);
-        }
+     //   jbyteArray pngJBuf = env->NewByteArray(pngBufLen);
+     //   if (pngBuf != nullptr) {
+    //        env->SetByteArrayRegion(pngJBuf, 0, pngBufLen, reinterpret_cast<const jbyte *>(pngBuf));
+     //   }
 
-        free(pngBuf); // SetByteArrayRegion is copying... I think
-        env->SetObjectField(outputData, pngBufferField, pngJBuf);
-        env->SetIntField(outputData, pngBufferLenField, pngBufLen);
+     //   free(pngBuf); // SetByteArrayRegion is copying... I think
+     //   env->SetObjectField(outputData, pngBufferField, pngJBuf);
+      //  env->SetIntField(outputData, pngBufferLenField, pngBufLen);
+
+     //   jdoubleArray jdoubleArray1 = env->NewDoubleArray(2);
+       // env->SetDoubleArrayRegion(jdoubleArray1, 0, 2,lastPoint);
+       // env->SetObjectField(outputData, lastPointField, jdoubleArray1);
+       // env->ReleaseIntArrayElements(intArgs, jintArgs, 0 );
+       // env->ReleaseDoubleArrayElements(dArgs, jdoubleArgs,0);
 
         // long time = time_t(0);
         //char * strbuf[30];
@@ -341,13 +446,15 @@ JNIEXPORT int JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNa
         // jstring dataFileName = env->NewString(reinterpret_cast<const jchar *>(fn.c_str()), len);
 
         //----------- Save outputData ----------------------- calling Java method on MainViewModel instance//
-        env->CallVoidMethod(mainViewModel, saveOutputDataId, outputData, context, fname, imageFileName);
-        env->DeleteLocalRef(pngJBuf);
-        env->DeleteLocalRef(outDataJ);
-        //env->FreeByteArrayRegion(pngJBuf)
+      //  env->CallVoidMethod(mainViewModel, saveOutputDataId, outputData, context, fname, imageFileName);
+       // env->DeleteLocalRef(pngJBuf);
+       // env->DeleteLocalRef(outDataJ);
+
+        free(appy);
+
         resy = 0;
     }
-return resy;
+return outputData;
 }
 
 /*
@@ -371,7 +478,9 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
     jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
-   // jsize size = env->GetArrayLength( bgClr );
+    jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
+
+    // jsize size = env->GetArrayLength( bgClr );
     double bgClrArray[4] ;
     env->GetDoubleArrayRegion( bgClr, 0, 4, bgClrArray );
 
@@ -388,18 +497,62 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     stringstream symStream;
     symStream << symInString;
     int sizeIcon = sz;
-    len = reColourBuffer( symStream, sz, &pngBuf,  bgClrArray,  minClrArray,  maxClrArray);
+ //   len = reColourBuffer( symStream, sz, &pngBuf,  bgClrArray,  minClrArray,  maxClrArray);
 
-    jbyteArray pngJBuf = env->NewByteArray(len);
+    SymIconApp* appy = new SymIconApp();
+    symStream >> *appy;
+
+    appy->sz = sz;
+    appy->colourIcon.xSz = sz;
+    appy->colourIcon.ySz = sz;
+    appy->setColour(bgClrArray,minClrArray,maxClrArray);
+    appy ->colourIcon.colourIn(sz, false);
+    int bufLen = 0;
+
+    PaintIcon paintIcon;
+    paintIcon.getCharArray(appy->colourIcon, true,   false);
+    if (paintIcon.charBuffer == nullptr) {
+        cout << "save char buffer failed." << endl;
+        throw exception();
+    }
+   unsigned char *rgbaBuf = paintIcon.charBuffer;
+  //  mungeRgbaToArgbAndroid(&pngBuf, len);
+
+ /*   jbyteArray pngJBuf = env->NewByteArray(len);
     if (pngBuf != nullptr) {
         env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
     }
-
-    free(pngBuf); // SetByteArrayRegion is copying... I think
-    env->SetObjectField(outputData, pngBufferField, pngJBuf);
+*/
+  //  env->SetObjectField(outputData, pngBufferField, pngJBuf);
     env->SetIntField(outputData, pngBufferLenField,  len);
 
-  //  env->ReleaseDoubleArrayElements(bgClr, bgClrArray,0);
+    jclass bitmapConfig = env->FindClass("android/graphics/Bitmap$Config");
+    jfieldID rgba8888FieldID = env->GetStaticFieldID(bitmapConfig, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
+    jobject rgba8888Obj = env->GetStaticObjectField(bitmapConfig, rgba8888FieldID);
+
+    jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
+    jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass,"createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+    jobject bitmapObj = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
+
+    jintArray pixels = env->NewIntArray(sz * sz);
+
+    for (int i = 0; i < sz * sz; i++)
+    {
+        unsigned char red = rgbaBuf[i*4];
+        unsigned char green = rgbaBuf[i*4 + 1];
+        unsigned char blue = rgbaBuf[i*4 + 2];
+        unsigned char alpha = rgbaBuf[i*4 + 3];
+        int currentPixel = (alpha << 24) | (red << 16) | (green << 8) | (blue);
+        env->SetIntArrayRegion(pixels, i, 1, &currentPixel);
+    }
+
+    jmethodID setPixelsMid = env->GetMethodID(bitmapClass, "setPixels", "([IIIIIII)V");
+    env->CallVoidMethod(bitmapObj, setPixelsMid, pixels, 0, sz, 0, 0, sz, sz);
+
+    env->SetObjectField(outputData, bitmapField, bitmapObj);
+  //  free(pngBuf); // SetByteArrayRegion is copying... I think
+
+    //  env->ReleaseDoubleArrayElements(bgClr, bgClrArray,0);
   //  env->ReleaseDoubleArrayElements(minClr, minClrArray,0);
  //   env->ReleaseDoubleArrayElements(maxClr, maxClrArray,0);
 
@@ -470,6 +623,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     double* lastPoint = static_cast<double *>(malloc(2 * sizeof(double)));
     lastPoint[0] = 0.0; lastPoint[1] = 0.0;
         result = runsample(nparam, argy , output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, captureParams);
+   // mungeRgbaToArgbAndroid(&pngBuf, result);
 
  //   }else {
    //     result = runsample(1, (char **) ({ "whaty"; }), output, &pngBuf, &len);
