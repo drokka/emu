@@ -133,9 +133,9 @@ void emu::utility::simpleColourFn(double *minRGBA, double *maxRGBA, long hits, F
     //bound opacity between 0 and 1.
   //  opacity = (opacity <= 0)?0.05:opacity;
   //  opacity = (opacity >1)?1:opacity;
-  for(int i=0;i<3;i++){
+  for(int i=0;i<4;i++){
       rgbaOut[i] = minRGBA[i] + ratio*(maxRGBA[i] - minRGBA[i]);
   }
-    rgbaOut[3] = 1.0;
+   // rgbaOut[3] = 1.0;
 }
 
