@@ -91,7 +91,7 @@ cout << "frequ Len " << frequLen <<endl;
                 }
            // }
           //  cout <<"colourPoint done" <<endl;
-         // free(rgba);
+          free(rgba);
         }
         cout<< "loop done" << endl;
 }
@@ -108,7 +108,8 @@ ColourIcon::~ColourIcon() {
         iter++;
     }
     colourArray.clear();
-    free(rgbaByteArray);
+    free( rgbaByteArray);
+    free( pointList);
 }
 
 void ColourIcon::setColour(double *bgRGBAin, double *minRGBAin, double *maxRGBAin) {

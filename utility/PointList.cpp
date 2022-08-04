@@ -75,7 +75,15 @@ void emu::utility::PointList::convert(int scale) {
     }
     i->second.findMin();
 }
+emu::utility::PointList::~PointList() {
+    auto tableIter  = freqTables.begin();
+    while(tableIter != freqTables.end()){
+        tableIter->second.frequencyList->clear();
 
+        tableIter++;
+    }
+    freqTables.clear();
+}
 std::ostream& operator<<(std::ostream &ostream1, const emu::utility::PointList& pl) {
     using namespace std;
     using namespace emu::utility;

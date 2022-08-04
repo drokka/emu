@@ -140,6 +140,9 @@ void SymIconApp::save(ostringstream& outy) {
 SymIconApp::~SymIconApp() {
     delete qi;
     delete gg;
+    if(colourIcon.rgbaByteArray != nullptr) {
+        free(colourIcon.rgbaByteArray);
+    }
 }
 
 void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {

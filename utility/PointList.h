@@ -55,9 +55,7 @@ using namespace std;
             PointList();
 
             PointList(const PointList& pl);
-            virtual ~PointList() {
-             //addPoints();
-            }
+            virtual ~PointList() ;
 
             void addPoints() ;
 

@@ -58,6 +58,7 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     appy ->colourIcon.colourIn();
     int bufLen = 0;
     appy->createPNG(pngBuf, &bufLen, fname);
+    delete appy;
     return bufLen;
 }
 int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* bg, double* min, double * max){
@@ -78,7 +79,7 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy ->colourIcon.colourIn(sz);
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
-    free( appy);
+    delete appy;
     return bufLen;
 }
 
@@ -94,6 +95,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     //double minc[4] = {0.0,0.0,0.0,0.0};
     //double maxgc[4] = {0.4,0.0,0.0,0.0};
 
+    free(appy->colourIcon.rgbaByteArray);
     stringstream strlog ; strlog << "colour double arrays " << *bgclr_c << " " << *(bgclr_c+1) << " " << *(bgclr_c+2) << " " << *(bgclr_c+3) << " " << *(bgclr_c+4) << " , "
                                  << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3)<< " " << *(minclr_c+4) << " , "
                                  << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " " << *(maxclr_c+4) << endl;
@@ -104,7 +106,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
 
-    free(appy);
+    delete appy;
     return bufLen;
 }
 
