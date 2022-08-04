@@ -231,6 +231,7 @@ cout << ss7.str() << endl;
     cout << osIter.str() <<endl;
     stringstream iter1Stream(osIter.str());
 
+    free(pngBuf); pngBuf = nullptr;
       reColour(iter1Stream,&pngBuf,"iter1.png" , bgClr,mClr, maxClr);
  /*    iter1Stream >> *app1;
      unsigned  char *bb = nullptr;
@@ -242,6 +243,7 @@ cout << ss7.str() << endl;
 
     ostringstream osIter1("yep");
     istringstream inPutSym1(osIter.str());
+    free(pngBuf2); pngBuf2= nullptr;
     int reiterResult1 = moreIterSample(100000,inPutSym1, osIter1, &pngBuf2, bgClr,mClr, maxClr);
     istringstream inny2(osIter1.str());
     inny2 >> *app1;
@@ -250,10 +252,17 @@ cout << ss7.str() << endl;
     cout <<"moreIter result " << reiterResult1 << " output data is " << endl;
     cout << osIter1.str() <<endl;
     stringstream iter12Stream(osIter1.str());
+    free(pngBuf); pngBuf = nullptr;
     reColour(iter12Stream,&pngBuf,"iter2.png" , bgClr,mClr, maxClr);
 /*
     iter12Stream >> *app1;
     unsigned  char *bb1 = nullptr;
     int ii1 = 0;
     app1->createPNG(&bb1, &ii1, "iter_2.png"); */
+
+    delete app1;
+    free(pngBuf);
+    free(pngBuf2);
+    free(pngBuf3);
+
 }
