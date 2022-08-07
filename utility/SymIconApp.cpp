@@ -70,7 +70,7 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
         cout << "save png image failed." << endl;
     }
 
-    *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, true, len);
+    paintIcon.paintPNGtoBuffer(colourIcon, true, len,false, pngBuf);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
 
@@ -86,7 +86,7 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
 
 int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len, bool switchRGBAtoARGB){
     PaintIcon paintIcon;
-     *pngBuf = paintIcon.paintPNGtoBuffer(colourIcon, true, len,  switchRGBAtoARGB);
+     paintIcon.paintPNGtoBuffer(colourIcon, true, len,  switchRGBAtoARGB, pngBuf);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
 
@@ -117,8 +117,9 @@ void SymIconApp::save(ostringstream& outy) {
         outy << errorMsg;
     }
     else {
+        unsigned  char *buf = nullptr;
 
-        colourIcon.colourIn();
+        colourIcon.colourIn(sz, false, &buf);
 
         std::cout << "After colourIn complete. " << colourArray.size() << '\n';
 
@@ -129,6 +130,7 @@ void SymIconApp::save(ostringstream& outy) {
         // string dname = fnBase + ddate + ".sym";
         //std::ostringstream outy(dname, std::ios_base::out);
         outy << *this ;
+        free(buf);
     }
     outy.flush();
   //  outy.close();
@@ -140,10 +142,7 @@ void SymIconApp::save(ostringstream& outy) {
 SymIconApp::~SymIconApp() {
     delete qi;
     delete gg;
-    if(colourIcon.rgbaByteArray != nullptr) {
-        free(colourIcon.rgbaByteArray);
-    }
-}
+  }
 
 void SymIconApp::setColour(double *bgClr, double *minClr, double *maxClr) {
     colourIcon.setColour(bgClr,minClr,maxClr);

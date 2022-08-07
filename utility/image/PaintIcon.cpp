@@ -221,7 +221,7 @@ int PaintIcon::paintHDR(ColourIcon &colourIcon, string fileName, bool withAlpha=
     return result;
 }
 
-unsigned char *PaintIcon::paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB ){
+void PaintIcon::paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB , unsigned char **pngBuffer){
     if(charBuffer == nullptr) {
         getCharArray(colourIcon, withAlpha, switchRGBAtoARGB);
     }
@@ -229,11 +229,11 @@ unsigned char *PaintIcon::paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlph
     if(charBuffer != nullptr) {
         cout <<"charBuffer not null" <<endl;
         int pixelSize = withAlpha ? 4 : 3;
-        pngBuffer = stbi_write_png_to_mem((const unsigned char *) charBuffer, colourIcon.xSz * pixelSize,
+        *pngBuffer = stbi_write_png_to_mem((const unsigned char *) charBuffer, colourIcon.xSz * pixelSize,
                                                    colourIcon.xSz, colourIcon.ySz, pixelSize, len);
         cout <<"pngBuffer len is "<< *len <<endl;
     }
-    return pngBuffer;
+    return;
 }
 
 PaintIcon::~PaintIcon() {

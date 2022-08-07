@@ -46,7 +46,7 @@ namespace emu {
         int xSz;
         int ySz;
         RgbaList2D &colourArray;
-        unsigned char *rgbaByteArray;
+     //   unsigned char *rgbaByteArray;
         //Dimensions
         double *bgRGBA;
 
@@ -56,7 +56,7 @@ namespace emu {
 
         void setColourFunction(ColourFn func);
 
-        void colourIn(int sz =0, bool argb =false);
+        void colourIn(int sz, bool argb, unsigned char **rgbaByteArray);
     };
 
 }

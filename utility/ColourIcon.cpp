@@ -9,16 +9,16 @@
 emu::utility::ColourIcon::ColourIcon(int xSz, int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList,
           ColourFn colourFn , RgbaList2D &clrArray) : xSz(xSz), ySz(ySz), bgRGBA(bgRGBA),
                                                               minRGBA(minRGBA), maxRGBA(maxRGBA),
-                                                              pointList(pointList), colourFn(colourFn), colourArray(clrArray) ,rgbaByteArray(nullptr){
+                                                              pointList(pointList), colourFn(colourFn), colourArray(clrArray) {
 }
 
 emu::utility::ColourIcon::ColourIcon(int xSz, int ySz, double *bgRGBA, double *minRGBA,
                                    double *maxRGBA, PointList *pointList, RgbaList2D &clrArray)
         : xSz(xSz), ySz(ySz), bgRGBA(bgRGBA), minRGBA(minRGBA), maxRGBA(maxRGBA), pointList(pointList),
-          colourFn(emu::utility::simpleColourFn), colourArray(clrArray),rgbaByteArray(nullptr) {
+          colourFn(emu::utility::simpleColourFn), colourArray(clrArray) {
 
 }
-void emu::utility::ColourIcon::colourIn(int sz , bool argb) {
+void emu::utility::ColourIcon::colourIn(int sz , bool argb, unsigned char **rgbaByteArray) {
 
     if(colourFn == nullptr){
         colourFn = emu::utility::simpleColourFn;
@@ -29,10 +29,10 @@ void emu::utility::ColourIcon::colourIn(int sz , bool argb) {
     // byte array background colour
     int byteArrayLen = iconSize*iconSize*4; //ASSUMING alpha
     int pixelLen = iconSize*iconSize;
-    rgbaByteArray = static_cast<unsigned char *>(malloc(byteArrayLen));
+    *rgbaByteArray = static_cast<unsigned char *>(malloc(byteArrayLen));
     for(int k =0 ; k< pixelLen; k++){
         for(int j=0; j<4; j++){
-            rgbaByteArray[4*k+j] = (unsigned char) (bgRGBA[j]*255.0);
+            (*rgbaByteArray)[4*k+j] = (unsigned char) (bgRGBA[j]*255.0);
         }
     }
     //----------------------------------------
@@ -87,7 +87,7 @@ cout << "frequ Len " << frequLen <<endl;
            // }else {
                 colourPoint(x, y, rgba);
                 for(int i=0; i<4;i++){
-                    rgbaByteArray[4*(y*iconSize +x) +i] = (unsigned char)(rgba[i]*255.0);
+                    (*rgbaByteArray)[4*(y*iconSize +x) +i] = (unsigned char)(rgba[i]*255.0);
                 }
            // }
           //  cout <<"colourPoint done" <<endl;
@@ -100,17 +100,7 @@ void emu::utility::ColourIcon::colourPoint(int x, int y, double *rgba)  {
     colourArray.emplace(IntegerPoint2D(x,y), rgba);
 }
 
-ColourIcon::~ColourIcon() {
-
-    RgbaList2DConstIter iter = colourArray.begin();
-    while(iter != colourArray.end()){
-        free(iter->second);
-        iter++;
-    }
-    colourArray.clear();
-    free( rgbaByteArray);
-    free( pointList);
-}
+ColourIcon::~ColourIcon() = default;
 
 void ColourIcon::setColour(double *bgRGBAin, double *minRGBAin, double *maxRGBAin) {
 

@@ -20,7 +20,7 @@ namespace emu {
              void getFloatArray(ColourIcon &colourIcon, bool withAlpha);
 
             float  *floatBuffer = nullptr;
-            unsigned  char *pngBuffer = nullptr;
+          //  unsigned  char *pngBuffer = nullptr;
 
         public:
             void getCharArray(ColourIcon &colourIcon, bool withAlpha, bool switchRGBAtoARGB = false);
@@ -28,7 +28,7 @@ namespace emu {
             int paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha);
 
             int paintHDR(ColourIcon &colourIcon, string fileName, bool withAlpha);
-             unsigned char * paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB = false);
+             void paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB, unsigned char **pngBuf);
 
             virtual ~PaintIcon();
 
