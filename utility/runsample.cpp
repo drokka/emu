@@ -65,6 +65,7 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     return bufLen;
 }
 int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* bg, double* min, double * max){
+    //NOT used JNI.
     SymIconApp appy ;
     symIn >> appy;
 
@@ -248,9 +249,10 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
     // const std::string ddate = to_string(result).data();
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
   //  if(res == 0) {
-    unsigned  char *buf = nullptr;
+  //  unsigned  char *buf = nullptr;
 
-  app.colourIcon.colourIn(sz, false, &buf);
+  app.colourIcon.colourIn(sz, false, pngBuf);
+ /*
     if(!app.error) {
         PaintIcon paintIcon;
          paintIcon.paintPNGtoBuffer(app.colourIcon, true, len, false, pngBuf);
@@ -258,6 +260,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
             cout << "save png image failed." << endl;
         }
     }
+    */
  /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
@@ -265,7 +268,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
     }
    ***************************************************************/
 
-    free(buf);
+   // free(buf);
     return app.maxhits;
 
 }
@@ -315,6 +318,51 @@ void mungeRgbaToArgbAndroid(unsigned char** dst, int len /* width xheight*/) {
         }
     }
 }
+
+jobject bitmapFromJNI(
+        JNIEnv *env, int sz, const unsigned char *rgbaBuffer){
+
+        jclass bitmapConfig = env->FindClass("android/graphics/Bitmap$Config");
+        jfieldID rgba8888FieldID = env->GetStaticFieldID(bitmapConfig, "ARGB_8888",
+                                                         "Landroid/graphics/Bitmap$Config;");
+        jobject rgba8888Obj = env->GetStaticObjectField(bitmapConfig, rgba8888FieldID);
+
+        jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
+        jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass, "createBitmap",
+                                                                "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+         jobject bitmapObj = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz,
+                                                        rgba8888Obj);
+
+        jintArray pixels = env->NewIntArray(sz * sz);
+
+        jint *c_pixels = static_cast<jint *>(malloc(sizeof(jint) * sz * sz));
+
+        for (int i = 0; i < sz * sz; i++) {
+            unsigned char red = rgbaBuffer[i * 4 + 0];
+            unsigned char green = rgbaBuffer[i * 4 + 1];
+            unsigned char blue = rgbaBuffer[i * 4 + 2];
+            unsigned char alpha = rgbaBuffer[i * 4 + 3];
+            c_pixels[i] = (alpha << 24) | (red << 16) | (green << 8) | (blue);
+        }
+
+        env->SetIntArrayRegion(pixels, 0, sz * sz, c_pixels);
+
+        jmethodID setPixelsMid = env->GetMethodID(bitmapClass, "setPixels", "([IIIIIII)V");
+        env->CallVoidMethod(bitmapObj, setPixelsMid, pixels, 0, sz, 0, 0, sz, sz);
+
+        //----------- Save outputData ----------------------- calling Java method on MainViewModel instance//
+        //  env->CallVoidMethod(mainViewModel, saveOutputDataId, outputData, context, fname, imageFileName);
+        // env->DeleteLocalRef(pngJBuf);
+        // env->DeleteLocalRef(outDataJ);
+
+        free(c_pixels);
+        env->DeleteLocalRef(pixels);
+        env->DeleteLocalRef(bitmapClass);
+    env->DeleteLocalRef(bitmapConfig);
+    env->DeleteLocalRef(rgba8888Obj);
+
+    return bitmapObj;
+    }
 /****************************************************************
 extern "C"
 JNIEXPORT jstring JNICALL Java_com_drokka_emu_testloadimage_MainActivityKt_callRunSampleFromJNI( JNIEnv* env, jclass thiz ) {
@@ -397,34 +445,10 @@ JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_Sy
             cout << "save char buffer failed." << endl;
             throw exception();
         } */
-        jclass bitmapConfig = env->FindClass("android/graphics/Bitmap$Config");
-        jfieldID rgba8888FieldID = env->GetStaticFieldID(bitmapConfig, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
-        jobject rgba8888Obj = env->GetStaticObjectField(bitmapConfig, rgba8888FieldID);
-
-        jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
-        jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass,"createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
         jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
 
         int sz = appy.sz;
-        jobject bitmapObj = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
-
-        jintArray pixels = env->NewIntArray(sz * sz);
-
-        jint *c_pixels = static_cast<jint*>(malloc(sizeof(jint)*sz*sz ));
-
-        for (int i = 0; i < sz * sz; i++)
-        {
-            unsigned char red = rgbaByteArray[i*4 +0];
-            unsigned char green = rgbaByteArray[i*4 + 1];
-            unsigned char blue = rgbaByteArray[i*4 + 2];
-            unsigned char alpha = rgbaByteArray[i*4 +3];
-            c_pixels[i] = (alpha << 24) | (red << 16) | (green << 8) | (blue);
-        }
-
-        env->SetIntArrayRegion(pixels, 0, sz*sz, c_pixels);
-
-        jmethodID setPixelsMid = env->GetMethodID(bitmapClass, "setPixels", "([IIIIIII)V");
-        env->CallVoidMethod(bitmapObj, setPixelsMid, pixels, 0, sz, 0, 0, sz, sz);
+        jobject bitmapObj = bitmapFromJNI(env,sz,rgbaByteArray); //env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
 
         env->SetObjectField(outputData, bitmapField, bitmapObj);
 
@@ -455,15 +479,13 @@ JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_Sy
         // auto len = fn.length();
         // jstring dataFileName = env->NewString(reinterpret_cast<const jchar *>(fn.c_str()), len);
 
-        //----------- Save outputData ----------------------- calling Java method on MainViewModel instance//
-      //  env->CallVoidMethod(mainViewModel, saveOutputDataId, outputData, context, fname, imageFileName);
-       // env->DeleteLocalRef(pngJBuf);
-       // env->DeleteLocalRef(outDataJ);
-
-       free(rgbaByteArray);
-       free(c_pixels);
-       env->DeleteLocalRef(pixels);
+        free(rgbaByteArray);
        env->DeleteLocalRef(inData);
+
+       env->DeleteLocalRef(outDataJ);
+       env->DeleteLocalRef(bitmapObj);
+        env->DeleteLocalRef(mvmClass);
+        env->DeleteLocalRef(outputDataClass);
 
        // resy = 0;
     }
@@ -488,7 +510,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
   //  jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
   //  jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
 
-    jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
+  //  jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
     jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
     jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
@@ -504,7 +526,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     env->GetDoubleArrayRegion( maxClr, 0, 4, maxClrArray );
 
     int len = 0;
-    string symInString = env->GetStringUTFChars(symIn,0);
+    auto symInString = env->GetStringUTFChars(symIn,0);
     stringstream symStream;
     symStream << symInString;
     int sizeIcon = sz;
@@ -521,7 +543,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
 
     appy.colourIcon.colourIn(sz, false, &buf);
     int bufLen = 0;
-
+/*
     PaintIcon paintIcon;
     paintIcon.getCharArray(appy.colourIcon, true,   false);
     if (paintIcon.charBuffer == nullptr) {
@@ -529,6 +551,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
         throw exception();
     }
    unsigned char *rgbaBuf = paintIcon.charBuffer;
+   */
   //  mungeRgbaToArgbAndroid(&pngBuf, len);
 
  /*   jbyteArray pngJBuf = env->NewByteArray(len);
@@ -537,39 +560,21 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     }
 */
   //  env->SetObjectField(outputData, pngBufferField, pngJBuf);
-    env->SetIntField(outputData, pngBufferLenField,  len);
+  //  env->SetIntField(outputData, pngBufferLenField,  len);
 
-    jclass bitmapConfig = env->FindClass("android/graphics/Bitmap$Config");
-    jfieldID rgba8888FieldID = env->GetStaticFieldID(bitmapConfig, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
-    jobject rgba8888Obj = env->GetStaticObjectField(bitmapConfig, rgba8888FieldID);
-
-    jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
-    jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass,"createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
-    jobject bitmapObj = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
-
-    jintArray pixels = env->NewIntArray(sz * sz);
-
-    for (int i = 0; i < sz * sz; i++)
-    {
-        unsigned char red = rgbaBuf[i*4];
-        unsigned char green = rgbaBuf[i*4 + 1];
-        unsigned char blue = rgbaBuf[i*4 + 2];
-        unsigned char alpha = rgbaBuf[i*4 + 3];
-        int currentPixel = (alpha << 24) | (red << 16) | (green << 8) | (blue);
-        env->SetIntArrayRegion(pixels, i, 1, &currentPixel);
-    }
-
-    jmethodID setPixelsMid = env->GetMethodID(bitmapClass, "setPixels", "([IIIIIII)V");
-    env->CallVoidMethod(bitmapObj, setPixelsMid, pixels, 0, sz, 0, 0, sz, sz);
+   jobject bitmapObj = bitmapFromJNI(env,sz,buf); //env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID, sz, sz, rgba8888Obj);
 
     env->SetObjectField(outputData, bitmapField, bitmapObj);
 
-    //  env->ReleaseDoubleArrayElements(bgClr, bgClrArray,0);
+  //    env->ReleaseDoubleArrayElements(bgClr, bgClrArray,0);
   //  env->ReleaseDoubleArrayElements(minClr, minClrArray,0);
  //   env->ReleaseDoubleArrayElements(maxClr, maxClrArray,0);
 
     free(buf);
-    env->DeleteLocalRef(pixels);
+   env->DeleteLocalRef(bitmapObj);
+    env->DeleteLocalRef(outputDataClass);
+    env->ReleaseStringUTFChars(symIn,symInString);
+
     return outputData;
 }
 
@@ -583,8 +588,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
     jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
 
-    jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
-    jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
+ //   jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
+ //   jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
     jsize lenArgs = env->GetArrayLength(intArgs);
     jfieldID lastPointField = env->GetFieldID(outputDataClass,"lastPoint", "[D");
@@ -592,6 +597,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
 
     //int intArg0 = env->GetInt(env->GetObjectArrayElement(intArgs,0));
     jint* jintArgs = env->GetIntArrayElements(intArgs, 0);
+    //Size ie width should be second
+    int sz = jintArgs[1];
     string argvStr = "whaty ";
     argvStr += to_string(jintArgs[0]);
     argvStr += " ";
@@ -613,7 +620,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     }
 
 
-    unsigned char *pngBuf = nullptr;
+    unsigned char *rgbaBuf = nullptr;
     int len = 0;
     int result = 0;
 
@@ -636,20 +643,23 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
  //   if (params != 0){
     double* lastPoint = static_cast<double *>(malloc(2 * sizeof(double)));
     lastPoint[0] = 0.0; lastPoint[1] = 0.0;
-        result = runsample(nparam, argy , output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, captureParams);
+        result = runsample(nparam, argy , output, reinterpret_cast<double **>(&lastPoint), &rgbaBuf, &len, captureParams);
    // mungeRgbaToArgbAndroid(&pngBuf, result);
 
  //   }else {
    //     result = runsample(1, (char **) ({ "whaty"; }), output, &pngBuf, &len);
   //  }
     char strBuf[] = "give me a big enough string for my output line please, thankyou";
-cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[0],pngBuf[1], pngBuf[2], pngBuf[len-1])  << endl;
+cout << sprintf(strBuf, "pngBuf start is: %i  %i  %i    and last is  %i", rgbaBuf[0], rgbaBuf[1], rgbaBuf[2], rgbaBuf[len - 1]) << endl;
     if(result ==0){
         return nullptr;
     }
-    env->SetObjectField ( outputData,savedDataField,env->NewStringUTF(output.str().c_str()));
-    env->SetObjectField ( outputData,paramsUsedField,env->NewStringUTF(captureParams.str().c_str()));
+    jstring savedData = env->NewStringUTF(output.str().c_str());
+    jstring  paramsUsed = env->NewStringUTF(captureParams.str().c_str());
+    env->SetObjectField ( outputData,savedDataField,savedData);
+    env->SetObjectField ( outputData,paramsUsedField,paramsUsed);
 
+    /*
     jbyteArray pngJBuf = env->NewByteArray(len);
     if (pngBuf != nullptr) {
        env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
@@ -657,6 +667,12 @@ cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[
 
     env->SetObjectField(outputData, pngBufferField, pngJBuf);
     env->SetIntField(outputData, pngBufferLenField,  len);
+*/
+    jobject bitmapObj = bitmapFromJNI(env, sz, rgbaBuf);
+
+
+    jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
+    env->SetObjectField(outputData, bitmapField, bitmapObj);
 
     jdoubleArray jdoubleArray1 = env->NewDoubleArray(2);
     env->SetDoubleArrayRegion(jdoubleArray1, 0, 2,lastPoint);
@@ -666,8 +682,12 @@ cout << sprintf(strBuf,"pngBuf start is: %i  %i  %i    and last is  %i", pngBuf[
 
    free(buff);
     free(lastPoint);
-    free(pngBuf); // SetByteArrayRegion is copying... I think
+    free(rgbaBuf); // SetByteArrayRegion is copying... I think
 
+    env->DeleteLocalRef(bitmapObj);  //???? did setobjectfield copy???
+   env->DeleteLocalRef(savedData);
+    env->DeleteLocalRef(paramsUsed);
+    env->DeleteLocalRef(outputDataClass);
     return outputData;
 
 }
