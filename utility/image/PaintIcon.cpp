@@ -5,6 +5,7 @@
 #include "../../../stb/stb_image_write.h"
 
 #include <ctime>
+#include <string>
 #include "PaintIcon.h"
 
 
@@ -200,7 +201,7 @@ int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha)
                 iter++;
             }catch(exception &xx){
                 cout<< "ERROR!" <<xx.what() <<endl;
-                exit;
+                exit(-1);
             }
         }
     }

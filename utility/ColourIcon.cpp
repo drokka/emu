@@ -79,7 +79,7 @@ cout << "frequ Len " << frequLen <<endl;
              ******************/
             double *rgba = (double *) (calloc(4, sizeof(double)));
             colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba);
-            cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
+          //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
 
      //       if(argb){ //switch for Android bitmap ARGB format
        //         double clr[4] = {rgba[3], rgba[0], rgba[1], rgba[2]};

@@ -55,10 +55,13 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     symIn >> *appy;
 
     appy->setColour(bg,min,max);
-    appy ->colourIcon.colourIn();
+    unsigned  char *buf = nullptr;
+
+    appy ->colourIcon.colourIn(appy->sz, false, &buf);
     int bufLen = 0;
     appy->createPNG(pngBuf, &bufLen, fname);
     delete appy;
+    free(buf);
     return bufLen;
 }
 int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* bg, double* min, double * max){
@@ -76,37 +79,45 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy->colourIcon.xSz = sz;
     appy->colourIcon.ySz = sz;
     appy->setColour(bg,min,max);
-    appy ->colourIcon.colourIn(sz);
+    unsigned  char *buf = nullptr;
+
+    appy ->colourIcon.colourIn(sz, false, &buf);
     int bufLen = 0;
     appy->createPngBuffer(pngBuf, &bufLen);
     delete appy;
+    free(buf);
     return bufLen;
 }
 
 int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
-                   unsigned char **pngBuf, double *bgclr_c, double *minclr_c, double *maxclr_c) {
+                   unsigned char **pngBuf, double *bgclr_c, double *minclr_c, double *maxclr_c, int sz=0) {
     SymIconApp* appy = new SymIconApp();
     inData >> *appy;
     appy->setIterations(iterations);
     appy->setInitPoint(appy->lastPoint);
+    if(sz >0){ appy->sz = sz;}
     appy->runGenerator();
     appy->save(outData);
     //double bgc[4] = {0.99,0.99,0.99,0.0};
     //double minc[4] = {0.0,0.0,0.0,0.0};
     //double maxgc[4] = {0.4,0.0,0.0,0.0};
 
-    free(appy->colourIcon.rgbaByteArray);
+    //free(rgbaByteArray);
     stringstream strlog ; strlog << "colour double arrays " << *bgclr_c << " " << *(bgclr_c+1) << " " << *(bgclr_c+2) << " " << *(bgclr_c+3) << " " << *(bgclr_c+4) << " , "
                                  << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3)<< " " << *(minclr_c+4) << " , "
                                  << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " " << *(maxclr_c+4) << endl;
 
-    appy->setColour(bgclr_c ,minclr_c,maxclr_c);
-    appy ->colourIcon.colourIn(appy->sz);
+    if(bgclr_c != nullptr) {
+        appy->setColour(bgclr_c, minclr_c, maxclr_c);
+    }
+    unsigned  char *buf = nullptr;
+    appy ->colourIcon.colourIn(appy->sz, false, &buf);
 
     int bufLen = 0;
-    appy->createPngBuffer(pngBuf, &bufLen);
+    appy->createPngBuffer(pngBuf, &bufLen, true);
 
     delete appy;
+    free(buf);
     return bufLen;
 }
 
@@ -237,7 +248,6 @@ int degSym = 4;
     SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();
     cout << "After runGenerator call max hits: " << app.maxhits << endl;
-
     app.save(outData);
     (*lastPoint)[0] = app.lastPoint.val[0];
     (*lastPoint)[1] = app.lastPoint.val[1];
