@@ -93,8 +93,8 @@ namespace emu {
 
             int createPNG(unsigned char **pngBuf, int *len, string fname);
 
-            int createPngBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
-            int createByteBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
+         //   int createPngBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
+         //   int createByteBuffer(unsigned char **pngBuf, int *len, bool switchRGBAtoARGB = false);
 
             void setIterations(long iter);
 

@@ -64,7 +64,12 @@ void SymIconApp::runGenerator() {
 }
 
 int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
-    PaintIcon paintIcon;
+
+    unsigned char* rgbaArray = nullptr;
+    colourIcon.colourIn(sz,true, &rgbaArray);
+    PaintIcon::savePNG(fname, sz,sz,rgbaArray);
+
+  /*  PaintIcon paintIcon;
     int res = paintIcon.paintPNG(colourIcon, fname, true);
     if (res == 0) {
         cout << "save png image failed." << endl;
@@ -73,6 +78,7 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
     paintIcon.paintPNGtoBuffer(colourIcon, true, len,false, pngBuf);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
+        */
 
 /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
@@ -80,26 +86,29 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
-    }
+  //  }
+
+  *len = sz*sz*4;
     return  *len;
 }
-
+/*
 int SymIconApp::createPngBuffer(unsigned char ** pngBuf, int *len, bool switchRGBAtoARGB){
     PaintIcon paintIcon;
      paintIcon.paintPNGtoBuffer(colourIcon, true, len,  switchRGBAtoARGB, pngBuf);
     if (*pngBuf == nullptr) {
         cout << "save png buffer failed." << endl;
-
+*/
 /********************************************
     res = PaintIcon::paintHDR(app.colourIcon, "symi_" +ddate +".hdr",false);
     if(res == 0) {
         cout <<"save hdr image failed." << endl;
     }
    ***************************************************************/
-    }
+ /*   }
     return  *len;
 }
-
+  */
+/*
 int SymIconApp::createByteBuffer(unsigned char **buf, int *len, bool switchRGBAtoARGB) {
     PaintIcon paintIcon;
      paintIcon.getCharArray(colourIcon, true,   switchRGBAtoARGB);
@@ -111,6 +120,8 @@ int SymIconApp::createByteBuffer(unsigned char **buf, int *len, bool switchRGBAt
 
     return  *len;
 }
+ */
+
 void SymIconApp::save(ostringstream& outy) {
 //colourIcon.setUseAlpha(false);
     if(error){

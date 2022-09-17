@@ -17,22 +17,23 @@ using namespace std;
 namespace emu {
     namespace utility {
         class PaintIcon {
-             void getFloatArray(ColourIcon &colourIcon, bool withAlpha);
+           //  void getFloatArray(ColourIcon &colourIcon, bool withAlpha);
 
-            float  *floatBuffer = nullptr;
+          //  float  *floatBuffer = nullptr;
           //  unsigned  char *pngBuffer = nullptr;
 
         public:
-            void getCharArray(ColourIcon &colourIcon, bool withAlpha, bool switchRGBAtoARGB = false);
+          //  void getCharArray(ColourIcon &colourIcon, bool withAlpha, bool switchRGBAtoARGB = false);
 
-            int paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha);
+     static     void savePNG(const string& fileName , int width, int height, unsigned char* rgbaBuf);
+       //     int paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha);
 
-            int paintHDR(ColourIcon &colourIcon, string fileName, bool withAlpha);
-             void paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB, unsigned char **pngBuf);
+        //    int paintHDR(ColourIcon &colourIcon, string fileName, bool withAlpha);
+       //      void paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *len, bool switchRGBAtoARGB, unsigned char **pngBuf);
 
             virtual ~PaintIcon();
 
-            unsigned char *charBuffer = nullptr;
+        //    unsigned char *charBuffer = nullptr;
         };
     }
 }

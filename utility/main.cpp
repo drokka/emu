@@ -12,22 +12,23 @@ int main(int nparams, char** params){
     ostringstream paramValsApplied("Icon definition and parameters captured: ");
 
     cout<<"runsample call 1"<<endl;
-    double lastPoint[2];
+    double lastPoint[] = {0.0,0.0};
     int result = runsample(nparams, params, output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, paramValsApplied);
 
-    char msg[150]; strchrnul(msg,50);
-    sprintf(msg, "pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
-            pngBuf[3] , pngBuf[4],pngBuf[len-1], len);
-    cout << msg << endl;
+  //  char msg[150]; strchr(msg,0);
+ //   sprintf(msg, "pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
+  //          pngBuf[3] , pngBuf[4],pngBuf[len-1], len);
+  //  cout << msg << endl;
     cout << paramValsApplied.str() << endl;
 
-    ofstream stream( "symi1.png", ios::out | ios::binary);
-    if(!stream){ cout << "failed create bin file stream" << endl;}
-    else{
-        stream.write((char*)pngBuf, len);
-    }
+  //  PaintIcon::savePNG("symi1.png", 999,999, pngBuf);
+  //  ofstream stream( "symi1.png", ios::out | ios::binary);
+ //   if(!stream){ cout << "failed create bin file stream" << endl;}
+  //  else{
+  //      stream.write((char*)pngBuf, len);
+  //  }
 
-   // free(pngBuf);
+  //  free(pngBuf);
     char* parma[3] = {"runsample","1000000","H"};
 
     ostringstream paramValsApplied1("");
@@ -38,11 +39,13 @@ int main(int nparams, char** params){
 
     std::time_t resultH = std::time(nullptr);
     const std::string ddateH = to_string(resultH).data();
+ //   PaintIcon::savePNG("symiHEX"+ddateH+".png", 999,999, pngBuf2);
+/*
     ofstream stream2( "symiHEX"+ddateH+".png", ios::out | ios::binary);
     if(!stream2){ cout << "failed create bin file stream" << endl;}
     else{
         stream2.write((char*)pngBuf2, len);
-    }
+    }*/
 
     cout << "HEX ICON DONE!!!!!!!!!!!"  << endl;
     cout << paramValsApplied1.str() << endl;
@@ -61,20 +64,26 @@ int main(int nparams, char** params){
     }else{
          std::time_t result = std::time(nullptr);
          const std::string ddate = to_string(result).data();
+        PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
 
-          ofstream stream( "symiRecolour" + ddate +".png", ios::out | ios::binary);
+         /* ofstream stream( "symiRecolour" + ddate +".png", ios::out | ios::binary);
         if(!stream){ cout << "failed create bin file stream for recolour!!!!" << endl;}
         else{
             stream.write((char*)pngRecolrBuf, reClrResult);
             cout<<"recolour of hex icon written to symiRecolour.png" <<endl;
         }
+          */
     }
+
+    /*
+    PaintIcon::savePNG("symi2.png", 999,999, pngBuf2);
 
     ofstream stream3( "symi2.png", ios::out | ios::binary);
     if(!stream3){ cout << "failed create bin file stream2" << endl;}
     else{
         stream3.write((char*)pngBuf, len);
     }
+     */
 
 //    free(pngBuf);
     char* parmaa[12] = {"runsample", "100000","F", "121", "cannot count",
@@ -89,12 +98,13 @@ int main(int nparams, char** params){
      cout << "FRACTAL ICON DONE!!" << endl;
     cout << paramValsApplied2.str() << endl;
 
-    ofstream stream4( "symiF.png", ios::out | ios::binary);
+ //   PaintIcon::savePNG("symiF.png",121,121,pngBuf3);
+ /*   ofstream stream4( "symiF.png", ios::out | ios::binary);
     if(!stream4){ cout << "failed create bin file stream3" << endl;}
     else{
         stream4.write((char*)pngBuf3, len3);
     }
-
-  //  free(pngBuf3);
+*/
+   // free(pngBuf3);
     return  result;
 }

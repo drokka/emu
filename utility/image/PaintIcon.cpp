@@ -2,13 +2,17 @@
 // Created by peter on 27/01/2021.
 //
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../../../stb/stb_image_write.h"
+//#include "../../../stb/stb_image_write.h"
 
 #include <ctime>
 #include <string>
 #include "PaintIcon.h"
+#include <iostream>
+#include <boost/gil.hpp>
+#include <boost/gil/extension/io/png.hpp>
+#include <fstream>
 
-
+/*
 void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha, bool switchRGBAtoARGB) {
 
     int width = colourIcon.xSz;
@@ -54,10 +58,11 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha, bool switc
               /*  charBuffer[k * pixelSize + 1] = (unsigned int) (colourIcon.bgRGBA[0] * 255); //alpha first for android?
                 charBuffer[k * pixelSize + 2] = (unsigned int) (colourIcon.bgRGBA[1] * 255);
                 charBuffer[k * pixelSize + 3] = (unsigned int) (colourIcon.bgRGBA[2] * 255);
-                charBuffer[k * pixelSize + 0] = (unsigned int) (colourIcon.bgRGBA[3] * 255);  */
+                charBuffer[k * pixelSize + 0] = (unsigned int) (colourIcon.bgRGBA[3] * 255);
 
             }
         }
+        */
             /*
             for(int p=0;p<pixelSize;p++) {
                 unsigned int val = (unsigned int)( colourIcon.bgRGBA[p] *255);
@@ -75,10 +80,10 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha, bool switc
             stbi_write_png(("bgOnly" +ddate +".png").c_str(), colourIcon.xSz, colourIcon.ySz, pixelSize, buf, colourIcon.xSz*pixelSize);
     ******************************************************************************************/
 
-            RgbaList2DIter iter = colourIcon.colourArray.begin();
+      /*      RgbaList2DIter iter = colourIcon.colourArray.begin();
             int posy = 0;
             // int  count = 0;
-            while (iter != colourIcon.colourArray.end() /*&& count < width*height*pixelSize*/ ) {
+            while (iter != colourIcon.colourArray.end() /*&& count < width*height*pixelSize ) {
                 //  count++;
                 xPos = iter->first.val[0];
                 yPos = iter->first.val[1];
@@ -112,9 +117,9 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha, bool switc
                     charBuffer[posy + 1] = (unsigned int)red;
                     charBuffer[posy + 2] = (unsigned int)green;
                     charBuffer[posy + 3] = (unsigned int)blue;
-                    charBuffer[posy + 0] = (unsigned int)alpha;  */
+                    charBuffer[posy + 0] = (unsigned int)alpha;
 
-                }
+                }*/
                 /*
                 for(int n=0;n<pixelSize;n++) {
                     try {
@@ -135,11 +140,12 @@ void PaintIcon::getCharArray(ColourIcon &colourIcon, bool  withAlpha, bool switc
 
                 } */
                 //  cout <<endl;
-                iter++;
-            }
-        }
-}
+   //             iter++;
+     //       }
+     //   }
+//}
 
+/*
 int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha){
     getCharArray(colourIcon, withAlpha);
     int result = 0;
@@ -181,9 +187,8 @@ int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha)
         RgbaList2DIter iter = colourIcon.colourArray.begin();
         int bufPos = 0;
        // int count = 0;
-        while(iter != colourIcon.colourArray.end()/* && (count < bufMax)*/){
+       // while(iter != colourIcon.colourArray.end()/* && (count < bufMax)){
          //   count++;
-            try {
                 xPos = iter->first.val[0];
                 yPos = iter->first.val[1];
 
@@ -199,18 +204,17 @@ int PaintIcon::paintPNG(ColourIcon &colourIcon, string fileName, bool withAlpha)
                 }
                //  cout <<endl;
                 iter++;
-            }catch(exception &xx){
-                cout<< "ERROR!" <<xx.what() <<endl;
-                exit(-1);
             }
         }
     }
-}
+
+
 /*****
 int len;
 unsigned char *png = stbi_write_png_to_mem((const unsigned char *) data, stride_bytes, x, y, comp, &len);
 ************/
 
+/*
 int PaintIcon::paintHDR(ColourIcon &colourIcon, string fileName, bool withAlpha=false){
     getFloatArray(colourIcon, withAlpha);
     int result = 0;
@@ -236,11 +240,28 @@ void PaintIcon::paintPNGtoBuffer(ColourIcon &colourIcon, bool withAlpha, int *le
     }
     return;
 }
-
+*/
 PaintIcon::~PaintIcon() {
-    free(charBuffer);
-    free(floatBuffer);
+   // free(charBuffer);
+ //   free(floatBuffer);
    // free(pngBuffer); //OK handed off
+}
+/*********
+ *  Save png to file.
+ * @param fname
+ * @param width
+ * @param height
+ * @param rgbaBuf unsigned char pixel data. Assumes red green blue alpha so buffer should be 4*width*height length
+ */
+void PaintIcon::savePNG(const string& fname, int width, int height, unsigned char *rgbaBuf) {
+    auto myview = boost::gil::interleaved_view(width, height, (boost::gil::rgba8_pixel_t const*)(rgbaBuf), 4 * width);
+    std::ofstream imageOut2((fname).c_str(), std::ios_base::binary);
+
+    write_view( imageOut2, myview, boost::gil::png_tag() );
+    //  write_view(imageOut, view(b), boost::gil::png_tag());
+    imageOut2.flush();
+    imageOut2.close();
+
 }
 
 
