@@ -5,6 +5,7 @@
 //#include <math.h>
 //#include <iostream>
 #include "QuiltIcon.h"
+#include "GeneratorException.h"
 
 using namespace emu::utility;
 
@@ -253,6 +254,17 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
     b1 = omega;
     b2 = ma;
 
+    // Need to be a contraction affine map. NOT any of:
+    //a11^2 + a21^2 > 1
+    //a21^2 + a22^2 >1
+    // a11^2 + a21^2 +   a21^2 + a22^2 > 1 + (a11*a22 - a21*a12)^2
+    double a1 = a11*a11 + a21*a21;
+    double a2 = a21*a21 + a22*a22;
+    if(a1 >1 || a2 >1 || (a1+a2 ) > 1 + ((a11*a22 - a21*a12)*(a11*a22 - a21*a12))){
+        cout <<"error not a contraction" <<endl;
+        throw GeneratorException("Generate fractal parameters not a contraction");
+    }
+
     double x = inputPoint[0];
     double y = inputPoint[1];
 
@@ -260,14 +272,15 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
     double c[128]; //= new double[128];   //degree sym assumed < 128
     double s[128]; //= new double[128];
     for (int i = 0; i < n; i++) {
-        c[i] = cos(2 * PI * i / n);
-        s[i] = sin(2 * PI * i / n);
+        double angle = 2 * PI * i / n;
+        c[i] = cos(angle);
+        s[i] = sin(angle);
     }
     double xnew, ynew, x1, y1;
 //Info.numberSteps +=1;
     xnew = a11 * x + a12 * y + b1;
     ynew = a21 * x + a22 * y + b2;
-    m = (int) (n * (rand() / static_cast<double>(RAND_MAX)));
+    m =  (rand()%n);
     if (m < 0) { m = 0 - m; }
     x1 = xnew;
     y1 = ynew;
@@ -276,13 +289,16 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
 
     //  if (Info.CONJ == true) {
     //
-    if (2 * (rand() / static_cast<double>(RAND_MAX)) < 1) ynew = -ynew;
+  //  if (rand()%2 == 0) ynew = -ynew; //FIXIT pass in CONJ!!!!!!!!!!!!!
     // }
-    inputPoint[0] = (xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
-    inputPoint[1] = (ynew + .5)*0.96;
-    if(inputPoint[0] >=1 || inputPoint[1] >=1){
+    inputPoint[0] = xnew<1?xnew:1.0; //(xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
+    inputPoint[1] = ynew<1? ynew: 1.0; // (ynew + .5)*0.96;
+
+
+  //  if(inputPoint[0] >=1 || inputPoint[1] >=1){
+  //      cout << "exploding " << inputPoint[0] << " " << inputPoint[1] <<endl;
       //  throw ( MATH_ERREXCEPT) ;
-    }
+   // }
 //    cout << "x: " << inputPoint[0] <<" y: " << inputPoint[1] <<endl;
 }
 

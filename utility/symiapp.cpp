@@ -7,7 +7,7 @@
 #include <fstream>
 #include "runsampleNoJni.cpp"
 
-int doMore(char **pString);
+int doMore(char **pString, bool changeClr);
 
 int main(int argc , char** argv){
 
@@ -37,15 +37,17 @@ int main(int argc , char** argv){
 //        maxClr[2] = strtod(pString[22], nullptr);
 //        maxClr[3] = strtod(pString[23], nullptr);                24
 
-if(argc == 16){ //iters  filename    size  colours
-     doMore(argv);
+if(argc == 16 ){ //iters  filename    size  colours
+     doMore(argv, true);
 
-}else {
+}else if( argc == 4){
+    doMore(argv, false);
+}
+else{
     ostringstream outData("");
     ostringstream iconDefUsed("");
-    auto *lastPoint = static_cast<double *>(malloc(sizeof(double) * 2));
-    lastPoint[0] = .2707;
-    lastPoint[1] = .5901;
+    double *lastPoint = nullptr;
+
     unsigned char *pngBuf = nullptr;
     int len = 0;
 
@@ -59,30 +61,11 @@ if(argc == 16){ //iters  filename    size  colours
 }
 }
 
-int doMore(char **pString) {
+int doMore(char **pString, bool changeClr) {
     long iterations = atol(pString[1]);
     int sz = atoi(pString[2]);
 
     char* inDataFile = pString[3];
-
-    double bgClr[4];
-    double minClr[4];
-    double maxClr[4];
-
-    bgClr[0] = strtod(pString[4], nullptr);
-    bgClr[1] = strtod(pString[5], nullptr);
-    bgClr[2] = strtod(pString[6], nullptr);
-    bgClr[3] = strtod(pString[7], nullptr);
-
-    minClr[0] = strtod(pString[8], nullptr);
-    minClr[1] = strtod(pString[9], nullptr);
-    minClr[2] = strtod(pString[10], nullptr);
-    minClr[3] = strtod(pString[11], nullptr);
-    maxClr[0] = strtod(pString[12], nullptr);
-    maxClr[1] = strtod(pString[13], nullptr);
-    maxClr[2] = strtod(pString[14], nullptr);
-    maxClr[3] = strtod(pString[15], nullptr);
-
     ifstream inSymi;
     inSymi.open(inDataFile);
     SymIconApp appy;
@@ -90,7 +73,27 @@ int doMore(char **pString) {
     appy.sz = sz;
     appy.colourIcon.xSz = sz; appy.colourIcon.ySz = sz;
 
-    appy.setColour(bgClr, minClr, maxClr);
+    if(changeClr) {
+        double bgClr[4];
+        double minClr[4];
+        double maxClr[4];
+
+        bgClr[0] = strtod(pString[4], nullptr);
+        bgClr[1] = strtod(pString[5], nullptr);
+        bgClr[2] = strtod(pString[6], nullptr);
+        bgClr[3] = strtod(pString[7], nullptr);
+
+        minClr[0] = strtod(pString[8], nullptr);
+        minClr[1] = strtod(pString[9], nullptr);
+        minClr[2] = strtod(pString[10], nullptr);
+        minClr[3] = strtod(pString[11], nullptr);
+        maxClr[0] = strtod(pString[12], nullptr);
+        maxClr[1] = strtod(pString[13], nullptr);
+        maxClr[2] = strtod(pString[14], nullptr);
+        maxClr[3] = strtod(pString[15], nullptr);
+
+        appy.setColour(bgClr, minClr, maxClr);
+    }
 
     cout<< "after setColour " << appy.colourIcon.bgRGBA[0] <<" " << appy.colourIcon.bgRGBA[1] <<" "
     <<     appy.colourIcon.bgRGBA[2] <<" " << appy.colourIcon.bgRGBA[3] << endl;

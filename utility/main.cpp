@@ -12,7 +12,7 @@ int main(int nparams, char** params){
     ostringstream paramValsApplied("Icon definition and parameters captured: ");
 
     cout<<"runsample call 1"<<endl;
-    double lastPoint[] = {0.0,0.0};
+    double *lastPoint = nullptr;  //runsample allocs 2*double
     int result = runsample(nparams, params, output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, paramValsApplied);
 
   //  char msg[150]; strchr(msg,0);
@@ -64,6 +64,12 @@ int main(int nparams, char** params){
     }else{
          std::time_t result = std::time(nullptr);
          const std::string ddate = to_string(result).data();
+         cout<<"Before savePNG pngRecolrBuf row 200" << *(pngRecolrBuf + 40000) << " "
+<< *(pngRecolrBuf + 40000 +1) << " " << *(pngRecolrBuf + 40000 +2 ) << " "  << *(pngRecolrBuf + 40000 +3)
+<< " " << *(pngRecolrBuf + 40000 +4) << " " <<         endl;
+
+PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
+
         PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
 
          /* ofstream stream( "symiRecolour" + ddate +".png", ios::out | ios::binary);
@@ -86,14 +92,16 @@ int main(int nparams, char** params){
      */
 
 //    free(pngBuf);
-    char* parmaa[12] = {"runsample", "100000","F", "121", "cannot count",
-                        "0.2", "0.13", "0.7","0.39","0.22","0.073","4"};
+    char* parmaa[12] = {"runsample", "100000","F", "121", "dummyincannotcount", "7",
+                        "0.5", "0.0", "0.1","0.5","0.5","0.1"};
     unsigned char * pngBuf3 = nullptr;
     int len3 = 0;
     ostringstream output3("test");
     ostringstream paramValsApplied2("");
 
-    result += runsample(12,parmaa , output3, reinterpret_cast<double **>(&lastPoint),&pngBuf3, &len3, paramValsApplied2);
+    double *lasty = nullptr;
+    cout<< "before runsample for FRACTAL call" <<endl;
+    result += runsample(12,parmaa , output3, reinterpret_cast<double **>(&lasty),&pngBuf3, &len3, paramValsApplied2);
 
      cout << "FRACTAL ICON DONE!!" << endl;
     cout << paramValsApplied2.str() << endl;

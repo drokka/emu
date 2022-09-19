@@ -139,8 +139,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
 
     //testColourIcon();
 
-    int sz = 999; /** use odd sz for even number either side of centre, otherwise last row and column not used. */
-cout << "runsample sz= " << sz <<endl;
+    int sz = 12; /** use odd sz for even number either side of centre, otherwise last row and column not used. */
 int degSym = 4;
     QuiltIcon::QuiltType quiltType = QuiltIcon::QuiltType::SQUARE;
     if (nparam >= 3) {
@@ -152,6 +151,8 @@ int degSym = 4;
         sz = atoi(param[3]); /* WIDTH in pixels is passed in, but assuming height the same. */
         degSym = atoi(param[5]);
     }
+    cout << "runsample sz= " << sz <<endl;
+
     double lambdaVal = 0.6;
     double alphaVal = 0.2;
     double betaVal = 0.3;
@@ -199,8 +200,8 @@ int degSym = 4;
             cout << "Error reading QuiltIcon parameters." << endl;
             //continue using default values
         }
-    }
-    /**
+    }  */
+
     cout << "got parameters " << endl;
     cout << "lambdaVal " << lambdaVal << endl;
     cout << "alphaVal " << alphaVal << endl;
@@ -208,7 +209,7 @@ int degSym = 4;
     cout << "gammaVal " << gammaVal << endl;
     cout << "omegaVal " << omegaVal << endl;
     cout << "maVal " << maVal << endl;
-     **************/
+
 
 
     double initX = 0.307;
@@ -241,9 +242,9 @@ int degSym = 4;
     }
 
     ColourIcon::ColourFn colourFn = emu::utility::simpleColourFn;
-  //  stringstream strlog ; strlog << "colour double arrays " << *bgClr << " " << *(bgClr+1) << " " << *(bgClr+2) << " " << *(bgClr+3) << " " << *(bgClr+4) << " , "
-    //                             << *minClr << " " << *(minClr+1) << " " << *(minClr+2) << " " << *(minClr+3)<< " " << *(minClr+4) << " , "
-      //                           << *maxClr << " " << *(maxClr+1) << " " << *(maxClr+2) << " " << *(maxClr+3)  << " " << *(maxClr+4) << endl;
+ // cout << "colour double arrays " << *bgClr << " " << *(bgClr+1) << " " << *(bgClr+2) << " " << *(bgClr+3) << " " << *(bgClr+4) << " , "
+   //                             << *minClr << " " << *(minClr+1) << " " << *(minClr+2) << " " << *(minClr+3)<< " " << *(minClr+4) << " , "
+     //                            << *maxClr << " " << *(maxClr+1) << " " << *(maxClr+2) << " " << *(maxClr+3)  << " " << *(maxClr+4) << endl;
 
     SymIconApp app(iterations, initX, initY, quiltType, fnBase, sz, iconParams, numIconParams, degSym, bgClr, minClr, maxClr, colourFn);
     app.runGenerator();
@@ -254,7 +255,7 @@ int degSym = 4;
     (*lastPoint)[1] = app.lastPoint.val[1];
 
      std::time_t result = std::time(nullptr);
-     const std::string ddate = to_string(result).data();
+     const std::string ddate = to_string(result);
 
      string fname("symD" +ddate+".symd");
      ofstream symFile;

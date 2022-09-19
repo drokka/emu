@@ -6,6 +6,7 @@
 #include <sstream>
 #include "SymIconApp.h"
 #include "image/PaintIcon.h"
+#include "GeneratorException.h"
 
 using namespace emu::utility;
 
@@ -50,7 +51,14 @@ void SymIconApp::runGenerator() {
         error = true;
         maxhits = 0;
         return;
-    } catch (...) {
+    }catch(GeneratorException &xx) {
+        errorMsg.append("Error.").append(xx.message);
+       // error = true;
+      //  maxhits = 0;
+        cout<< errorMsg <<endl;
+      //  return;   // see what we got.
+    }
+    catch (...) {
         cout << "error some other exception" << endl;
         errorMsg.append("Error. runGenerator: error some other exception occured.");
         error = true;

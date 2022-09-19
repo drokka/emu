@@ -112,7 +112,7 @@ namespace emu {
                     else{
                         if (std::is_floating_point<NumericType>::value) {
                             //value = std::nextafter(_min, _max); /*closest to min */
-                            value = _min + (_max -_min)/1000000.0;
+                            value = _min + (_max -_min)/100000000.0;
                         }
                         else { /* is integer type */
                             value = _min + 1;
@@ -126,7 +126,7 @@ namespace emu {
                     else{
                         if (std::is_floating_point<NumericType>::value) {
                             //value = std::nextafter<NumericType>(_max, _min); /*closest to max */
-                            value = _max - (_max - _min)/1000000.0;
+                            value = _max - (_max - _min)/100000000.0;
                         }
                         else { /* is integer type */
                             value = _max - 1;
@@ -136,7 +136,7 @@ namespace emu {
                 else if(_value == _min) {
                     if (std::is_floating_point<NumericType>::value) {
                         //value = std::nextafter<NumericType>(_min, _max); /*closest to min */
-                        value = _min + (_max -_min)/1000000.0;
+                        value = _min + (_max -_min)/100000000.0;
 
                     }
                     else {
@@ -146,7 +146,7 @@ namespace emu {
                 else{ /*equals max and not includesMax */
                     if (std::is_floating_point<NumericType>::value) {
                         //value = std::nextafter<NumericType>(_max, _min); /*closest to max */
-                        value = _max - (_max - _min)/1000000.0;
+                        value = _max - (_max - _min)/100000000.0;
 
                     }
                     else {

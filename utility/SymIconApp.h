@@ -24,8 +24,8 @@ namespace emu {
                        double *maxColour, ColourIcon::ColourFn colourFn);
             SymIconApp(): SymIconApp(2, 0.1, 0.1, QuiltIcon::QuiltType::SQUARE, "sym", 9,
                                               const_cast<double *>(defaultParams), 6, 3,
-                                              const_cast<double *>(defaultClr), const_cast<double *>(defaultClr),
-                                              const_cast<double *>(defaultClr), nullptr){}
+                                              const_cast<double *>(defaultBgClr), const_cast<double *>(defaultMinClr),
+                                              const_cast<double *>(defaultMaxClr), nullptr){}
             SymIconApp(long iterations, double initX, double initY,double *bgColour, double *minColour, double *maxColour):
                             SymIconApp(iterations, initX, initY, QuiltIcon::QuiltType::SQUARE, "sym", 9,
                                        const_cast<double *>(defaultParams), 6, 3, bgColour, minColour, maxColour,
@@ -60,7 +60,9 @@ namespace emu {
 
              double defaultParams[6] = {0.1,0.02,0.12,0.1,0.1,0.1};
 
-             double defaultClr[4] = {0.1,0.1,0.1,0.1};
+             double defaultBgClr[4] = {0.1,0.1,0.1,0.1};
+            double defaultMinClr[4] = {0.1,0.4,0.7,0.4};
+            double defaultMaxClr[4] = {0.7,0.6,1.0,1.0};
             //paintIcon.setUseAlpha(false);
 
             std::string fnBase = "img_a_";
