@@ -68,9 +68,9 @@ int main(int nparams, char** params){
 << *(pngRecolrBuf + 40000 +1) << " " << *(pngRecolrBuf + 40000 +2 ) << " "  << *(pngRecolrBuf + 40000 +3)
 << " " << *(pngRecolrBuf + 40000 +4) << " " <<         endl;
 
-PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
+//PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
 
-        PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
+ //       PaintIcon::savePNG("symiRecolour" + ddate +".png", 201,201, pngRecolrBuf);
 
          /* ofstream stream( "symiRecolour" + ddate +".png", ios::out | ios::binary);
         if(!stream){ cout << "failed create bin file stream for recolour!!!!" << endl;}

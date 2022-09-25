@@ -15,7 +15,6 @@ add_library(emutil STATIC
         QuiltIcon.h QuiltIcon.cpp SymIconApp.cpp SymIconApp.h
      #  runsample.cpp
         runsampleNoJni.cpp
-        image/PaintIcon.cpp image/PaintIcon.h
         #runsamplenj.h runsamplenj.cpp
         )
 
@@ -50,7 +49,7 @@ set_target_properties(zlib PROPERTIES
 add_executable(symiapp symiapp.cpp)
 target_link_libraries(symiapp emutil png zlib boost)
 
-target_link_libraries(symirun emutil png zlib boost)
+target_link_libraries(symirun emutil)
 
 #target_link_libraries(symiapp emutil m)
 #target_sources(symiapp "symiapp.cpp")

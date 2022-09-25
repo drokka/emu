@@ -79,7 +79,7 @@ namespace emu {
                                   double _ma);
 
             static void generate1(double inputPoint[], double lambda, double alpha, double beta, double gamma,
-                                  double omega, double ma);
+                                  double omega, double ma, double shift);
 
             static void
             generateHex(double *inputPoint, double lambda, double alpha, double beta, double gamma, double omega,

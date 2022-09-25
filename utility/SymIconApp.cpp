@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include "SymIconApp.h"
-#include "image/PaintIcon.h"
+//#include "image/PaintIcon.h"   //JNI
 #include "GeneratorException.h"
 
 using namespace emu::utility;
@@ -73,9 +73,13 @@ void SymIconApp::runGenerator() {
 
 int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
 
-    unsigned char* rgbaArray = nullptr;
-    colourIcon.colourIn(sz,true, &rgbaArray);
-    PaintIcon::savePNG(fname, sz,sz,rgbaArray);
+   // unsigned char* rgbaArray = nullptr;
+    int nperiod = (qi->quiltType == QuiltIcon::QuiltType::HEX)?2:1;
+    colourIcon.colourIn(sz,true, pngBuf, nperiod);
+    cout<< "createPNG pngBuf first and last pixel: " << endl;
+    cout << (*pngBuf)[0] <<","<< (*pngBuf)[1] <<","<<(*pngBuf)[2] <<","<< (*pngBuf)[3] <<","<<endl;
+    cout << (*pngBuf)[(sz*sz-1)*4 +0] <<","<< (*pngBuf)[(sz*sz-1)*4 +1] <<","<<(*pngBuf)[(sz*sz-1)*4 +2] <<","<< (*pngBuf)[(sz*sz-1)*4 +3] <<","<<endl;
+//  PaintIcon::savePNG(fname, sz,sz,rgbaArray);   //NOT for JNI version!
 
   /*  PaintIcon paintIcon;
     int res = paintIcon.paintPNG(colourIcon, fname, true);
@@ -136,11 +140,12 @@ void SymIconApp::save(ostringstream& outy) {
         outy << errorMsg;
     }
     else {
-        unsigned  char *buf = nullptr;
+      //  unsigned  char *buf = nullptr;
+      //  int nperiod = (type == QuiltIcon::QuiltType::HEX)? 2:1;
 
-        colourIcon.colourIn(sz, false, &buf);
+      //  colourIcon.colourIn(sz, false, &buf,nperiod);
 
-        std::cout << "After colourIn complete. " << colourArray.size() << '\n';
+      //  std::cout << "After colourIn complete. " << colourArray.size() << '\n';
 
 
         // std::time_t result = std::time(nullptr);
@@ -149,7 +154,7 @@ void SymIconApp::save(ostringstream& outy) {
         // string dname = fnBase + ddate + ".sym";
         //std::ostringstream outy(dname, std::ios_base::out);
         outy << *this ;
-        free(buf);
+      //  free(buf);
     }
     outy.flush();
   //  outy.close();

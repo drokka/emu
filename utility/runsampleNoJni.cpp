@@ -11,7 +11,6 @@
 #include <assert.h>
 #include "SymIconApp.h"
 #include "ColourIcon.h"
-#include "image/PaintIcon.h"
 using namespace std;
 using namespace emu::utility;
 
@@ -57,7 +56,7 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     appy->setColour(bg,min,max);
     unsigned  char *buf = nullptr;
 
-    appy ->colourIcon.colourIn(appy->sz, false, &buf);
+    appy ->colourIcon.colourIn(appy->sz, false, &buf,1);
     int bufLen = 0;
     appy->createPNG(pngBuf, &bufLen, fname);
     delete appy;
@@ -81,7 +80,7 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy->setColour(bg,min,max);
  //   unsigned  char *buf = nullptr;
 
-    appy ->colourIcon.colourIn(sz, false, pngBuf);
+    appy ->colourIcon.colourIn(sz, false, pngBuf,1);
  //   int bufLen = 0;
  //   appy->createPngBuffer(pngBuf, &bufLen);
     delete appy;
@@ -111,7 +110,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
         appy->setColour(bgclr_c, minclr_c, maxclr_c);
     }
    // unsigned  char *buf = nullptr;
-    appy ->colourIcon.colourIn(appy->sz, false, pngBuf);
+    appy ->colourIcon.colourIn(appy->sz, false, pngBuf,1);
 
  //   int bufLen = 0;
 //    appy->createPngBuffer(pngBuf, &bufLen, true);
@@ -221,9 +220,9 @@ int degSym = 4;
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bgClr[] ={0, 0.2, .15, 1.0};
-    double minClr[]= {0.0,.5,.3,1.0};
-    double maxClr[] = {.3,.99,.99,1.0};
+    double bgClr[] ={0, 0.2, .15, .10};
+    double minClr[]= {0.0,0,.99,0.50};
+    double maxClr[] = {.99,0,0,1.0};
 
     if(nparam == 24) { //colours provided
         bgClr[0] = strtod(param[12], nullptr);
@@ -265,6 +264,12 @@ int degSym = 4;
     if(!app.error) {
 
         app.createPNG(pngBuf, len,"symi_" + ddate + ".png");
+        cout << "runsample app.createPNG() call  buffer length returned is " << *len << endl;
+
+        cout<< "runsample createPNG pngBuf first and last pixel: " << endl;
+        cout << (*pngBuf)[0] <<","<< (*pngBuf)[1] <<","<<(*pngBuf)[2] <<","<< (*pngBuf)[3] <<","<<endl;
+        cout << (*pngBuf)[(sz*sz-1)*4 +0] <<","<< (*pngBuf)[(sz*sz-1)*4 +1] <<","<<(*pngBuf)[(sz*sz-1)*4 +2] <<","<< (*pngBuf)[(sz*sz-1)*4 +3] <<","<<endl;
+
         /********************************************
 
         PaintIcon paintIcon;

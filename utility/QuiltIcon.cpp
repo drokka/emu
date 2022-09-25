@@ -13,9 +13,9 @@ const double QuiltIcon::pi = acos(-1);
 const double QuiltIcon::p2 = 2 * pi;
 
 void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, double beta,
-                          double gamma, double omega, double ma) {
-
-    double shift, sx, sy;
+                          double gamma, double omega, double ma, double shift=0.5) {
+    //shift either 0 or 0.5
+    double  sx, sy;
 
     double xnew;
     double ynew;
@@ -23,7 +23,6 @@ void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, doub
     double x = inputPoint[0];
     double y = inputPoint[1];
 
-    shift = 0;
     sx = sin(p2 * x);
     sy = sin(p2 * y);
 
@@ -215,19 +214,14 @@ void QuiltIcon::generateHex(double *inputPoint, double lambda, double alpha, dou
     ynew = ynew + ah12 * s3h1 + ah22 * s3h2 + ah32 * s3h3;
     by = 2 * ynew / sq3;
     bx = xnew - by / 2.0;
-    /***
-    if( bx > 1)   bx = bx - (int)(bx)  ;
-    if( by > 1)   by = by - (int)(by)   ;
-    if( bx < 0)   bx = bx + (int)(-bx) + 1;
-    if( by < 0)   by = by + (int)(-by) + 1 ;
-     ***/
+
     bx = std::remainder(bx, 1.0);
     by = std::remainder(by, 1.0);
 
     xnew = bx * k11 + by * k21;
     ynew = bx * k12 + by * k22;
 
-    //for (int i = -HALFnperiod -1; i <  HALFnperiod +2 ; i++){
+//    for (int i = -HALFnperiod -1; i <  HALFnperiod +2 ; i++){
 //	for (int j = 0 ; j < nperiod  +1  ; j++){
 //		xx.xPix = XPixFuncQ(x + i * k11 + j * k21);          // (NumXPixel  * x / Info.degreeSym )
 
@@ -289,10 +283,13 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
 
     //  if (Info.CONJ == true) {
     //
-  //  if (rand()%2 == 0) ynew = -ynew; //FIXIT pass in CONJ!!!!!!!!!!!!!
+    if (rand()%2 == 0) ynew = -ynew; //FIXIT pass in CONJ!!!!!!!!!!!!!
     // }
-    inputPoint[0] = xnew<1?xnew:1.0; //(xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
-    inputPoint[1] = ynew<1? ynew: 1.0; // (ynew + .5)*0.96;
+    double xnewMod = (xnew );
+    double ynewMod = (ynew );
+
+    inputPoint[0] = xnewMod; //<1?xnewMod:1.0; //(xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
+    inputPoint[1] = ynewMod; // <1? ynewMod: 1.0; // (ynew + .5)*0.96;
 
 
   //  if(inputPoint[0] >=1 || inputPoint[1] >=1){

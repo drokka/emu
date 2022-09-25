@@ -50,9 +50,27 @@ else{
 
     unsigned char *pngBuf = nullptr;
     int len = 0;
+    int sz = atoi(argv[4]);
 
+    cout << "got sz = " <<sz << endl;
     int resy = runsample(argc, argv, outData, &lastPoint, &pngBuf, &len, iconDefUsed);
 
+    //write image to png
+    auto myview = boost::gil::interleaved_view(sz, sz, (boost::gil::rgba8_pixel_t const*)(pngBuf), 4 * sz);
+
+    cout <<"after boost::gil::interleaved_view" <<endl;
+
+    std::time_t result = std::time(nullptr);
+    const std::string ddate = to_string(result);
+
+    string fname("symD" +ddate);
+    std::ofstream imageOut2((fname + ".png").c_str(), std::ios_base::binary);
+
+    write_view( imageOut2, myview, boost::gil::png_tag() );
+    //  write_view(imageOut, view(b), boost::gil::png_tag());
+    imageOut2.flush();
+    imageOut2.close();
+    cout << "apparently wrote files" << endl;
 
     cout << "argc is " << argc << endl;
     cout << iconDefUsed.str() << endl;
@@ -117,7 +135,7 @@ int doMore(char **pString, bool changeClr) {
 
 
     unsigned char *byteArray = nullptr;
-    appy.colourIcon.colourIn(sz, false, &byteArray);
+    appy.colourIcon.colourIn(sz, false, &byteArray,1);
  //   unsigned char *pngBuf = nullptr;
   //  int len = 0;
    // appy.createByteBuffer(&byteArray,&len);

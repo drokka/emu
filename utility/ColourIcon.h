@@ -56,7 +56,7 @@ namespace emu {
 
         void setColourFunction(ColourFn func);
 
-        void colourIn(int sz, bool argb, unsigned char **rgbaByteArray);
+        void colourIn(int sz, bool argb, unsigned char **rgbaByteArray, int nperiod);
     };
 
 }

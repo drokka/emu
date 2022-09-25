@@ -8,7 +8,6 @@
 #include <assert.h>
 #include "SymIconApp.h"
 #include "ColourIcon.h"
-#include "image/PaintIcon.h"
 using namespace std;
 using namespace emu::utility;
 
@@ -57,7 +56,9 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
 
     appy->setColour(bg,min,max);
     unsigned char *rgbaBuf = nullptr;
-    appy ->colourIcon.colourIn(appy->sz,false, &rgbaBuf);
+    int nperiod = 1; //(appy->type == QuiltIcon::QuiltType::HEX)? 2:1;
+
+    appy ->colourIcon.colourIn(appy->sz,false, &rgbaBuf, nperiod);
     int bufLen = 0;
     appy->createPNG(pngBuf, &bufLen, fname);
     delete appy;
@@ -73,12 +74,15 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy.colourIcon.xSz = sz;
     appy.colourIcon.ySz = sz;
     appy.setColour(bg,min,max);
-    unsigned char *rgbaBuf = nullptr;
-    appy.colourIcon.colourIn(sz, true, &rgbaBuf);
-    int bufLen = 0;
-    appy.createByteBuffer(pngBuf, &bufLen, false);
-    free(rgbaBuf);
-    return bufLen;
+ //   unsigned  char *buf = nullptr;
+    int nperiod = 1;  //ype == QuiltIcon::QuiltType::HEX)? 2:1;
+
+    appy.colourIcon.colourIn(sz, false, pngBuf,nperiod);
+ //   int bufLen = 0;
+ //   appy->createPngBuffer(pngBuf, &bufLen);
+  //  delete appy;
+  //  free(buf);
+    return sz*sz*4;
 }
 
 int moreIterSample(long iterations, istringstream &inData, ostringstream &outData,
@@ -87,6 +91,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     inData >> *appy;
     appy->setIterations(iterations);
     appy->setInitPoint(appy->lastPoint);
+    if(sz >0){ appy->sz = sz;}
     appy->runGenerator();
     appy->save(outData);
     //double bgc[4] = {0.99,0.99,0.99,0.0};
@@ -98,23 +103,21 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
                                  << *minclr_c << " " << *(minclr_c+1) << " " << *(minclr_c+2) << " " << *(minclr_c+3)<< " " << *(minclr_c+4) << " , "
                                  << *maxclr_c << " " << *(maxclr_c+1) << " " << *(maxclr_c+2) << " " << *(maxclr_c+3)  << " " << *(maxclr_c+4) << endl;
 
+    if(bgclr_c != nullptr) {
     appy->setColour(bgclr_c ,minclr_c,maxclr_c);
-    unsigned  char *buf = nullptr;
-    appy ->colourIcon.colourIn(appy->sz, false, &buf);
+    }
+   // unsigned  char *buf = nullptr;
+    int nperiod = 1; //(appy->type == QuiltIcon::QuiltType::HEX)? 2:1;
 
-    int bufLen = 0;
-    appy->createPngBuffer(pngBuf, &bufLen, true);
-   /*
-    if(!appy->error) {
-        PaintIcon paintIcon;
-        *pngBuf = paintIcon.paintPNGtoBuffer(appy->colourIcon, true, &bufLen);
-        if (*pngBuf == nullptr) {
-            cout << "save png image failed." << endl;
-        }
-    }*/
+    appy ->colourIcon.colourIn(appy->sz, false, pngBuf,nperiod);
+
+ //   int bufLen = 0;
+//    appy->createPngBuffer(pngBuf, &bufLen, true);
+
+    int sz = appy->sz;
     delete appy;
-    free(buf);
-    return bufLen;
+  //  free(buf);
+    return sz*sz*4;
 }
 
 int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
@@ -205,8 +208,8 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
 
     double initX = 0.307;
     double initY = 0.079;
-    if(lastPoint != nullptr && (*lastPoint)[0] != 0.0) initX = (*lastPoint)[0];
-    if(lastPoint != nullptr && (*lastPoint)[1] != 0.0) initY = (*lastPoint)[1];
+    if(*lastPoint != nullptr && (*lastPoint)[0] != 0.0) initX = (*lastPoint)[0];
+    if(*lastPoint != nullptr && (*lastPoint)[1] != 0.0) initY = (*lastPoint)[1];
 
     std::string fnBase = "img_a_";
 
@@ -242,7 +245,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
    // cout << "max hits: " << app.maxhits << endl;
 
     app.save(outData);
-
+    *lastPoint =(double *) malloc(sizeof(double ) *2);
     (*lastPoint)[0] = app.lastPoint.val[0];
     (*lastPoint)[1] = app.lastPoint.val[1];
      //std::time_t result = std::time(nullptr);
@@ -250,8 +253,9 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
    // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
   //  if(res == 0) {
   //  unsigned  char *buf = nullptr;
+    int nperiod = 1; //(app.type == QuiltIcon::QuiltType::HEX)? 2:1;
 
-  app.colourIcon.colourIn(sz, false, pngBuf);
+  app.colourIcon.colourIn(sz, false, pngBuf,nperiod);
  /*
     if(!app.error) {
         PaintIcon paintIcon;
@@ -432,8 +436,9 @@ JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_Sy
         appy.save(outData);
         appy.setColour(bgclr_c ,minclr_c,maxclr_c);
         unsigned char* rgbaByteArray = nullptr;
-        appy .colourIcon.colourIn(appy.sz, false,&rgbaByteArray);
-        PaintIcon paintIcon;
+        int nperiod = 1;  //ype == QuiltIcon::QuiltType::HEX)? 2:1;
+
+        appy .colourIcon.colourIn(appy.sz, false,&rgbaByteArray,nperiod);
        // stringstream bugg;
       /*  RgbaList2DIter iter = appy->colourIcon.colourArray.begin();
         iter+=4455;
@@ -541,7 +546,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     appy.setColour(bgClrArray,minClrArray,maxClrArray);
     unsigned  char *buf = nullptr;
 
-    appy.colourIcon.colourIn(sz, false, &buf);
+    int nperiod = 1;  //ype == QuiltIcon::QuiltType::HEX)? 2:1;
+    appy.colourIcon.colourIn(sz, false, &buf,nperiod);
     int bufLen = 0;
 /*
     PaintIcon paintIcon;
