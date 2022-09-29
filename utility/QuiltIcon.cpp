@@ -13,9 +13,9 @@ const double QuiltIcon::pi = acos(-1);
 const double QuiltIcon::p2 = 2 * pi;
 
 void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, double beta,
-                          double gamma, double omega, double ma, double shift=0.5) {
-    //shift either 0 or 0.5
-    double  sx, sy;
+                          double gamma, double omega, double ma) {
+
+    double shift, sx, sy;
 
     double xnew;
     double ynew;
@@ -23,6 +23,7 @@ void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, doub
     double x = inputPoint[0];
     double y = inputPoint[1];
 
+    shift = 0;
     sx = sin(p2 * x);
     sy = sin(p2 * y);
 
@@ -285,8 +286,8 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
     //
     if (rand()%2 == 0) ynew = -ynew; //FIXIT pass in CONJ!!!!!!!!!!!!!
     // }
-    double xnewMod = (xnew );
-    double ynewMod = (ynew );
+    double xnewMod = (xnew )*0.96;
+    double ynewMod = (ynew )*0.96;
 
     inputPoint[0] = xnewMod; //<1?xnewMod:1.0; //(xnew + .5)*0.96;  //hack scale down to avoid out of range... hopefully
     inputPoint[1] = ynewMod; // <1? ynewMod: 1.0; // (ynew + .5)*0.96;

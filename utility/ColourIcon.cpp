@@ -3,6 +3,7 @@
 //
 
 #include "ColourIcon.h"
+#include "GeneratorException.h"
 #include <fstream>
 
 
@@ -29,14 +30,7 @@ void emu::utility::ColourIcon::colourIn(int sz , bool argb, unsigned char **rgba
     // byte array background colour
     int byteArrayLen = iconSize*iconSize*4; //ASSUMING alpha
     int pixelLen = iconSize*iconSize;
-    *rgbaByteArray = static_cast<unsigned char *>(malloc(byteArrayLen));
-  //  if(nperiod == 1) {  //Not HEX, for HEX want transparent background....
-        for (int k = 0; k < pixelLen; k++) {
-            for (int j = 0; j < 4; j++) {
-                (*rgbaByteArray)[4 * k + j] = (unsigned char) (bgRGBA[j] * 255.0);
-            }
-        }
-   // }
+
     //----------------------------------------
     if( sz==0) {
         fd = &(pointList->freqTables[xSz]);
@@ -62,6 +56,20 @@ void emu::utility::ColourIcon::colourIn(int sz , bool argb, unsigned char **rgba
     emu::utility::FrequencyList2DConstIter iter = pointList->freqTables[iconSize].frequencyList->begin();
 int frequLen = pointList->freqTables[iconSize].frequencyList->size();
 cout << "frequ Len " << frequLen <<endl;
+
+if(frequLen < 1) { // No interesting image
+//    throw emu::utility::GeneratorException("ColourIn: frequencyList size too small.");  //Throwing through static C not good??
+    return; // Use null rgbaByteArray to signal error
+}
+
+    *rgbaByteArray = static_cast<unsigned char *>(malloc(byteArrayLen));
+    //  if(nperiod == 1) {  //Not HEX, for HEX want transparent background....
+    for (int k = 0; k < pixelLen; k++) {
+        for (int j = 0; j < 4; j++) {
+            (*rgbaByteArray)[4 * k + j] = (unsigned char) (bgRGBA[j] * 255.0);
+        }
+    }
+    // }
 
     double tan30 = 0.57735027;
     double sin60 = 0.8660254;
@@ -92,7 +100,7 @@ cout << "frequ Len " << frequLen <<endl;
              double widthHEX = szDD * 2.0 / 3.0;
              double heightHex = sz*  0.578246393  - 4;       // 7.0/12.0 -6;   //Hack!!!!!!!11
             double sq3 =  pow(3, 0.5);
-            double *rgba = (double *) (calloc(4, sizeof(double)));
+            auto *rgba = (double *) (calloc(4, sizeof(double)));
             colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba);
           //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
 
@@ -105,10 +113,11 @@ cout << "frequ Len " << frequLen <<endl;
             double midY = sz*2/7; // trial and error!!!
              //  if(pow(x-midX,2) + pow(y-midY,2) > pow(sz/2,2)) continue; //exclude those extra triangles, nearly
 
-              if(x*gradient + k1 > y || x*gradient + k2 < y) continue;
 
             colourPoint(x, y, rgba);
                 if(nperiod == 1) {
+                    if(x < 0 || x >= sz || y < 0 || y >= ySz) continue;
+
                     for (int i = 0; i < 4; i++) {
                         (*rgbaByteArray)[4 * (y * iconSize + x) + i] = (unsigned char) (rgba[i] *255.0);
                     }
@@ -117,12 +126,14 @@ cout << "frequ Len " << frequLen <<endl;
                         // Hmm generating a parallelogram containing the full hex shape but extended top left
                         // and bottom right corners beyond the hex border. Need to exclude these triangle regions
                         // before the diagonal hex stacking.
+                    if(x*gradient + k1 > y || x*gradient + k2 < y) continue;
+
                     for(int i = -1; i<= 3 ; i++){
                         int xx = (x+ 0.75*widthHEX*i);
                         if(xx < 0 || xx >= sz) continue;
                         for(int j= -1; j <= 3 ; j++){
 
-                            int yy = (y + heightHex*((-(i%2)*0.5) + j));                //HEX square root 3
+                            int yy = (y + heightHex*((-(i%2)*0.5) + j));
                             if(yy < 0 || yy >= ySz) continue;
                             for (int ii = 0; ii < 4; ii++) {   //pixel depth is 4 rgba
                                 int index = int(4 * (yy * sz + xx) + ii);

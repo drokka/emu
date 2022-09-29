@@ -75,7 +75,13 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
 
    // unsigned char* rgbaArray = nullptr;
     int nperiod = (qi->quiltType == QuiltIcon::QuiltType::HEX)?2:1;
-    colourIcon.colourIn(sz,true, pngBuf, nperiod);
+        colourIcon.colourIn(sz, true, pngBuf, nperiod);
+    if (pngBuf == nullptr){
+        error = true;
+        errorMsg = "colourIn returned empty buffer, no useful data.";
+        *len = 0;
+        return  0;
+    }
     cout<< "createPNG pngBuf first and last pixel: " << endl;
     cout << (*pngBuf)[0] <<","<< (*pngBuf)[1] <<","<<(*pngBuf)[2] <<","<< (*pngBuf)[3] <<","<<endl;
     cout << (*pngBuf)[(sz*sz-1)*4 +0] <<","<< (*pngBuf)[(sz*sz-1)*4 +1] <<","<<(*pngBuf)[(sz*sz-1)*4 +2] <<","<< (*pngBuf)[(sz*sz-1)*4 +3] <<","<<endl;
@@ -228,7 +234,7 @@ std::istream& operator>>(std::istream &input, emu::utility::SymIconApp& symIconA
                          >> symIconApp.omegaVal
                          >> symIconApp.maVal
                          >> symIconApp.degSym;
-    input >> *(symIconApp.qi);
+    input >> *(symIconApp.qi); symIconApp.type = symIconApp.qi->quiltType;   //Data should only live in one place!!
     input >>  symIconApp.hl ;
     double x, y;
     input >> x >> y;
