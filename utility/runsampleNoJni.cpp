@@ -56,7 +56,7 @@ int reColour(stringstream& symIn, unsigned char **pngBuf, string fname, double* 
     appy->setColour(bg,min,max);
     unsigned  char *buf = nullptr;
 
-    appy ->colourIcon.colourIn(appy->sz, false, &buf,1);
+    appy->colourIcon.colourIn(appy->sz, false, &buf, 1, 0);
     int bufLen = 0;
     appy->createPNG(pngBuf, &bufLen, fname);
     delete appy;
@@ -80,7 +80,7 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy->setColour(bg,min,max);
  //   unsigned  char *buf = nullptr;
 
-    appy ->colourIcon.colourIn(sz, false, pngBuf,1);
+    appy->colourIcon.colourIn(sz, false, pngBuf, 1, 0);
  //   int bufLen = 0;
  //   appy->createPngBuffer(pngBuf, &bufLen);
     delete appy;
@@ -110,7 +110,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
         appy->setColour(bgclr_c, minclr_c, maxclr_c);
     }
    // unsigned  char *buf = nullptr;
-    appy ->colourIcon.colourIn(appy->sz, false, pngBuf,1);
+    appy->colourIcon.colourIn(appy->sz, false, pngBuf, 1, 0);
 
  //   int bufLen = 0;
 //    appy->createPngBuffer(pngBuf, &bufLen, true);

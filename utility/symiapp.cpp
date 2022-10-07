@@ -135,7 +135,7 @@ int doMore(char **pString, bool changeClr) {
 
 
     unsigned char *byteArray = nullptr;
-    appy.colourIcon.colourIn(sz, false, &byteArray,1);
+    appy.colourIcon.colourIn(sz, false, &byteArray, 1, 0);
  //   unsigned char *pngBuf = nullptr;
   //  int len = 0;
    // appy.createByteBuffer(&byteArray,&len);

@@ -22,7 +22,8 @@ namespace emu {
         typedef std::map<IntegerPoint2D, double*>::iterator RgbaList2DIter;
 
         void simpleColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
-                                   double *rgbaOut);
+                                   double *rgbaOut, double fntype = 0.0);
+
     class ColourIcon {
         PointList *pointList;
         bool useAlpha = false;
@@ -32,7 +33,7 @@ namespace emu {
         double *minRGBA;
         double *maxRGBA;
         typedef void (*ColourFn)(double min[4], double max[4], long frequency, FrequencyData &pointList,
-                                 double *rgbaOut); //calculate RGBA to colourise frequency
+                                 double *rgbaOut, double fntype); //calculate RGBA to colourise frequency
 
         ColourIcon(int xSz, int ySz, double *bgRGBA, double *minRGBA, double *maxRGBA, PointList *pointList,
                  ColourFn colourFn , RgbaList2D &colourArray);
@@ -56,7 +57,7 @@ namespace emu {
 
         void setColourFunction(ColourFn func);
 
-        void colourIn(int sz, bool argb, unsigned char **rgbaByteArray, int nperiod);
+        void colourIn(int sz, bool argb, unsigned char **rgbaByteArray, int nperiod, double d);
     };
 
 }

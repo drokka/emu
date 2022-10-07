@@ -64,7 +64,7 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
  //   unsigned  char *buf = nullptr;
     int nperiod = (appy.type == QuiltIcon::QuiltType::HEX)? 2:1;
 
-        appy.colourIcon.colourIn(sz, false, pngBuf, nperiod);
+    appy.colourIcon.colourIn(sz, false, pngBuf, nperiod, 0);
     if(pngBuf == nullptr){
         appy.error = true;
         return 0;
@@ -103,7 +103,7 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
 
     int resy = sz*sz*4;
 
-    appy ->colourIcon.colourIn(appy->sz, false, pngBuf,nperiod);
+    appy->colourIcon.colourIn(appy->sz, false, pngBuf, nperiod, 0);
     if(pngBuf == nullptr){
         resy = 0;
     }
@@ -115,7 +115,8 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     return resy;
 }
 
-int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
+int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len,
+              ostringstream &iconDefUsed, const char* clrFun, double clrFunExp) {
 
     long iterations = 10000;
     if(nparam >1){
@@ -249,7 +250,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
   //  if(res == 0) {
   //  unsigned  char *buf = nullptr;
     int nperiod = (app.type == QuiltIcon::QuiltType::HEX)? 2:1;
-    app.colourIcon.colourIn(sz, false, pngBuf, nperiod);
+    app.colourIcon.colourIn(sz, false, pngBuf, nperiod, clrFunExp);
     if(pngBuf == nullptr){
         app.error = true;
     return 0;
@@ -390,7 +391,8 @@ JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_Sy
                             JNIEnv *env,jclass jazz,
                                           jobject mainViewModel ,jobject context,
                                           jlong iterations,  jstring fname, jstring imageFileName,
-                                          jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr){
+                                          jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr,
+                            jstring clr_function, jdouble clr_fun_exp){
     jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
     jobject outputData = env->AllocObject(outputDataClass);
     jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
@@ -436,7 +438,7 @@ JNIEXPORT jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_Sy
         unsigned char* rgbaByteArray = nullptr;
         jobject bitmapObj = nullptr;
         int nperiod = (appy.type == QuiltIcon::QuiltType::HEX)? 2:1;
-        appy .colourIcon.colourIn(appy.sz, false,&rgbaByteArray,nperiod);
+        appy.colourIcon.colourIn(appy.sz, false, &rgbaByteArray, nperiod, clr_fun_exp);
         if(rgbaByteArray!= nullptr && appy.error == false) {
             jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap",
                                                    "Landroid/graphics/Bitmap;");
@@ -511,16 +513,17 @@ return outputData;
  */
 extern "C"
 JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callReColourBufFromJNI(
-        JNIEnv *env, jclass jazz, jstring symIn, jint sz, jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr) {
+        JNIEnv *env, jclass jazz, jstring symIn, jint sz, jdoubleArray bgClr, jdoubleArray minClr, jdoubleArray maxClr,
+         jstring  clr_function, jdouble clr_fun_exp) {
 
     ostringstream output("test");
     jclass outputDataClass = env->FindClass("com/drokka/emu/symicon/generateicon/nativewrap/OutputData");
     jobject outputData = env->AllocObject(outputDataClass);
-  //  jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
+    jfieldID savedDataField = env->GetFieldID(outputDataClass, "savedData", "Ljava/lang/String;");
   //  jfieldID paramsUsedField = env->GetFieldID(outputDataClass, "paramsUsed", "Ljava/lang/String;");
 
-  //  jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
-    jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
+   // jfieldID pngBufferField = env->GetFieldID(outputDataClass, "pngBuffer", "[B");
+    //jfieldID pngBufferLenField = env->GetFieldID(outputDataClass, "pngBufferLen", "I");
 
     jfieldID bitmapField = env->GetFieldID(outputDataClass, "bitmap", "Landroid/graphics/Bitmap;");
 
@@ -533,7 +536,7 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     env->GetDoubleArrayRegion( minClr, 0, 4, minClrArray );
     double maxClrArray[4] ;
     env->GetDoubleArrayRegion( maxClr, 0, 4, maxClrArray );
-
+    double clrFunExp = clr_fun_exp;
     int len = 0;
     auto symInString = env->GetStringUTFChars(symIn,0);
     stringstream symStream;
@@ -549,16 +552,20 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     appy.colourIcon.ySz = sz;
     appy.setColour(bgClrArray,minClrArray,maxClrArray);
     unsigned  char *buf = nullptr;
+    len = sz*sz*4;
 
     jobject bitmapObj = nullptr;
     int nperiod = (appy.type == QuiltIcon::QuiltType::HEX)? 2:1;
-    appy.colourIcon.colourIn(sz, false, &buf,nperiod);
+    appy.colourIcon.colourIn(sz, false, &buf, nperiod, clrFunExp);
     if(buf != nullptr) {
         bitmapObj = bitmapFromJNI(env, sz, buf);
-
-        env->SetObjectField(outputData, bitmapField, bitmapObj);
+        if(bitmapObj != nullptr) {
+            env->SetObjectField(outputData, bitmapField, bitmapObj);
+        }else{
+            env->SetObjectField(outputData,savedDataField, (jstring) "Error creating bitmap");
+        }
     }
-    int bufLen = 0;
+  //  int bufLen = 0;
 /*
     PaintIcon paintIcon;
     paintIcon.getCharArray(appy.colourIcon, true,   false);
@@ -570,13 +577,13 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
    */
   //  mungeRgbaToArgbAndroid(&pngBuf, len);
 
- /*   jbyteArray pngJBuf = env->NewByteArray(len);
-    if (pngBuf != nullptr) {
-        env->SetByteArrayRegion(pngJBuf, 0, len, (jbyte *) pngBuf);
-    }
-*/
-  //  env->SetObjectField(outputData, pngBufferField, pngJBuf);
-  //  env->SetIntField(outputData, pngBufferLenField,  len);
+ //   jbyteArray pngJBuf = env->NewByteArray(len);
+  //  if (buf != nullptr) {
+  //      env->SetByteArrayRegion(pngJBuf, 0, sz*sz*4, (jbyte *) buf);
+   // }
+
+//    env->SetObjectField(outputData, pngBufferField, pngJBuf);
+ //   env->SetIntField(outputData, pngBufferLenField,  sz*sz*4);
 
 
 
@@ -596,7 +603,8 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
 
 extern "C"
 JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_SymiNativeWrapperKt_callRunSampleFromJNI(
-        JNIEnv *env, jclass clazz, jintArray intArgs, jbyte iconImageType, jdoubleArray dArgs) {
+        JNIEnv *env, jclass clazz, jintArray intArgs, jbyte iconImageType, jdoubleArray dArgs,
+        jstring clr_function, jdouble clr_fun_exp) {
 
     bool generateError = false;
     ostringstream output("test");
@@ -661,8 +669,9 @@ JNIEXPORT  jobject JNICALL Java_com_drokka_emu_symicon_generateicon_nativewrap_S
     double *lastPoint = static_cast<double *>(malloc(2 * sizeof(double)));
     lastPoint[0] = 0.0;
     lastPoint[1] = 0.0;
+    const char* clrFun = env->GetStringUTFChars(clr_function,NULL);
     result = runsample(nparam, argy, output, reinterpret_cast<double **>(&lastPoint), &rgbaBuf,
-                       &len, captureParams);
+                       &len, captureParams, clrFun, (double)clr_fun_exp);
 
     if (result == 0 || rgbaBuf == nullptr) {
         generateError = true;

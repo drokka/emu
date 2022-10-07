@@ -19,7 +19,9 @@ emu::utility::ColourIcon::ColourIcon(int xSz, int ySz, double *bgRGBA, double *m
           colourFn(emu::utility::simpleColourFn), colourArray(clrArray) {
 
 }
-void emu::utility::ColourIcon::colourIn(int sz , bool argb, unsigned char **rgbaByteArray, int nperiod = 1) {
+void
+emu::utility::ColourIcon::colourIn(int sz, bool argb, unsigned char **rgbaByteArray, int nperiod,
+                                   double clrFunExp) {
 
     if(colourFn == nullptr){
         colourFn = emu::utility::simpleColourFn;
@@ -98,10 +100,10 @@ if(frequLen < 1) { // No interesting image
              ******************/
              auto szDD = (double) sz;
              double widthHEX = szDD * 2.0 / 3.0;
-             double heightHex = sz*  0.578246393  - 4;       // 7.0/12.0 -6;   //Hack!!!!!!!11
+             double heightHex = sz* 0.578246393 +1;       // 7.0/12.0 -6;   //Hack!!!!!!!11
             double sq3 =  pow(3, 0.5);
             auto *rgba = (double *) (calloc(4, sizeof(double)));
-            colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba);
+            colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba, clrFunExp);
           //  cout << "colourFn gave rgba: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << " " << rgba[3] << endl;
 
      //       if(argb){ //switch for Android bitmap ARGB format
@@ -114,7 +116,7 @@ if(frequLen < 1) { // No interesting image
              //  if(pow(x-midX,2) + pow(y-midY,2) > pow(sz/2,2)) continue; //exclude those extra triangles, nearly
 
 
-            colourPoint(x, y, rgba);
+         //   colourPoint(x, y, rgba);
                 if(nperiod == 1) {
                     if(x < 0 || x >= sz || y < 0 || y >= ySz) continue;
 
@@ -191,21 +193,34 @@ void ColourIcon::setColourFunction(ColourIcon::ColourFn func){
 }
 
 void emu::utility::simpleColourFn(double *minRGBA, double *maxRGBA, long hits, FrequencyData &fd,
-                                                    double *rgbaOut) {
+                                                    double *rgbaOut, double fntype) {
     long maxhits = fd.maxHits;
+    long minHits = fd.minHits;
+    long fdiff = maxhits - minHits;
     // cout<< "maxHits for " << sz <<" is "<< maxhits<<endl;
-    long fdiff = maxhits>1?maxhits-1: 1; //maxx -minn;
+     if (fdiff == 0) fdiff =1;                    //maxhits>1?maxhits-1: 1; //maxx -minn;
 
     //  cout << "maxhits " <<maxhits <<endl;
-    double ratio = (double)(hits - 1)/fdiff;
+    double ratio = (double)(hits - minHits)/fdiff;
     //   cout <<"opacity " << opacity <<endl;std::max(
 //opacity=0.3*opacity;
     //bound opacity between 0 and 1.
   //  opacity = (opacity <= 0)?0.05:opacity;
   //  opacity = (opacity >1)?1:opacity;
-  for(int i=0;i<4;i++){
-      rgbaOut[i] = minRGBA[i] + ratio*(maxRGBA[i] - minRGBA[i]);
-  }
+ //   if (fntype==0) {
+
+  //      for (int i = 0; i < 4; i++) {
+  //          rgbaOut[i] = minRGBA[i] + ratio * (maxRGBA[i] - minRGBA[i]);
+  //      }
+  //  }else {
+           //exp, take the exp of the ratio
+           double factor = pow(ratio, fntype);
+         //  factor = min(factor,1.0);
+            for (int i = 0; i < 4; i++) {
+                rgbaOut[i] = minRGBA[i] + factor * (maxRGBA[i] - minRGBA[i]);
+  //          }
+    }
+
    // rgbaOut[3] = 1.0;
 }
 

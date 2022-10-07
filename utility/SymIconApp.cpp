@@ -75,7 +75,7 @@ int SymIconApp::createPNG(unsigned char ** pngBuf, int *len, string fname){
 
    // unsigned char* rgbaArray = nullptr;
     int nperiod = (qi->quiltType == QuiltIcon::QuiltType::HEX)?2:1;
-        colourIcon.colourIn(sz, true, pngBuf, nperiod);
+    colourIcon.colourIn(sz, true, pngBuf, nperiod, 0);
     if (pngBuf == nullptr){
         error = true;
         errorMsg = "colourIn returned empty buffer, no useful data.";
