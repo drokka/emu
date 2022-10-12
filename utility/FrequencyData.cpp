@@ -26,6 +26,8 @@ IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) 
     int a = m * (pt.val[0]); //normally generated pt values between -1, 1.
     int b = m * (pt.val[1]); // integral values between 0 and scale
     ipp = IntegerPoint2D(a, b);
+    if(a <= -m || a >= m || b <= -m || b >= m) return ipp;  // ignore out of range values... CHECK!!!
+
     FrequencyList2DIter j = frequencyList->find(ipp);
     if (j == frequencyList->end()) {
         std::pair<IntegerPoint2D, long> entry = std::make_pair(ipp, 1);

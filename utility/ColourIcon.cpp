@@ -99,8 +99,8 @@ if(frequLen < 1) { // No interesting image
         }
              ******************/
              auto szDD = (double) sz;
-             double widthHEX = szDD * 2.0 / 3.0;
-             double heightHex = sz* 0.578246393 +1;       // 7.0/12.0 -6;   //Hack!!!!!!!11
+             double widthHEX = szDD * 2.0 / 3.0 ;
+             double heightHex = sz* 0.578246393 ;       // 7.0/12.0 -6;   //Hack!!!!!!!11
             double sq3 =  pow(3, 0.5);
             auto *rgba = (double *) (calloc(4, sizeof(double)));
             colourFn(minRGBA, maxRGBA, hits, pointList->freqTables[iconSize], rgba, clrFunExp);
@@ -116,7 +116,7 @@ if(frequLen < 1) { // No interesting image
              //  if(pow(x-midX,2) + pow(y-midY,2) > pow(sz/2,2)) continue; //exclude those extra triangles, nearly
 
 
-         //   colourPoint(x, y, rgba);
+            colourPoint(x, y, rgba);
                 if(nperiod == 1) {
                     if(x < 0 || x >= sz || y < 0 || y >= ySz) continue;
 
