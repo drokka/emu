@@ -23,10 +23,13 @@ frequencyList(shared_ptr<FrequencyList2D>(new FrequencyList2D()))  {
 IntegerPoint2D emu::utility::FrequencyData::addIntegerPoint( const Point2D &pt) {
     IntegerPoint2D ipp;
     int m = this->scale;
-    int a = m * (pt.val[0]); //normally generated pt values between -1, 1.
-    int b = m * (pt.val[1]); // integral values between 0 and scale
+    int a = m * (pt.val[0]);
+    int b = m * (pt.val[1]);
     ipp = IntegerPoint2D(a, b);
-    if(a <= -m || a >= m || b <= -m || b >= m) return ipp;  // ignore out of range values... CHECK!!!
+    if(a < -m || a >= m || b < -m || b >= m) {
+      //  cout << "addIntegerPoint got outside boundary input: " << pt.val[0] << ", " << pt.val[1] << " a = " << a << "b = " << b << endl;
+        return ipp;  // ignore out of range values... CHECK!!!
+    }
 
     FrequencyList2DIter j = frequencyList->find(ipp);
     if (j == frequencyList->end()) {

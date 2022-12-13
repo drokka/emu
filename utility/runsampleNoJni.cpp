@@ -79,8 +79,13 @@ int reColourBuffer(stringstream& symIn, int sz, unsigned char **pngBuf, double* 
     appy->colourIcon.ySz = sz;
     appy->setColour(bg,min,max);
  //   unsigned  char *buf = nullptr;
+    int nperiod = (appy->type == QuiltIcon::QuiltType::HEX)? 2:1;
 
-    appy->colourIcon.colourIn(sz, false, pngBuf, 1, 0);
+    appy->colourIcon.colourIn(sz, false, pngBuf, nperiod, 0);
+    if(pngBuf == nullptr){
+        appy->error = true;
+        return 0;
+    }
  //   int bufLen = 0;
  //   appy->createPngBuffer(pngBuf, &bufLen);
     delete appy;
@@ -110,8 +115,15 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
         appy->setColour(bgclr_c, minclr_c, maxclr_c);
     }
    // unsigned  char *buf = nullptr;
-    appy->colourIcon.colourIn(appy->sz, false, pngBuf, 1, 0);
+    int nperiod = (appy->type == QuiltIcon::QuiltType::HEX)? 2:1;
+     sz = appy->sz;
 
+    int resy = sz*sz*4;
+
+    appy->colourIcon.colourIn(appy->sz, false, pngBuf, nperiod, 0);
+    if(pngBuf == nullptr){
+        resy = 0;
+    }
  //   int bufLen = 0;
 //    appy->createPngBuffer(pngBuf, &bufLen, true);
 
@@ -120,7 +132,8 @@ int moreIterSample(long iterations, istringstream &inData, ostringstream &outDat
     return sz*sz*4;
 }
 
-int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len, ostringstream &iconDefUsed) {
+int runsample(int nparam, char** param, ostringstream &outData, double** lastPoint,unsigned char **pngBuf, int *len,
+              ostringstream &iconDefUsed, const char* clrFun, double clrFunExp) {
 
     long iterations = 10000;
     if(nparam >1){
@@ -144,6 +157,7 @@ int degSym = 4;
     if (nparam >= 3) {
         if ('H' == param[2][0]) { quiltType = QuiltIcon::QuiltType::HEX; }
         else if ('F' == param[2][0]) { quiltType = QuiltIcon::QuiltType::FRACTAL; }
+        else if ('I' == param[2][0]) { quiltType = QuiltIcon::QuiltType::SQUARE_ICON;}
     }
     if(nparam >=5)
     {
@@ -220,9 +234,9 @@ int degSym = 4;
 
     double iconParams[] = {lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal};
     int numIconParams = 6;
-    double bgClr[] ={0, 0.2, .15, .10};
-    double minClr[]= {0.0,0,.99,0.50};
-    double maxClr[] = {.99,0,0,1.0};
+    double bgClr[] ={0, 0.2, .15, 1.0};
+    double minClr[]= {0.0,.5,.3,1.0};
+    double maxClr[] = {.3,.99,.99,1.0};
 
     if(nparam == 24) { //colours provided
         bgClr[0] = strtod(param[12], nullptr);
@@ -252,15 +266,18 @@ int degSym = 4;
     *lastPoint =(double *) malloc(sizeof(double ) *2);
     (*lastPoint)[0] = app.lastPoint.val[0];
     (*lastPoint)[1] = app.lastPoint.val[1];
-
-     std::time_t result = std::time(nullptr);
-     const std::string ddate = to_string(result);
-
-     string fname("symD" +ddate+".symd");
-     ofstream symFile;
-     symFile.open(fname.c_str(), std::ofstream::out);
-     cout <<"writing the SymIconApp to file " + fname <<endl;
-     symFile << app; // use the operator << defn
+     //std::time_t result = std::time(nullptr);
+    // const std::string ddate = to_string(result).data();
+   // int res = PaintIcon::paintPNG(app.colourIcon, "symi_" +ddate +".png",false);
+  //  if(res == 0) {
+  //  unsigned  char *buf = nullptr;
+    int nperiod = (app.type == QuiltIcon::QuiltType::HEX)? 2:1;
+    app.colourIcon.colourIn(sz, false, pngBuf, nperiod, clrFunExp);
+    if(pngBuf == nullptr){
+        app.error = true;
+    return 0;
+}
+ /*
     if(!app.error) {
 
         app.createPNG(pngBuf, len,"symi_" + ddate + ".png");
@@ -288,7 +305,7 @@ int degSym = 4;
     }
    ***************************************************************/
 
-    }
+
 cout<< "max hits is " << app.maxhits <<endl;
    int resy = app.maxhits;
 

@@ -14,7 +14,19 @@ emu::utility::Point2D  emu::utility::Generator::go(const Point2D& startPt) {
     emu::utility::Point2D point;
     point.val[0] = startPt.val[0];
     point.val[1] = startPt.val[1];
-    hl->addPoint(point);
+
+    /*
+     * SymIcon::XPixFunc(long double x)
+{
+	return (NumXPixel /2*scale ) * (x + scale);
+}
+
+SymIcon::YPixFunc(long double y)
+{
+	return NumYPixel - (NumYPixel /2*scale ) * (y + scale);
+}
+     */
+  //  hl->addPoint(point);
 
     for (int i = 0; i < iters; i++) {
         double inPt[2] = {(double) (point.val[0]), (double) point.val[1]};

@@ -137,6 +137,7 @@ int runsample(int nparam, char** param, ostringstream &outData, double** lastPoi
     if (nparam >= 3) {
         if ('H' == param[2][0]) { quiltType = QuiltIcon::QuiltType::HEX; }
         else if ('F' == param[2][0]) { quiltType = QuiltIcon::QuiltType::FRACTAL; }
+        else if ('I' == param[2][0]) { quiltType = QuiltIcon::QuiltType::SQUARE_ICON;}
     }
     if(nparam >=5)
     {

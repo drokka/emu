@@ -27,6 +27,19 @@ SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::Q
         maVal = iconParams[5];
     }
 
+    switch (type) {
+        case QuiltIcon::QuiltType::SQUARE: hl.notTiled = true;
+            maVal = floor(maVal*10);     // tiled patterns have integral values... or sixth root of 1.
+            break;  //notTiled used to add buffer to scaling for non-repeating patterns.
+        case QuiltIcon::QuiltType::SQUARE_ICON: hl.notTiled = true;
+            maVal = floor(maVal*10);
+            break;
+        case QuiltIcon::QuiltType::FRACTAL: hl.notTiled = true; break;
+        case QuiltIcon::QuiltType::HEX: hl.notTiled = false;
+            maVal = floor(maVal*10);
+
+    }
+
     qi = new QuiltIcon(lambdaVal, alphaVal, betaVal, gammaVal, omegaVal, maVal, degSym, type);
     gg = new Generator(qi, iterations, &hl);
 

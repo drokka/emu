@@ -33,7 +33,7 @@ namespace emu {
 
         public:
             enum class QuiltType {
-                SQUARE, HEX, FRACTAL
+                SQUARE, HEX, FRACTAL, SQUARE_ICON
             };
             QuiltType quiltType = QuiltType::SQUARE;
             const static double pi;
@@ -78,7 +78,11 @@ namespace emu {
             virtual void setValue(double _lambda, double _alpha, double _beta, double _gamma, double _omega,
                                   double _ma);
 
+            static void generate1_(double inputPoint[], double lambda, double alpha, double beta, double gamma,
+                                  double omega, double ma, bool tiled);
             static void generate1(double inputPoint[], double lambda, double alpha, double beta, double gamma,
+                                  double omega, double ma);
+            static void generate1_NoTile(double inputPoint[], double lambda, double alpha, double beta, double gamma,
                                   double omega, double ma);
 
             static void

@@ -37,10 +37,10 @@ int main(int argc , char** argv){
 //        maxClr[2] = strtod(pString[22], nullptr);
 //        maxClr[3] = strtod(pString[23], nullptr);                24
 
-if(argc == 16 ){ //iters  filename    size  colours
+if(argc == 18 ){ //iters  filename    size  colours
      doMore(argv, true);
 
-}else if( argc == 4){
+}else if( argc == 6){
     doMore(argv, false);
 }
 else{
@@ -52,8 +52,9 @@ else{
     int len = 0;
     int sz = atoi(argv[4]);
 
-    cout << "got sz = " <<sz << endl;
-    int resy = runsample(argc, argv, outData, &lastPoint, &pngBuf, &len, iconDefUsed);
+    double clrFunExp = atof(argv[argc-1]);  //tack colour function exponent on the end of input parameters. and period before that.
+    cout << "got sz = " <<sz << " clrFunExp = " << clrFunExp << endl;
+    int resy = runsample(argc, argv, outData, &lastPoint, &pngBuf, &len, iconDefUsed, "default", clrFunExp);
 
     //write image to png
     auto myview = boost::gil::interleaved_view(sz, sz, (boost::gil::rgba8_pixel_t const*)(pngBuf), 4 * sz);
@@ -64,6 +65,7 @@ else{
     const std::string ddate = to_string(result);
 
     string fname("symD" +ddate);
+    cout << "fname is " << fname <<endl;
     std::ofstream imageOut2((fname + ".png").c_str(), std::ios_base::binary);
 
     write_view( imageOut2, myview, boost::gil::png_tag() );
@@ -90,7 +92,8 @@ int doMore(char **pString, bool changeClr) {
     inSymi >> appy;
     appy.sz = sz;
     appy.colourIcon.xSz = sz; appy.colourIcon.ySz = sz;
-
+    int nperiod = 1;
+    double clrFunExp = 0.057;
     if(changeClr) {
         double bgClr[4];
         double minClr[4];
@@ -111,8 +114,14 @@ int doMore(char **pString, bool changeClr) {
         maxClr[3] = strtod(pString[15], nullptr);
 
         appy.setColour(bgClr, minClr, maxClr);
+        nperiod = atoi(pString[16]);
+        clrFunExp = atof(pString[17]);
     }
+    else { // argc is 6
 
+        nperiod = atoi(pString[4]);
+        clrFunExp = atof(pString[5]);
+    }
     cout<< "after setColour " << appy.colourIcon.bgRGBA[0] <<" " << appy.colourIcon.bgRGBA[1] <<" "
     <<     appy.colourIcon.bgRGBA[2] <<" " << appy.colourIcon.bgRGBA[3] << endl;
     cout<< "after setColour " << appy.colourIcon.minRGBA[0] <<" " << appy.colourIcon.minRGBA[1] <<" "
@@ -135,7 +144,7 @@ int doMore(char **pString, bool changeClr) {
 
 
     unsigned char *byteArray = nullptr;
-    appy.colourIcon.colourIn(sz, false, &byteArray, 1, 0);
+    appy.colourIcon.colourIn(sz, false, &byteArray, nperiod, clrFunExp);
  //   unsigned char *pngBuf = nullptr;
   //  int len = 0;
    // appy.createByteBuffer(&byteArray,&len);

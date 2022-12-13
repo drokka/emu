@@ -13,7 +13,7 @@ int main(int nparams, char** params){
 
     cout<<"runsample call 1"<<endl;
     double *lastPoint = nullptr;  //runsample allocs 2*double
-    int result = runsample(nparams, params, output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, paramValsApplied);
+    int result = runsample(nparams, params, output, reinterpret_cast<double **>(&lastPoint), &pngBuf, &len, paramValsApplied, "default", 0.57);
 
   //  char msg[150]; strchr(msg,0);
  //   sprintf(msg, "pngBuf: %i  %i  %i  %i  %i  last one %i len is %i.", pngBuf[0], pngBuf[1]  ,pngBuf[2]  ,
@@ -35,7 +35,7 @@ int main(int nparams, char** params){
     unsigned char* pngBuf2 = nullptr;
     ostringstream outputH;
     cout<<"runsampe call 2, HEX icon" <<endl;
-            result += runsample(3,parma , outputH,reinterpret_cast<double **>(&lastPoint), &pngBuf2, &len, paramValsApplied1);
+            result += runsample(3,parma , outputH,reinterpret_cast<double **>(&lastPoint), &pngBuf2, &len, paramValsApplied1, "default", 0.57);
 
     std::time_t resultH = std::time(nullptr);
     const std::string ddateH = to_string(resultH).data();
@@ -101,7 +101,7 @@ int main(int nparams, char** params){
 
     double *lasty = nullptr;
     cout<< "before runsample for FRACTAL call" <<endl;
-    result += runsample(12,parmaa , output3, reinterpret_cast<double **>(&lasty),&pngBuf3, &len3, paramValsApplied2);
+    result += runsample(12,parmaa , output3, reinterpret_cast<double **>(&lasty),&pngBuf3, &len3, paramValsApplied2, "default", 0.57);
 
      cout << "FRACTAL ICON DONE!!" << endl;
     cout << paramValsApplied2.str() << endl;

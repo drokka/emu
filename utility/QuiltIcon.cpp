@@ -12,8 +12,10 @@ using namespace emu::utility;
 const double QuiltIcon::pi = acos(-1);
 const double QuiltIcon::p2 = 2 * pi;
 
-void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, double beta,
-                          double gamma, double omega, double ma) {
+// Square quilts. Parameter values -1 to 1 ok. shift set to 0 ie (0,0) alternative is (0.5, 0.5)
+//
+void QuiltIcon::generate1_(double inputPoint[], double lambda, double alpha, double beta,
+                          double gamma, double omega, double ma, bool tile) {
 
     double shift, sx, sy;
 
@@ -23,7 +25,7 @@ void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, doub
     double x = inputPoint[0];
     double y = inputPoint[1];
 
-    shift = 0;
+    shift = 0;              // input to do!!!
     sx = sin(p2 * x);
     sy = sin(p2 * y);
 
@@ -45,8 +47,10 @@ void QuiltIcon::generate1(double inputPoint[], double lambda, double alpha, doub
         if (ynew < 0) ynew = ynew + (int) (-ynew) + 1;
     }
 *********************/
+if(tile) {
     xnew = std::remainder(xnew, 1.0);
     ynew = std::remainder(ynew, 1.0);
+}
     inputPoint[0] = xnew;
     inputPoint[1] = ynew;
 }
@@ -119,6 +123,11 @@ void QuiltIcon::iterFunction(double *input, Parameter<double> lambda, Parameter<
         case QuiltType::FRACTAL:
             generateFractal(input, lambda.getValue(), alpha.getValue(), beta.getValue(), gamma.getValue(),
                             omega.getValue(), ma.getValue(), degSymPeriod.getValue());
+            break;
+        case QuiltType::SQUARE_ICON:
+            generate1_NoTile(input, lambda.getValue(), alpha.getValue(), beta.getValue(), gamma.getValue(),
+                      omega.getValue(), ma.getValue());
+            break;
     }
 }
 
@@ -300,6 +309,20 @@ void QuiltIcon::generateFractal(double *inputPoint, double lambda, double alpha,
 //    cout << "x: " << inputPoint[0] <<" y: " << inputPoint[1] <<endl;
 }
 
+void
+QuiltIcon::generate1(double *inputPoint, double lambda, double alpha, double beta, double gamma,
+                     double omega, double ma) {
+    QuiltIcon::generate1_(inputPoint,  lambda,  alpha,  beta,  gamma,
+             omega,  ma, true);
+
+}
+
+void QuiltIcon::generate1_NoTile(double *inputPoint, double lambda, double alpha, double beta,
+                                 double gamma, double omega, double ma) {
+    QuiltIcon::generate1_(inputPoint,  lambda,  alpha,  beta,  gamma,
+                          omega,  ma, false);
+}
+
 //public static void  getIconDefault(Parameters pp) {
 /***
 	 Info.ICON = 1;
@@ -331,7 +354,9 @@ std::ostream& operator<<(std::ostream &ostream1, const emu::utility::QuiltIcon::
         case QuiltIcon::QuiltType::FRACTAL:
             ostream1 << 2;
             break;
-    }
+        case emu::utility::QuiltIcon::QuiltType::SQUARE_ICON:
+            ostream1 << 4;
+            break;}
     return ostream1;
 }
 std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon::QuiltType& quiltType){
@@ -341,6 +366,7 @@ std::istream& operator>>(std::istream &input, emu::utility::QuiltIcon::QuiltType
         case 0: quiltType = emu::utility::QuiltIcon::QuiltType::SQUARE; break;
         case 1: quiltType = emu::utility::QuiltIcon::QuiltType::HEX; break;
         case 2: quiltType = emu::utility::QuiltIcon::QuiltType::FRACTAL; break;
+        case 4: quiltType = emu::utility::QuiltIcon::QuiltType::SQUARE_ICON; break;
         default: quiltType = emu::utility::QuiltIcon::QuiltType::SQUARE;
     }
    return input ;

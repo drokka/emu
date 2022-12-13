@@ -74,6 +74,12 @@ using namespace std;
  //           friend std::istream &operator>>(std::istream &input, PointList &pl);
 
             long rawTotal=0;
+            double rawMinX = -1.0;
+            double rawMaxX = 1.0;
+            double rawMinY = -1.0;
+            double rawMaxY = 1.0;
+            bool rangeFixed = false;  // will estimate a range hence scale factor after first pass
+            bool notTiled = true;
         private:
             long rawIndex=0;
             Point2D rl[BUFFER_SIZE];
