@@ -32,7 +32,7 @@ SymIconApp::SymIconApp(long iterations, double initX, double initY, QuiltIcon::Q
             maVal = floor(maVal*10);     // tiled patterns have integral values... or sixth root of 1.
             break;  //notTiled used to add buffer to scaling for non-repeating patterns.
         case QuiltIcon::QuiltType::SQUARE_ICON: hl.notTiled = true;
-            maVal = floor(maVal*10);
+           // maVal = floor(maVal*10);
             break;
         case QuiltIcon::QuiltType::FRACTAL: hl.notTiled = true; break;
         case QuiltIcon::QuiltType::HEX: hl.notTiled = false;
